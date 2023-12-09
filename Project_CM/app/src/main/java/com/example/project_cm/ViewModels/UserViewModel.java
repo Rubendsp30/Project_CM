@@ -1,90 +1,130 @@
 package com.example.project_cm.ViewModels;
 
-import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
-import com.example.project_cm.DataBase.AppDatabase;
-import com.example.project_cm.DataBase.Tables.UserEntity;
+import com.example.project_cm.Callbacks.AuthCallback;
+import com.example.project_cm.Callbacks.EmailCheckCallback;
+import com.example.project_cm.User;
+import com.example.project_cm.Callbacks.UsernameCheckCallback;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
 
-public class UserViewModel extends AndroidViewModel {
+public class UserViewModel extends ViewModel {
 
-    private final MutableLiveData<List<UserEntity>> listOfUserEntity;
-    private final AppDatabase appDatabase;
-    private final ExecutorService executorService;
+    private FirebaseFirestore firestore;
+    private final MutableLiveData<User> currentUser = new MutableLiveData<>();
+    private static final String USERS_COLLECTION = "USERS";
+    private final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
+    private final Handler uiHandler = new Handler(Looper.getMainLooper());
 
-    public UserViewModel(Application application) {
-        super(application);
-        listOfUserEntity = new MutableLiveData<>();
-        appDatabase = AppDatabase.getDBinstance(getApplication().getApplicationContext());
-
-        executorService = Executors.newSingleThreadExecutor();
-    }
-
-    public MutableLiveData<List<UserEntity>> getListOfUserEntity() {
-        return listOfUserEntity;
-    }
-
-    public void getAllUserEntityList(){
-        List<UserEntity> userEntityList= appDatabase.userDao().getAllUsersList();
-        if(userEntityList.size()>0){
-            listOfUserEntity.postValue(userEntityList);
-        }else{
-            listOfUserEntity.postValue(null);
+    public UserViewModel() {
+        try {
+            firestore = FirebaseFirestore.getInstance();
+            // Disable Firestore cache
+            /*FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                    .setLocalCacheSettings(MemoryCacheSettings.newBuilder().build())
+                    .build();
+            firestore.setFirestoreSettings(settings);*/
+        } catch (Exception e) {
+            Log.e("UserViewModel", "Error initializing UserViewModel: " + e.getMessage());
         }
     }
 
-    public void insertUserEntity(UserEntity userEntity){
-        executorService.execute(() -> {
-            long rowId = appDatabase.userDao().insertUserEntity(userEntity);
-            if (rowId > 0) {
-                // Insertion was successful
-                // You can use LiveData or another method to notify the UI
-                Log.e("Insert User", "SUCESS");
-            } else {
-                // Insertion failed
-                Log.e("Insert User", "FAIL");
-            }
-            getAllUserEntityList();
+    public void registerUser(User user){
+
+        networkExecutor.execute(() -> {
+            DocumentReference documentReference;
+            documentReference = firestore.collection(USERS_COLLECTION).document();
+            String newUserID = documentReference.getId();
+            user.setUserID(newUserID);
+
+            documentReference.set(user).addOnSuccessListener(aVoid -> {
+
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("registerUser", "Failed to register user: " + e.getMessage());
+                    });
         });
     }
 
-    public void checkUserExists(String username, Consumer<Integer> callback) {
-        executorService.execute(() -> {
-            int count = appDatabase.userDao().countUsersByUsername(username);
-            new Handler(Looper.getMainLooper()).post(() -> callback.accept(count));
+    public void checkUsernameExists(String username, UsernameCheckCallback callback) {
+        networkExecutor.execute(() -> {
+            firestore.collection(USERS_COLLECTION)
+                    .whereEqualTo("username", username)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        // If the query finds any documents, then the username already exists
+                        boolean exists = !queryDocumentSnapshots.isEmpty();
+                        uiHandler.post(() -> callback.onUsernameChecked(exists));
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("checkUsernameExists", "Error checking if username exists: " + e.getMessage());
+                        //Check this after
+                        uiHandler.post(() -> callback.onUsernameChecked(false));
+                    });
         });
     }
 
-    public void getUserByUsernameAndPassword(String username, String password, Consumer<UserEntity> callback) {
-        executorService.execute(() -> {
-            UserEntity user = appDatabase.userDao().getUserByUsernameAndPassword(username, password);
-            new Handler(Looper.getMainLooper()).post(() -> callback.accept(user));
+    public void checkEmailExists(String email, EmailCheckCallback callback) {
+        networkExecutor.execute(() -> {
+            firestore.collection(USERS_COLLECTION)
+                    .whereEqualTo("email", email)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        // If the query finds any documents, then the email already exists
+                        boolean exists = !queryDocumentSnapshots.isEmpty();
+                        uiHandler.post(() -> callback.onEmailChecked(exists));
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("checkEmailExists", "Error checking if email exists: " + e.getMessage());
+                        //Check this after
+                        uiHandler.post(() -> callback.onEmailChecked(false));
+                    });
         });
     }
 
-    public void updateUserEntity(UserEntity userEntity){
-        appDatabase.userDao().updateUserEntity(userEntity);
-        getAllUserEntityList();
+
+    public void authenticateUser(String username, String password, AuthCallback callback) {
+        networkExecutor.execute(() -> {
+            firestore.collection(USERS_COLLECTION)
+                    .whereEqualTo("username", username)
+                    .whereEqualTo("password", password)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        boolean isAuthenticated = !queryDocumentSnapshots.isEmpty();
+                        String userId;
+                        if (isAuthenticated) {
+                            // Assuming the user ID is a field in the document
+                            userId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                        } else {
+                            userId = null;
+                        }
+                        uiHandler.post(() -> callback.onAuthCompleted(isAuthenticated, userId));
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("authenticateUser", "Error authenticating user: " + e.getMessage());
+                        uiHandler.post(() -> callback.onAuthCompleted(false, null));
+                    });
+        });
     }
 
-    public void deleteUserEntity(UserEntity userEntity){
-        appDatabase.userDao().deleteUserEntity(userEntity);
-        getAllUserEntityList();
+    // Getter for currentUser
+    public MutableLiveData<User> getCurrentUser() {
+        return currentUser;
     }
 
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        executorService.shutdown();
+    // Method to set the current user
+    public void setCurrentUser(User user) {
+        currentUser.setValue(user);
     }
+
+
 }

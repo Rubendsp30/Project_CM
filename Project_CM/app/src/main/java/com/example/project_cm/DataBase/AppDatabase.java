@@ -6,6 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import com.example.project_cm.DataBase.Tables.PetProfileEntity;
 import com.example.project_cm.DataBase.Tables.UserEntity;
 
 @Database(entities = {UserEntity.class}, version = 1)

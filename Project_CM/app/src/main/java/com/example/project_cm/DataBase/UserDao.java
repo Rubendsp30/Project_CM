@@ -6,8 +6,6 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.project_cm.DataBase.Tables.UserEntity;
-
 import java.util.List;
 
 @Dao

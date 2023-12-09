@@ -1,5 +1,8 @@
-package com.example.project_cm;
+package com.example.project_cm.Fragments;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +17,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.project_cm.Activities.HomeActivity;
+import com.example.project_cm.Activities.LoginActivity;
+import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.UserViewModel;
 import com.example.project_cm.utils.SecurityUtils;
 
@@ -21,7 +27,7 @@ public class LoginFragment extends Fragment {
 
     private EditText usernameLogin;
     private EditText passwordLogin;
-    @Nullable private FragmentChangeListener FragmentChangeListener;
+    @Nullable private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
     private UserViewModel userViewModel;
 
     @Override
@@ -30,7 +36,7 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.login_fragment, container, false);
 
         // Initialize the FragmentChangeListener
-        this.FragmentChangeListener = (MainActivity) inflater.getContext();
+        this.FragmentChangeListener = (LoginActivity) inflater.getContext();
 
         try {
             userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
@@ -63,24 +69,37 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    private void goToHomeScreen() {
+        Intent intent = new Intent(getActivity(), HomeActivity.class);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
     private void login() {
         String username = usernameLogin.getText().toString();
         String password = passwordLogin.getText().toString();
 
-        // Hash the password
-        String hashedPassword = SecurityUtils.hashPassword(password);
-
-        userViewModel.getUserByUsernameAndPassword(username, hashedPassword, user -> {
-            if (user != null) {
-                // Login successful
-                // Navigate to the next screen or show success message
-                Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
-                // goToNextScreen(); // Implement this method
+        userViewModel.authenticateUser(username, SecurityUtils.hashPassword(password), (isAuthenticated, userId) -> {
+            if (isAuthenticated) {
+                //String userId =;
+                saveLoggedInUser(getActivity(), userId);
+                // User authenticated, navigate to the next screen or show success message
+                goToHomeScreen();
+                // Navigate to next fragment or activity
             } else {
-                // Login failed
+                // Authentication failed, show error message
                 Toast.makeText(getContext(), "Invalid username or password", Toast.LENGTH_SHORT).show();
             }
         });
+
+    }
+
+    public void saveLoggedInUser(Context context, String userId) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isLoggedIn", true);
+        editor.putString("loggedInUserId", userId);
+        editor.apply();
     }
 
 

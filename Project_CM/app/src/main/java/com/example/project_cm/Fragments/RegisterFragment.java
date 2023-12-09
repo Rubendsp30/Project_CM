@@ -1,9 +1,10 @@
-package com.example.project_cm;
+package com.example.project_cm.Fragments;
 
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.project_cm.DataBase.Tables.UserEntity;
+import com.example.project_cm.Activities.LoginActivity;
+import com.example.project_cm.R;
+import com.example.project_cm.User;
 import com.example.project_cm.ViewModels.UserViewModel;
 import com.example.project_cm.utils.SecurityUtils;
 
@@ -25,9 +28,10 @@ import java.io.IOException;
 public class RegisterFragment extends Fragment {
 
     private EditText usernameRegister;
+    private EditText emailRegister;
     private EditText passwordRegister;
     private EditText confirmPasswordRegister;
-    @Nullable private FragmentChangeListener FragmentChangeListener;
+    @Nullable private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
     private UserViewModel userViewModel;
 
     @Override
@@ -37,7 +41,7 @@ public class RegisterFragment extends Fragment {
         View view = inflater.inflate(R.layout.register_fragment, container, false);
 
         // Get FragmentChangeListener from the parent activity
-        this.FragmentChangeListener = (MainActivity) inflater.getContext();
+        this.FragmentChangeListener = (LoginActivity) inflater.getContext();
         try {
             userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         } catch (Exception e) {
@@ -53,6 +57,7 @@ public class RegisterFragment extends Fragment {
         // Initialize UI elements
         ImageButton backButton = view.findViewById(R.id.backButton);
         this.usernameRegister = view.findViewById(R.id.usernameRegister);
+        this.emailRegister = view.findViewById(R.id.emailRegister);
         this.passwordRegister = view.findViewById(R.id.passwordRegister);
         this.confirmPasswordRegister = view.findViewById(R.id.confirmPasswordRegister);
         Button registerButton = view.findViewById(R.id.registerButton);
@@ -66,6 +71,21 @@ public class RegisterFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 validateUsernameLength(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        emailRegister.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                validateEmail(s.toString());
             }
 
             @Override
@@ -127,6 +147,15 @@ public class RegisterFragment extends Fragment {
         }
     }
 
+    private boolean validateEmail(String input) {
+        if (input != null && !input.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(input).matches()) {
+            return true;
+        } else {
+            emailRegister.setError("Email format invalid");
+            return true;
+        }
+    }
+
     private boolean validatePasswordLength(String input) {
         if (input != null && input.length() >= 5) {
             return true;
@@ -147,10 +176,11 @@ public class RegisterFragment extends Fragment {
 
     private boolean validateAllInput() {
         boolean isUsernameValid = validateUsernameLength(usernameRegister.getText().toString());
+        boolean isEmailValid = validateEmail(emailRegister.getText().toString());
         boolean isPasswordValid = validatePasswordLength(passwordRegister.getText().toString());
         boolean isConfirmPasswordValid = validateConfirmPassword(confirmPasswordRegister.getText().toString());
 
-        return isUsernameValid && isPasswordValid && isConfirmPasswordValid;
+        return isUsernameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid;
     }
 
     private void goToLoginDisplay() {
@@ -165,24 +195,29 @@ public class RegisterFragment extends Fragment {
 
     private void registerUser() throws IOException {
         String newUsername = usernameRegister.getText().toString();
+        String newEmail = emailRegister.getText().toString();
         String newPassword = passwordRegister.getText().toString();
 
-        userViewModel.checkUserExists(newUsername, count -> {
-            if (count > 0) {
-                // Username already exists
+        userViewModel.checkUsernameExists(newUsername, usernameExists -> {
+            if (usernameExists) {
+                // Username exists, handle accordingly
                 usernameRegister.setError("Username already exists!");
             } else {
-                // Username is unique, proceed with registration
-                UserEntity newUser = new UserEntity();
-                newUser.username = newUsername;
-                newUser.password = SecurityUtils.hashPassword(newPassword);
-                userViewModel.insertUserEntity(newUser);
-
-                goToLoginDisplay();
+                // Username does not exist, check if the email exists
+                userViewModel.checkEmailExists(newEmail, emailExists -> {
+                    if (emailExists) {
+                        // Email exists, handle accordingly
+                        emailRegister.setError("Email already in use!");
+                    } else {
+                        // Email does not exist, proceed with registration
+                        User newUser = new User(newUsername, newEmail, SecurityUtils.hashPassword(newPassword));
+                        userViewModel.registerUser(newUser);
+                        goToLoginDisplay();
+                    }
+                });
             }
         });
-
-
     }
+
 
 }
