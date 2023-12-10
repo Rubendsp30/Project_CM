@@ -79,6 +79,17 @@ public class LoginFragment extends Fragment {
         String username = usernameLogin.getText().toString();
         String password = passwordLogin.getText().toString();
 
+        // Check if the username or password fields are empty
+        if (username.isEmpty()) {
+            usernameLogin.setError("Please enter a username");
+            return; // Stop the method execution if validation fails
+        }
+
+        if (password.isEmpty()) {
+            passwordLogin.setError("Please enter a password");
+            return; // Stop the method execution if validation fails
+        }
+
         userViewModel.authenticateUser(username, SecurityUtils.hashPassword(password), (isAuthenticated, userId) -> {
             if (isAuthenticated) {
                 //String userId =;
