@@ -31,7 +31,7 @@ public class HomeScreenFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the login fragment layout
-        View view = inflater.inflate(R.layout.home_screen, container, false);
+        View view = inflater.inflate(R.layout.home_screen_dummy, container, false);
 
         // Initialize the FragmentChangeListener
         this.FragmentChangeListener = (HomeActivity) inflater.getContext();

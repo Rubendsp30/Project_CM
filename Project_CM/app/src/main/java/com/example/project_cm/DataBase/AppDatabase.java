@@ -7,12 +7,14 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.example.project_cm.DataBase.Tables.PetProfileEntity;
-import com.example.project_cm.DataBase.Tables.UserEntity;
+import com.example.project_cm.DataBase.Tables.VaccineEntity;
 
-@Database(entities = {UserEntity.class}, version = 1)
+@Database(entities = {VaccineEntity.class, PetProfileEntity.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
 
-    public abstract UserDao userDao();
+    //public abstract UserDao userDao();
+    public abstract PetProfileDao petProfileDao();
+    public abstract VaccineDao VaccineDao();
     public static AppDatabase INSTANCE;
 
     public static AppDatabase getDBinstance(Context context) {

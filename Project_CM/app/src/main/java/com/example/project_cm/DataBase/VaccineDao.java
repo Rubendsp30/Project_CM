@@ -1,17 +1,17 @@
 package com.example.project_cm.DataBase;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import java.util.List;
 
 @Dao
-public interface UserDao {
+public interface VaccineDao {
 
-    @Query("Select * from users")
+
+
+
+
+
+    //Example Querys use
+   /* @Query("Select * from users")
     List<UserEntity> getAllUsersList();
 
     @Insert
@@ -27,6 +27,6 @@ public interface UserDao {
     void updateUserEntity (UserEntity userEntity);
 
     @Delete
-    void deleteUserEntity (UserEntity userEntity);
+    void deleteUserEntity (UserEntity userEntity);*/
 
 }

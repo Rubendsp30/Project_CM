@@ -23,7 +23,8 @@ public class VaccineEntity {
     @ColumnInfo(name = "vaccine_name")
     public String vaccineName;
 
+    //ToDo Dps adicionar converters
     @ColumnInfo(name = "vaccine_date")
-    public Date vaccineDate;
+    public Long vaccineDate;
 
 }

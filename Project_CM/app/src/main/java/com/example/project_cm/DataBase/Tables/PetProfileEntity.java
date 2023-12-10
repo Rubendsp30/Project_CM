@@ -5,11 +5,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "pet_profiles",
-        foreignKeys = @ForeignKey(entity = HouseEntity.class,
-                parentColumns = "id",
-                childColumns = "house_id",
-                onDelete = ForeignKey.CASCADE))
+@Entity(tableName = "pet_profiles")
 public class PetProfileEntity {
     @PrimaryKey(autoGenerate = true)
     public int id;
@@ -17,6 +13,7 @@ public class PetProfileEntity {
     @ColumnInfo(name = "name")
     public String name;
 
+    //ToDo: Ver como guardar imagem. Podemos guardar uma cópia da imagem e um path para ela. Ou diretamente path para a foto mas pode-se perder.idk
     /*@ColumnInfo(name = "photo")
     public String photo;*/
 
@@ -40,8 +37,8 @@ public class PetProfileEntity {
     @ColumnInfo(name = "microchip_number")
     public String microchipNumber;
 
-    @ColumnInfo(name = "house_id")
-    public int houseId;
+    @ColumnInfo(name = "user_id")
+    public int userID;
 
 }
 
