@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,11 +23,16 @@ import com.example.project_cm.R;
 import com.example.project_cm.User;
 import com.example.project_cm.ViewModels.UserViewModel;
 import com.example.project_cm.utils.SecurityUtils;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.IOException;
 
 public class RegisterFragment extends Fragment {
 
+    private TextInputLayout usernameRegisterLayout;
+    private TextInputLayout emailRegisterLayout;
+    private TextInputLayout passwordRegisterLayout;
+    private TextInputLayout confirmPasswordRegisterLayout;
     private EditText usernameRegister;
     private EditText emailRegister;
     private EditText passwordRegister;
@@ -55,10 +61,15 @@ public class RegisterFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Initialize UI elements
-        ImageButton backButton = view.findViewById(R.id.backButton);
+        //ImageButton backButton = view.findViewById(R.id.backButton);
+        TextView backButton = view.findViewById(R.id.backButton);
+        this.usernameRegisterLayout = view.findViewById(R.id.usernameRegisterLayout);
         this.usernameRegister = view.findViewById(R.id.usernameRegister);
+        this.emailRegisterLayout = view.findViewById(R.id.emailRegisterLayout);
         this.emailRegister = view.findViewById(R.id.emailRegister);
+        this.passwordRegisterLayout = view.findViewById(R.id.passwordRegisterLayout);
         this.passwordRegister = view.findViewById(R.id.passwordRegister);
+        this.confirmPasswordRegisterLayout = view.findViewById(R.id.confirmPasswordLayout);
         this.confirmPasswordRegister = view.findViewById(R.id.confirmPasswordRegister);
         Button registerButton = view.findViewById(R.id.registerButton);
 
@@ -140,36 +151,44 @@ public class RegisterFragment extends Fragment {
 
     private boolean validateUsernameLength(String input) {
         if (input != null && input.length() >= 3 && input.length() <= 15) {
+            usernameRegisterLayout.setError(null);
+            usernameRegisterLayout.setErrorEnabled(false);
             return true;
         } else {
-            usernameRegister.setError("Username too short/long");
+            usernameRegisterLayout.setError("Username too short/long");
             return false;
         }
     }
 
     private boolean validateEmail(String input) {
         if (input != null && !input.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(input).matches()) {
+            emailRegisterLayout.setError(null);
+            emailRegisterLayout.setErrorEnabled(false);
             return true;
         } else {
-            emailRegister.setError("Email format invalid");
+            emailRegisterLayout.setError("Email format invalid");
             return true;
         }
     }
 
     private boolean validatePasswordLength(String input) {
         if (input != null && input.length() >= 5) {
+            passwordRegisterLayout.setError(null);
+            passwordRegisterLayout.setErrorEnabled(false);
             return true;
         } else {
-            passwordRegister.setError("Password too short");
+            passwordRegisterLayout.setError("Password too short");
             return false;
         }
     }
 
     private boolean validateConfirmPassword(String input) {
         if (input.equals(passwordRegister.getText().toString())) {
+            confirmPasswordRegisterLayout.setError(null);
+            confirmPasswordRegisterLayout.setErrorEnabled(false);
             return true;
         } else {
-            confirmPasswordRegister.setError("Password not identical");
+            confirmPasswordRegisterLayout.setError("Password not identical");
             return false;
         }
     }
@@ -201,13 +220,13 @@ public class RegisterFragment extends Fragment {
         userViewModel.checkUsernameExists(newUsername, usernameExists -> {
             if (usernameExists) {
                 // Username exists, handle accordingly
-                usernameRegister.setError("Username already exists!");
+                usernameRegisterLayout.setError("Username already exists!");
             } else {
                 // Username does not exist, check if the email exists
                 userViewModel.checkEmailExists(newEmail, emailExists -> {
                     if (emailExists) {
                         // Email exists, handle accordingly
-                        emailRegister.setError("Email already in use!");
+                        emailRegisterLayout.setError("Email already in use!");
                     } else {
                         // Email does not exist, proceed with registration
                         User newUser = new User(newUsername, newEmail, SecurityUtils.hashPassword(newPassword));

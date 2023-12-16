@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="green_200">#9AD2CC</color>
+    <color name="red_300">#E73435</color>
+    <color name="white_background">#F8FCFC</color>
+    <color name="green_300">#94CBA6</color>
+    <color name="orange_300">#EF794C</color>
+    <color name="blue_100">#DDEFF0</color>
+    <color name="green_400">#26564F</color>
+    <color name="orange_100">#F9C8B6</color>
+    <color name="green_saturated">#80FFBC</color>
+
 </resources>
