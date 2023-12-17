@@ -12,4 +12,5 @@
     <color name="orange_100">#F9C8B6</color>
     <color name="green_saturated">#80FFBC</color>
 
+    <color name="mtrl_textinput_default_box_stroke_color">#26564F</color>
 </resources>

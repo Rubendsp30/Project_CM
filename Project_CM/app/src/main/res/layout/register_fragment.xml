@@ -13,10 +13,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create Account"
-            android:textSize="25dp"
+            android:text="@string/create_account_header"
+            android:textSize="32sp"
+            android:fontFamily="@font/poppins_medium"
             android:textColor="@color/green_400"
-            android:layout_marginBottom="70dp"
+            android:layout_marginBottom="107dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/box"/>
@@ -36,7 +37,7 @@
                 android:id="@+id/usernameRegisterLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Username"
+                android:hint="@string/create_account_username_hint"
                 android:textColorHint="@color/green_400"
                 app:startIconTint="@color/green_400"
                 app:boxCornerRadiusBottomEnd="30dp"
@@ -55,7 +56,7 @@
                     android:id="@+id/usernameRegister"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="12dp"
+                    android:textSize="13sp"
                     android:textColor="@color/green_400"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -67,7 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:hint="Email"
+                android:hint="@string/create_account_email_hint"
                 android:textColorHint="@color/green_400"
                 app:boxCornerRadiusBottomEnd="30dp"
                 app:boxCornerRadiusBottomStart="30dp"
@@ -85,7 +86,7 @@
                     android:id="@+id/emailRegister"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="12dp"
+                    android:textSize="13sp"
                     android:textColor="@color/green_400"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -97,7 +98,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:hint="Password"
+                android:hint="@string/create_account_password_hint"
                 app:passwordToggleEnabled="true"
                 android:textColorHint="@color/green_400"
                 app:boxCornerRadiusBottomEnd="30dp"
@@ -118,7 +119,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:textSize="12dp"
+                    android:textSize="13sp"
                     android:textColor="@color/green_400"
                     />
 
@@ -131,7 +132,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:hint="Confirm Password"
+                android:hint="@string/create_account_confirm_password_hint"
                 app:passwordToggleEnabled="true"
                 android:textColorHint="@color/green_400"
                 app:boxCornerRadiusBottomEnd="30dp"
@@ -152,7 +153,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:textSize="12dp"
+                    android:textSize="13sp"
                     android:textColor="@color/green_400"
                     />
 
@@ -160,13 +161,18 @@
             <!--Confirm Password top-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <Button
             android:id="@+id/registerButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="Create Account"
             android:backgroundTint="@color/orange_300"
+            android:elevation="8dp"
+            android:stateListAnimator="@null"
+            android:text="@string/create_account_button_text"
+            android:textColor="@color/white"
+            android:textSize="21sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/box" />
@@ -183,8 +189,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Already have an account?"
+                android:text="@string/create_account_already_have_account"
                 android:textColor="@color/green_400"
+                android:textSize="13sp"
                 android:layout_marginEnd="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -193,7 +200,8 @@
                 android:id="@+id/backButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Login"
+                android:text="@string/create_account_login"
+                android:textSize="13sp"
                 android:textColor="@color/orange_300"
                 android:layout_marginEnd="5dp"
                 app:layout_constraintEnd_toEndOf="parent"

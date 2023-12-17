@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">Project_CM</string>
+
+
+    <!-- Create Acount page -->
+    <string name="create_account_header">Create Account</string>
+    <string name="create_account_username_hint">Username</string>
+    <string name="create_account_email_hint">Email</string>
+    <string name="create_account_password_hint">Password</string>
+    <string name="create_account_confirm_password_hint">Confirm Password</string>
+    <string name="create_account_button_text">Create Account</string>
+    <string name="create_account_already_have_account">Already have an account?</string>
+    <string name="create_account_login">Login</string>
+
+    <!-- Device Setups page -->
+    <string name="device_welcome_header">Welcome!</string>
+    <string name="device_welcome_text">To get your feeder working we need to connect it to the Wi-Fi network, please turn on the feeder to proceed.\n\nIf the lights are on continue to thenext page</string>
+    <string name="device_welcome_btn">The lights are on</string>
+
+    <string name="turn_ble_header">Turn on bluetooth!</string>
+    <string name="turn_ble_text">Turn on the bluetooth to activate the feeder to the phone during the installation process</string>
+    <string name="turn_ble_btn">Turn on bluetooth</string>
+
+    <string name="scan_bt_header">Looking for equipment</string>
+    <string name="scan_bt_text">Don’t turn off the application</string>
 </resources>

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,9 +23,12 @@ import com.example.project_cm.Activities.LoginActivity;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.UserViewModel;
 import com.example.project_cm.utils.SecurityUtils;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class LoginFragment extends Fragment {
 
+    private TextInputLayout usernameLoginLayout;
+    private TextInputLayout passwordLoginLayout;
     private EditText usernameLogin;
     private EditText passwordLogin;
     @Nullable private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
@@ -51,9 +55,11 @@ public class LoginFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Initialize UI elements and set click listeners
-        Button createAccountButton = view.findViewById(R.id.createAccountButton);
+        TextView createAccountButton = view.findViewById(R.id.createAccountButton);
         Button loginButton = view.findViewById(R.id.loginButton);
+        this.usernameLoginLayout = view.findViewById(R.id.usernameLoginLayout);
         this.usernameLogin = view.findViewById(R.id.usernameLogin);
+        this.passwordLoginLayout = view.findViewById(R.id.passwordLoginLayout);
         this.passwordLogin = view.findViewById(R.id.passwordLogin);
 
         createAccountButton.setOnClickListener(v -> goToRegisterDisplay());
@@ -81,17 +87,24 @@ public class LoginFragment extends Fragment {
 
         // Check if the username or password fields are empty
         if (username.isEmpty()) {
-            usernameLogin.setError("Please enter a username");
+            usernameLoginLayout.setError("Please enter a username");
             return; // Stop the method execution if validation fails
+        }
+        else{
+            usernameLoginLayout.setError(null);
         }
 
         if (password.isEmpty()) {
-            passwordLogin.setError("Please enter a password");
+            passwordLoginLayout.setError("Please enter a password");
             return; // Stop the method execution if validation fails
+        }
+        else{
+            passwordLoginLayout.setError(null);
         }
 
         userViewModel.authenticateUser(username, SecurityUtils.hashPassword(password), (isAuthenticated, userId) -> {
             if (isAuthenticated) {
+                passwordLoginLayout.setError(null);
                 //String userId =;
                 saveLoggedInUser(getActivity(), userId);
                 // User authenticated, navigate to the next screen or show success message
@@ -99,7 +112,8 @@ public class LoginFragment extends Fragment {
                 // Navigate to next fragment or activity
             } else {
                 // Authentication failed, show error message
-                Toast.makeText(getContext(), "Invalid username or password", Toast.LENGTH_SHORT).show();
+                //TODO sETERROR on the field that is wrong
+                passwordLoginLayout.setError("Invalid username or password");
             }
         });
 
