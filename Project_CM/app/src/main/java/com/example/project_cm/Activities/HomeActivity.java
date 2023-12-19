@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.project_cm.FragmentChangeListener;
+import com.example.project_cm.Fragments.DeviceSetup.DevSetupInitial;
+import com.example.project_cm.Fragments.DeviceSetup.DevSetupTurnBle;
 import com.example.project_cm.Fragments.HomeScreenFragment;
 import com.example.project_cm.R;
 import com.example.project_cm.User;
@@ -49,7 +51,9 @@ public class HomeActivity extends AppCompatActivity implements FragmentChangeLis
         }
 
         // Load the initial LoginFragment when the activity is created.
-        loadFragment(new HomeScreenFragment(), "home_screen");
+        //loadFragment(new HomeScreenFragment(), "home_screen");
+        //loadFragment(new DevSetupInitial(), "device_setup_initial");
+        loadFragment(new DevSetupInitial(), "device_setup_initial");
     }
 
     private String getLoggedInUserId() {
