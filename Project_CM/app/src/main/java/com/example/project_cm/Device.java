@@ -10,6 +10,7 @@ public class Device implements Serializable {
     public Device(String user_id) {
         this.user_id = user_id;
     }
+
     public Device(String user_id, String deviceID) {
         this.user_id = user_id;
         this.deviceID = deviceID;

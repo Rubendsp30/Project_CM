@@ -55,13 +55,32 @@ public class DeviceViewModel extends ViewModel {
                     });
         });
     }
+/*
+    public void checkUserDevice(String userId) {
+        firestore.collection(DEVICES_COLLECTION)
+                .whereEqualTo("user_id", userId)
+                .limit(1) // As you only need to check if at least one device exists
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        Device device = queryDocumentSnapshots.getDocuments().get(0).toObject(Device.class);
+                        currentDevice.postValue(device); // Set the current device
+                    } else {
+                        currentDevice.postValue(null); // No device found
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("DeviceViewModel", "Error checking user device: " + e.getMessage());
+                    currentDevice.postValue(null); // Handle failure
+                });
+    }*/
 
-    // Getter for currentUser
+    // Getter for currentDevice
     public MutableLiveData<Device> getCurrentDevice() {
         return currentDevice;
     }
 
-    // Method to set the current user
+    // Method to set the current device
     public void setCurrentDevice(Device device) {
         currentDevice.setValue(device);
     }

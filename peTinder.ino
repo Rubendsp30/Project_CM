@@ -27,7 +27,6 @@ void setup() {
 }
 
 void loop() {
-  if (ssid = "") {
   while (serialBT.available()) {
     char receivedChar = serialBT.read();
     incomingData += receivedChar; 
@@ -36,7 +35,7 @@ void loop() {
       incomingData = "";
     }
   }
-  }
+
 
     if (Serial.available()) {
     char receivedChar = Serial.read();
@@ -101,8 +100,7 @@ bool connectToWiFi(const String& ssid, const String& password) {
 void clearWiFiCredentials() {
   preferences.begin("wifi", false); 
   preferences.clear();              
-  preferences.end(); 
-  ssid=""; 
+  //preferences.end(); 
   serialBT.begin("ESP32-BT Woooo");            
 }
 
