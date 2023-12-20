@@ -37,6 +37,8 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation ("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
+    implementation ("com.github.hannesa2:paho.mqtt.android:3.5.1")
     implementation ("androidx.room:room-runtime:2.6.1")
     implementation("com.google.firebase:firebase-firestore:24.10.0")
     annotationProcessor ("androidx.room:room-compiler:2.6.1")
