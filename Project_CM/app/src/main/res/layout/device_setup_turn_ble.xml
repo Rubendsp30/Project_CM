@@ -14,41 +14,43 @@
             android:id="@+id/welcomeBTText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
+            android:layout_marginBottom="24dp"
             android:fontFamily="@font/poppins_medium"
             android:text="@string/turn_ble_header"
             android:textColor="@color/green_400"
-            android:textSize="25sp"
+            android:textSize="32sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toTopOf="@id/setupBTText"/>
 
         <TextView
             android:id="@+id/setupBTText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="107dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginHorizontal="32dp"
             android:text="@string/turn_ble_text"
             android:textColor="@color/green_400"
-            android:textSize="13sp"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/welcomeBTText" />
+            app:layout_constraintBottom_toTopOf="@+id/searchIcon" />
 
         <ImageView
             android:id="@+id/searchIcon"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/setupBTText"
-            app:srcCompat="@drawable/baseline_search_24" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:srcCompat="@drawable/search_icon" />
 
         <Button
             android:id="@+id/turnBTButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginBottom="42dp"
             android:backgroundTint="@color/orange_300"
             android:elevation="8dp"
             android:stateListAnimator="@null"
@@ -57,7 +59,7 @@
             android:textSize="21sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchIcon" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

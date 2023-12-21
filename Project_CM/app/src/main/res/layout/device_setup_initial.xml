@@ -40,7 +40,7 @@
             android:id="@+id/deviceLightConfirmation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginBottom="42dp"
             android:backgroundTint="@color/orange_300"
             android:elevation="8dp"
             android:stateListAnimator="@null"
@@ -49,7 +49,7 @@
             android:textSize="21sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/setupText" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

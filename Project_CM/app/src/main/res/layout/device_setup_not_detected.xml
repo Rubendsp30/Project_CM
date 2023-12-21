@@ -27,7 +27,7 @@
             android:id="@+id/searchIcon"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            app:srcCompat="@drawable/baseline_search_24"
+            app:srcCompat="@drawable/not_detected"
             app:layout_constraintTop_toBottomOf="@+id/notDetectedHeader"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -49,7 +49,7 @@
             android:id="@+id/tryAgainButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginBottom="42dp"
             android:backgroundTint="@color/orange_300"
             android:elevation="8dp"
             android:stateListAnimator="@null"
@@ -58,7 +58,7 @@
             android:textSize="21sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/notDetectedText" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
 
 

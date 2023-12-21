@@ -14,41 +14,43 @@
             android:id="@+id/successHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
+            android:layout_marginBottom="32dp"
             android:fontFamily="@font/poppins_medium"
             android:text="@string/all_set"
             android:textColor="@color/green_400"
             android:textSize="25sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toTopOf="@+id/successText" />
 
         <TextView
             android:id="@+id/successText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="107dp"
+            android:layout_marginBottom="42dp"
+            android:layout_marginHorizontal="32dp"
             android:text="@string/everything_is_ready_now"
             android:textColor="@color/green_400"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/successHeader" />
+            app:layout_constraintBottom_toTopOf="@+id/successIcon" />
 
         <ImageView
             android:id="@+id/successIcon"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/successText"
-            app:srcCompat="@drawable/baseline_search_24" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/createProfileButton"
+            app:srcCompat="@drawable/setup_final_icon" />
 
         <Button
             android:id="@+id/createProfileButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginBottom="42dp"
             android:backgroundTint="@color/orange_300"
             android:elevation="8dp"
             android:stateListAnimator="@null"
@@ -57,7 +59,7 @@
             android:textSize="21sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/successIcon" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

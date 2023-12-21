@@ -38,7 +38,7 @@
             android:id="@+id/connectingIcon"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            app:srcCompat="@drawable/baseline_search_24"
+            app:srcCompat="@drawable/connecting_icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
