@@ -68,23 +68,25 @@ public class HomeScreenFragment extends Fragment {
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setTitle("Pet Feeder");
-        
-
-        viewPagerHome = view.findViewById(R.id.viewPagerHome);
-        viewPagerItemDeviceList = new ArrayList<>();
-        HomeAdapter homeAdapter = new HomeAdapter(viewPagerItemDeviceList);
-        viewPagerHome.setAdapter(homeAdapter);
-        viewPagerHome.setOffscreenPageLimit(2);
-        viewPagerHome.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
 
         // Fetch devices for the current user
         String currentUserId = userViewModel.getCurrentUser().getValue().getUserID();
         DeviceViewModel deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
+
+        viewPagerHome = view.findViewById(R.id.viewPagerHome);
+        viewPagerItemDeviceList = new ArrayList<>();
+        HomeAdapter homeAdapter = new HomeAdapter(viewPagerItemDeviceList,  getChildFragmentManager(),deviceViewModel);
+        viewPagerHome.setAdapter(homeAdapter);
+        viewPagerHome.setOffscreenPageLimit(2);
+        viewPagerHome.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+
         deviceViewModel.getDevicesForUser(currentUserId).observe(getViewLifecycleOwner(), devices -> {
             viewPagerItemDeviceList.clear();
             viewPagerItemDeviceList.addAll(devices);
             homeAdapter.notifyDataSetChanged();
         });
+
+
 
     }
 

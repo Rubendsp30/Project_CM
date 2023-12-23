@@ -106,17 +106,6 @@
         app:layout_constraintTop_toBottomOf="@id/supplyProgressBar"
         app:srcCompat="@drawable/baseline_info_24" />
 
-    <ImageButton
-        android:id="@+id/treatButton"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginBottom="24dp"
-        android:backgroundTint="@color/white_background"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/baseline_info_24" />
-
     <TextView
         android:id="@+id/supplyText"
         android:layout_width="wrap_content"
@@ -129,5 +118,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/supplyInfoButton" />
+
+    <ImageButton
+        android:id="@+id/treatButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="24dp"
+        android:padding="0dp"
+        android:backgroundTint="@color/white_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/treat_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
