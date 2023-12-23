@@ -6,32 +6,48 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.project_cm.Activities.HomeActivity;
 import com.example.project_cm.Activities.LoginActivity;
+
+import com.example.project_cm.Device;
 import com.example.project_cm.R;
+import com.example.project_cm.Adapters.HomeAdapter;
+import com.example.project_cm.User;
+import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.UserViewModel;
+
+import java.util.ArrayList;
 
 public class HomeScreenFragment extends Fragment {
 
 
-    @Nullable private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
+    @Nullable
+    private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
     private UserViewModel userViewModel;
-    private TextView textView;
+
+    ViewPager2 viewPagerHome;
+    ArrayList<Device> viewPagerItemDeviceList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the login fragment layout
-        View view = inflater.inflate(R.layout.home_screen_dummy, container, false);
+        View view = inflater.inflate(R.layout.home_screen, container, false);
 
         // Initialize the FragmentChangeListener
         this.FragmentChangeListener = (HomeActivity) inflater.getContext();
@@ -47,18 +63,48 @@ public class HomeScreenFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbarHomeScreen);
+        setHasOptionsMenu(true);
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setTitle("Pet Feeder");
+        
 
-        Button buttonLogOut = view.findViewById(R.id.buttonLogOut);
-        this.textView = view.findViewById(R.id.textView);
+        viewPagerHome = view.findViewById(R.id.viewPagerHome);
+        viewPagerItemDeviceList = new ArrayList<>();
+        HomeAdapter homeAdapter = new HomeAdapter(viewPagerItemDeviceList);
+        viewPagerHome.setAdapter(homeAdapter);
+        viewPagerHome.setOffscreenPageLimit(2);
+        viewPagerHome.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
 
-        userViewModel.getCurrentUser().observe(getViewLifecycleOwner(), user -> {
-            if (user != null) {
-                textView.setText("Welcome, " + user.getUsername() + "!");
-            }
+        // Fetch devices for the current user
+        String currentUserId = userViewModel.getCurrentUser().getValue().getUserID();
+        DeviceViewModel deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
+        deviceViewModel.getDevicesForUser(currentUserId).observe(getViewLifecycleOwner(), devices -> {
+            viewPagerItemDeviceList.clear();
+            viewPagerItemDeviceList.addAll(devices);
+            homeAdapter.notifyDataSetChanged();
         });
 
-        buttonLogOut.setOnClickListener(v -> logoutUser());
+    }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
+        // Inflate the menu for this fragment
+        inflater.inflate(R.menu.menu_bar, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle menu item selections
+        if (item.getItemId() == R.id.action_logout) {
+            logoutUser();
+        }
+        /* else if (item.getItemId() == R.id.action_menu) {
+
+        }*/
+        return true;
     }
 
     public void logoutUser() {
