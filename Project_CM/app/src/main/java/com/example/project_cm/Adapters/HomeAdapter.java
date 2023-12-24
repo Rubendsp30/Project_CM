@@ -1,5 +1,6 @@
 package com.example.project_cm.Adapters;
 
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,7 +17,6 @@ import com.example.project_cm.Fragments.TreatPopUpFragment;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder> {
@@ -23,7 +24,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     @Nullable private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
     @Nullable private final FragmentManager fragmentManager;
 
-    private ArrayList<Device> viewPagerIDeviceArrayList;
+    private final ArrayList<Device> viewPagerIDeviceArrayList;
     private final DeviceViewModel deviceViewModel;
 
     public HomeAdapter(ArrayList<Device> viewPagerIDeviceArrayList , @Nullable FragmentManager fragmentManager, DeviceViewModel deviceViewModel) {
@@ -48,7 +49,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             }
 
         });
-
 
     }
 

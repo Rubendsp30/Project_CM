@@ -13,17 +13,27 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.project_cm.FragmentChangeListener;
 import com.example.project_cm.Fragments.DeviceSetup.DevSetupInitial;
-import com.example.project_cm.Fragments.DeviceSetup.DevSetupTurnBle;
 import com.example.project_cm.Fragments.HomeScreenFragment;
+import com.example.project_cm.MQTTHelper;
 import com.example.project_cm.R;
 import com.example.project_cm.User;
 import com.example.project_cm.ViewModels.UserViewModel;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements FragmentChangeListener {
     private static final String USERS_COLLECTION = "USERS";
     private static final String DEVICES_COLLECTION = "DEVICES";
+    private MQTTHelper mqttHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +53,8 @@ public class HomeActivity extends AppCompatActivity implements FragmentChangeLis
                         UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
                         userViewModel.setCurrentUser(user);
 
+                        mqttHelper = setupMqtt();
+
                         checkUserHasDevice(firestore, userId, this);
                     })
                     .addOnFailureListener(e -> Log.e("HomeActivity", "Error fetching user details: " + e.getMessage()));
@@ -51,14 +63,39 @@ public class HomeActivity extends AppCompatActivity implements FragmentChangeLis
             redirectToLogin();
         }
 
-        // Load the initial LoginFragment when the activity is created.
-        //loadFragment(new HomeScreenFragment(), "home_screen");
-        //loadFragment(new DevSetupInitial(), "device_setup_initial");
     }
 
     private String getLoggedInUserId() {
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         return sharedPreferences.getString("loggedInUserId", null);
+    }
+
+    private MQTTHelper setupMqtt() {
+        mqttHelper = MQTTHelper.getInstance(this,"yourClientName");
+        mqttHelper.setCallback(new MqttCallbackExtended() {
+            @Override
+            public void connectComplete(boolean reconnect, String serverURI) {
+                Log.e("MQTT", "CONNECTED: " + serverURI);
+            }
+
+            @Override
+            public void connectionLost(Throwable cause) {
+                Log.d("MQTT", "CONNECTION LOST");
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage message) {
+                Log.d("MQTT", "Message arrived on topic: " + topic + " Message: " + new String(message.getPayload()));
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
+                Log.d("MQTT", "DELIVERY COMPLETED");
+            }
+        });
+
+        mqttHelper.connect();
+        return mqttHelper;
     }
 
 
@@ -67,6 +104,11 @@ public class HomeActivity extends AppCompatActivity implements FragmentChangeLis
         query.get().addOnCompleteListener(task -> {
             if (isActivityActive(activity)) {
                 if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                    List<String> deviceIds = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        deviceIds.add(document.getId()); // Assuming the document ID is the device ID
+                    }
+                    mqttHelper.setDeviceIds(deviceIds);
                     // User has a device, load HomeScreenFragment
                     loadFragment(new HomeScreenFragment(), "home_screen");
                 } else {
@@ -91,9 +133,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentChangeLis
         finish();
     }
 
-    @Override
     public void replaceFragment(Fragment fragment) {
-        // Replace the current fragment with the provided fragment.
         if (fragment != null) {
             loadFragment(fragment, fragment.toString());
         }
@@ -108,4 +148,15 @@ public class HomeActivity extends AppCompatActivity implements FragmentChangeLis
                     .commit();
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Disconnect MQTT
+        if (mqttHelper != null) {
+            mqttHelper.stop();
+        }
+    }
+
 }

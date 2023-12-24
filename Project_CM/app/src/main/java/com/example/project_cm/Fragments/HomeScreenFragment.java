@@ -11,7 +11,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -28,7 +27,6 @@ import com.example.project_cm.Activities.LoginActivity;
 import com.example.project_cm.Device;
 import com.example.project_cm.R;
 import com.example.project_cm.Adapters.HomeAdapter;
-import com.example.project_cm.User;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.UserViewModel;
 
@@ -84,6 +82,7 @@ public class HomeScreenFragment extends Fragment {
             viewPagerItemDeviceList.clear();
             viewPagerItemDeviceList.addAll(devices);
             homeAdapter.notifyDataSetChanged();
+
         });
 
 

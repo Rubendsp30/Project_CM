@@ -90,7 +90,7 @@ public class DevSetupFinal extends Fragment {
 
     //Todo mover para o pet profile cration
     private MQTTHelper setupMqtt() {
-        mqttHelper = new MQTTHelper(requireContext(), "ClientName", "project_pet");
+        mqttHelper = new MQTTHelper(requireContext(), "ClientName");
         mqttHelper.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {

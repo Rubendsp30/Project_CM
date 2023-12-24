@@ -3,30 +3,40 @@ package com.example.project_cm.Fragments;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.ViewModelProvider;
 
+import com.example.project_cm.MQTTHelper;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 
-public class TreatPopUpFragment extends DialogFragment {
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+
+public class TreatPopUpFragment extends DialogFragment  {
     private final DeviceViewModel deviceViewModel;
     private SeekBar portionSeekBar;
+    private int treatSize = 85;
+    private final MQTTHelper mqttHelper;
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private boolean responseReceived = false;
+    private  ImageButton giveRreatButton;
 
     public TreatPopUpFragment(DeviceViewModel deviceViewModel1) {
         this.deviceViewModel = deviceViewModel1;
+        this.mqttHelper = MQTTHelper.getInstance(getContext(), "yourClientName");
     }
 
     // This method is called to create and configure the dialog when this fragment is displayed.
@@ -37,18 +47,22 @@ public class TreatPopUpFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.home_pop_up, null);
+        builder.setView(dialogView);
+
 
         TextView deviceId = dialogView.findViewById(R.id.deviceIdText);
         deviceId.setText(deviceViewModel.getCurrentDevice().getValue().getDeviceID());
 
         portionSeekBar = dialogView.findViewById(R.id.portionSeekBar);
         TextView portionTreatValue = dialogView.findViewById(R.id.portionTreaValue);
+        giveRreatButton = dialogView.findViewById(R.id.giveRreatButton);
 
         portionSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 // TODO Auto-generated method stub
+                treatSize = seekBar.getProgress();
             }
 
             @Override
@@ -64,51 +78,94 @@ public class TreatPopUpFragment extends DialogFragment {
 
             }
         });
-        // Find buttons in the dialog layout.
-        //this.editTitlePopUp = dialogView.findViewById(R.id.editTitlePopUp);
-        //Button erasePopUpButton = dialogView.findViewById(R.id.erasePopUpButton);
+
+        mqttHelper.setCallback(new MqttCallbackExtended() {
+            @Override
+            public void connectComplete(boolean reconnect, String serverURI) {
+                Log.d("MQTT", "Connection (re)established to: " + serverURI);
+            }
+
+            @Override
+            public void connectionLost(Throwable cause) {
+                Log.d("MQTT", "Connection lost: " + cause.toString());
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage message) throws Exception {
+                if (topic.equals("/project/treatAnswer/" + deviceViewModel.getCurrentDevice().getValue().getDeviceID())) {
+                    responseReceived = true;
+                    Log.d("MQTT", "Response received: " + new String(message.getPayload()));
+                    dismiss();
+                    enableComponentsAndAllowDismiss();
+                }
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
+                Log.d("MQTT", "Delivery complete for token: " + token.toString());
+            }
+        });
 
 
-        /*
-        loggedInUser = deviceViewModel.getLogedUser();
-        Note selectedNote = notesViewModel.getSelectedNote();
-        docId = selectedNote.getNoteId();*/
 
-        // Set the view for the AlertDialog.
-        builder.setView(dialogView);
+        giveRreatButton.setOnClickListener(v -> {
 
-        //editTitlePopUp.setText(selectedNote.getTitle());
+            giveRreatButton.setEnabled(false);
+            portionSeekBar.setEnabled(false);
+            Dialog dialog = getDialog();
+            if (dialog != null) {
+                dialog.setCancelable(false);
+                dialog.setCanceledOnTouchOutside(false);
+            }
 
-        // Set a click listener for the erase button.
-       // erasePopUpButton.setOnClickListener((v) -> eraseNote());
+            String topic = "/project/treat/" + deviceViewModel.getCurrentDevice().getValue().getDeviceID();
+            String message = String.valueOf(treatSize); // Convert treatSize to string
+            mqttHelper.publishToTopic(topic, message, 2);
 
-        // Set a click listener for the save changes button.
-        //savePopUpButton.setOnClickListener((v) -> saveNewTitle());
+            Log.e("Treat", "Treat size: " + treatSize + "g to " + deviceViewModel.getCurrentDevice().getValue().getDeviceID());
 
-        // Show an overlay in the parent fragment when the dialog is displayed.
-        //((ListNotesFragment) getParentFragment()).showOverlay();
+            // Reset the flag
+            responseReceived = false;
 
-        return builder.create(); // Return the configured dialog.
+            // Setup a delayed action to check the response
+            handler.postDelayed(() -> {
+                if (!responseReceived) {
+                    Log.d("MQTT", "No response received in the specified time.");
+                    enableComponentsAndAllowDismiss();
+                }
+            }, 5000); // 5000 milliseconds = 5 seconds
+
+        });
+
+        Dialog dialog = builder.create();
+
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+
+        return dialog;
     }
+
+    private void enableComponentsAndAllowDismiss() {
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(() -> {
+                giveRreatButton.setEnabled(true);
+                portionSeekBar.setEnabled(true);
+                Dialog dialog = getDialog();
+                if (dialog != null) {
+                    dialog.setCancelable(true);
+                    dialog.setCanceledOnTouchOutside(true);
+                }
+            });
+        }
+    }
+
 
     // This method is called when the dialog is dismissed.
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
-        /*notesViewModel.setSelectedNote(new Note());
-        // Hide the overlay in the parent fragment when the dialog is dismissed.
-        ((ListNotesFragment) getParentFragment()).hideOverlay();*/
+        handler.removeCallbacksAndMessages(null);
+
     }
 
-/*
-    public void saveNewTitle() {
-        String newNoteTitle = editTitlePopUp.getText().toString();
-        if (newNoteTitle.isEmpty()) {
-            editTitlePopUp.setError("Title is required");
-            return;
-        }
-
-        notesViewModel.updateNote(loggedInUser, docId, newNoteTitle, null,requireContext());
-        dismiss();
-    }*/
 }

@@ -16,6 +16,9 @@ char *letters = "abcdefghijklmnopqrstuvwxyz0123456789";
 
 // Define MQTT Topics
 #define TOPIC_TEST "/project/pet"
+#define  TOPIC_TREAT "/project/treat/GMCFo711FUaakBzcQ5Px"
+#define  TOPIC_TREAT_ANSWER "/project/treatAnswer/GMCFo711FUaakBzcQ5Px"
+
 
 // Define MQTT Broker and PORT
 const char *BROKER_MQTT = "broker.hivemq.com";
@@ -64,20 +67,25 @@ void initMQTT(void) {
 
 void callbackMQTT(char *topic, byte *payload, unsigned int length) {
   String msg;
+  String topicStr = String(topic); // Convert char* to String
 
   // Convert payload to string
   for (int i = 0; i < length; i++) {
     char c = (char)payload[i];
     msg += c;
   }
-/*################# END CALLBACKMQTT ###########################################
-#############################################################################*/
-
 
   Serial.printf("Topic: %s\n", topic);
-  Serial.printf("Message: %s\n", msg, topic);
+  Serial.printf("Message: %s\n", msg.c_str());
 
+  // Check if the message is on the treat topic
+  if (topicStr.equals(TOPIC_TREAT)) {
+    MQTT.publish(TOPIC_TREAT_ANSWER, "true");
+  }
 }
+
+/*################# END CALLBACKMQTT ###########################################
+#############################################################################*/
 
 // Connects to the Broker with a specific random ID
 /*###########################################################################
@@ -100,7 +108,7 @@ void reconnectMQTT(void) {
     if (MQTT.connect(ID_MQTT.c_str())) {
       Serial.print("* Connected to broker successfully with ID: ");
       Serial.println(ID_MQTT);
-      MQTT.subscribe(TOPIC_TEST);
+      MQTT.subscribe(TOPIC_TREAT);
     } else {
       Serial.println("* Failed to connected to broker. Trying again in 2 seconds.");
       delay(2000);

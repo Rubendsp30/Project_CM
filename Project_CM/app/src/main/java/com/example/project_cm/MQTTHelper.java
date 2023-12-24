@@ -11,6 +11,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import info.mqtt.android.service.Ack;
 import info.mqtt.android.service.MqttAndroidClient;
@@ -18,17 +19,31 @@ import info.mqtt.android.service.MqttAndroidClient;
 
 public class MQTTHelper {
     public MqttAndroidClient mqttAndroidClient;
+    private static MQTTHelper instance;
 
     //final String server = "tcp://2.80.198.184:1883";
     final String server = "tcp://broker.hivemq.com:1883";
     final String TAG = "MQTT";
     private final String name;
+    private List<String> deviceIds;
 
 
-    public MQTTHelper(Context context, String name, String topic) {
+    public void setDeviceIds(List<String> deviceIds) {
+        this.deviceIds = deviceIds;
+    }
+
+
+    public MQTTHelper(Context context, String name) {
         this.name = name;
 
         mqttAndroidClient = new MqttAndroidClient(context, server, name, Ack.AUTO_ACK);
+    }
+
+    public static synchronized MQTTHelper getInstance(Context context, String name) {
+        if (instance == null) {
+            instance = new MQTTHelper(context, name);
+        }
+        return instance;
     }
 
     public void setCallback(MqttCallbackExtended callback) {
@@ -51,6 +66,9 @@ public class MQTTHelper {
                 disconnectedBufferOptions.setPersistBuffer(false);
                 disconnectedBufferOptions.setDeleteOldestMessages(false);
                 mqttAndroidClient.setBufferOpts(disconnectedBufferOptions);
+
+                Log.w(TAG, "Connected to: " + server);
+                subscribeToDeviceTopics();
             }
 
             @Override
@@ -62,8 +80,26 @@ public class MQTTHelper {
 
     }
 
+    private void subscribeToDeviceTopics() {
+        if (deviceIds != null) {
+            for (String deviceId : deviceIds) {
+                subscribeToDeviceTopic(deviceId);
+            }
+        }
+    }
+
     public void stop() {
         mqttAndroidClient.disconnect();
+    }
+
+    public void subscribeToDeviceTopic(String deviceId) {
+        Log.e("MQTT","Subscribing");
+
+        String treatTopic = "/project/treat/" + deviceId;
+        subscribeToTopic(treatTopic);
+
+        String treatAnswerTopic = "/project/treatAnswer/" + deviceId;
+        subscribeToTopic(treatAnswerTopic);
     }
 
 
@@ -71,7 +107,7 @@ public class MQTTHelper {
         mqttAndroidClient.subscribe(topic, 0, null, new IMqttActionListener() {
             @Override
             public void onSuccess(IMqttToken asyncActionToken) {
-                Log.w(TAG, "Subscribed!");
+                Log.w(TAG, "Subscribed to: "+ topic);
             }
 
             @Override
