@@ -65,6 +65,7 @@ public class HomeScreenFragment extends Fragment {
         setHasOptionsMenu(true);
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.green_400));
         toolbar.setTitle("Pet Feeder");
 
         // Fetch devices for the current user

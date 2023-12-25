@@ -9,7 +9,9 @@
         android:id="@+id/toolbarHomeScreen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white_background" />
+        android:background="@color/white_background"
+        android:titleTextColor="@color/orange_300"
+        />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPagerHome"

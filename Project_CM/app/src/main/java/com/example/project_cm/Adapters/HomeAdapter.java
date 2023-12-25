@@ -75,7 +75,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         public HomeViewHolder(@NonNull View homeView) {
             super(homeView);
 
-            deviceID = itemView.findViewById(R.id.textViewDevice);
+            deviceID = itemView.findViewById(R.id.petNameText);
             treatButton = itemView.findViewById(R.id.treatButton);
 
         }

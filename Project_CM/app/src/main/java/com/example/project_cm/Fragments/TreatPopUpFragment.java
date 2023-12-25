@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -25,14 +26,14 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 
-public class TreatPopUpFragment extends DialogFragment  {
+public class TreatPopUpFragment extends DialogFragment {
     private final DeviceViewModel deviceViewModel;
     private SeekBar portionSeekBar;
     private int treatSize = 85;
     private final MQTTHelper mqttHelper;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private boolean responseReceived = false;
-    private  ImageButton giveRreatButton;
+    private ImageButton giveTreatButton;
 
     public TreatPopUpFragment(DeviceViewModel deviceViewModel1) {
         this.deviceViewModel = deviceViewModel1;
@@ -44,18 +45,14 @@ public class TreatPopUpFragment extends DialogFragment  {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Create an AlertDialog instance and set its appearance style.
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.CustomDialog);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.home_pop_up, null);
+        View dialogView = inflater.inflate(R.layout.home_treat_pop_up, null);
         builder.setView(dialogView);
-
-
-        TextView deviceId = dialogView.findViewById(R.id.deviceIdText);
-        deviceId.setText(deviceViewModel.getCurrentDevice().getValue().getDeviceID());
 
         portionSeekBar = dialogView.findViewById(R.id.portionSeekBar);
         TextView portionTreatValue = dialogView.findViewById(R.id.portionTreaValue);
-        giveRreatButton = dialogView.findViewById(R.id.giveRreatButton);
+        giveTreatButton = dialogView.findViewById(R.id.giveTreatButton);
 
         portionSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
@@ -71,10 +68,10 @@ public class TreatPopUpFragment extends DialogFragment  {
             }
 
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
 
-                portionTreatValue.setText(progress +"g");
+                portionTreatValue.setText(progress + "g");
 
             }
         });
@@ -95,10 +92,36 @@ public class TreatPopUpFragment extends DialogFragment  {
                 if (topic.equals("/project/treatAnswer/" + deviceViewModel.getCurrentDevice().getValue().getDeviceID())) {
                     responseReceived = true;
                     Log.d("MQTT", "Response received: " + new String(message.getPayload()));
-                    dismiss();
-                    enableComponentsAndAllowDismiss();
+
+                    getActivity().runOnUiThread(() -> {
+                        try {
+                            View dialogView = getDialog().getWindow().getDecorView();
+
+                            ImageView treatSuccessIcon = dialogView.findViewById(R.id.treatSuccessIcon);
+                            TextView treatSuccessText = dialogView.findViewById(R.id.treatSuccessText);
+                            TextView portionTreatText = dialogView.findViewById(R.id.portionTreatText);
+
+
+                            giveTreatButton.setVisibility(View.GONE);
+                            portionSeekBar.setVisibility(View.GONE);
+                            portionTreatValue.setVisibility(View.GONE);
+                            portionTreatText.setVisibility(View.GONE);
+                            treatSuccessIcon.setVisibility(View.VISIBLE);
+                            treatSuccessText.setVisibility(View.VISIBLE);
+
+                            // Delay dismissal of the dialog
+                            handler.postDelayed(() -> {
+                                dismiss();
+                                enableComponentsAndAllowDismiss();
+                            }, 3000); // 2000 milliseconds = 2 seconds
+
+                        } catch (Exception e) {
+                            Log.e("MQTT", "Error updating UI: " + e.getMessage());
+                        }
+                    });
                 }
             }
+
 
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {
@@ -107,10 +130,9 @@ public class TreatPopUpFragment extends DialogFragment  {
         });
 
 
+        giveTreatButton.setOnClickListener(v -> {
 
-        giveRreatButton.setOnClickListener(v -> {
-
-            giveRreatButton.setEnabled(false);
+            giveTreatButton.setEnabled(false);
             portionSeekBar.setEnabled(false);
             Dialog dialog = getDialog();
             if (dialog != null) {
@@ -148,7 +170,7 @@ public class TreatPopUpFragment extends DialogFragment  {
     private void enableComponentsAndAllowDismiss() {
         if (getActivity() != null) {
             getActivity().runOnUiThread(() -> {
-                giveRreatButton.setEnabled(true);
+                giveTreatButton.setEnabled(true);
                 portionSeekBar.setEnabled(true);
                 Dialog dialog = getDialog();
                 if (dialog != null) {
