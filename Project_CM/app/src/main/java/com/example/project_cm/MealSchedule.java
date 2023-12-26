@@ -11,19 +11,31 @@ import java.util.Map;
 
 public class MealSchedule implements Serializable {
     private String mealScheduleId;
-    private DateTime mealTime;
+    private Date mealTime;
     private Map<String, Boolean> repeatDays;
     private boolean isActive;
     private boolean notification;
     private int portionSize;
 
-    public MealSchedule(String mealScheduleId, DateTime mealTime, Map<String, Boolean> repeatDays, boolean isActive, boolean notification, int portionSize) {
+    public MealSchedule(String mealScheduleId, Date mealTime, Map<String, Boolean> repeatDays, boolean isActive, boolean notification, int portionSize) {
         this.mealScheduleId = mealScheduleId;
         this.mealTime = mealTime;
         this.repeatDays = repeatDays;
         this.isActive = isActive;
         this.notification = notification;
         this.portionSize = portionSize;
+    }
+
+    public MealSchedule( Date mealTime, Map<String, Boolean> repeatDays, boolean isActive, boolean notification, int portionSize) {
+        this.mealTime = mealTime;
+        this.repeatDays = repeatDays;
+        this.isActive = isActive;
+        this.notification = notification;
+        this.portionSize = portionSize;
+    }
+
+    public MealSchedule(){
+
     }
 
     public String getMealScheduleId() {
@@ -34,11 +46,11 @@ public class MealSchedule implements Serializable {
         this.mealScheduleId = mealScheduleId;
     }
 
-    public DateTime getMealTime() {
+    public Date getMealTime() {
         return mealTime;
     }
 
-    public void setMealTime(DateTime mealTime) {
+    public void setMealTime(Date mealTime) {
         this.mealTime = mealTime;
     }
 

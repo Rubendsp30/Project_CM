@@ -10,14 +10,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project_cm.Device;
 import com.example.project_cm.Fragments.TreatPopUpFragment;
+import com.example.project_cm.MealSchedule;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder> {
 
@@ -35,6 +42,26 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull HomeAdapter.HomeViewHolder holder, int position) {
+
+        Map<String, Boolean> repeatDays1 = new HashMap<>();
+        repeatDays1.put("Monday", true);
+        repeatDays1.put("Tuesday", false);
+        repeatDays1.put("Wednesday", true);
+        repeatDays1.put("Thursday", false);
+        repeatDays1.put("Friday", false);
+        repeatDays1.put("Saturday", true);
+        repeatDays1.put("Sunday", true);
+
+        List<MealSchedule> meals = new ArrayList<MealSchedule>();
+        meals.add(new MealSchedule("schedule_1", Timestamp.from(Instant.now()), repeatDays1, true, false, 3));
+        meals.add(new MealSchedule("schedule_2", Timestamp.from(Instant.now()), repeatDays1, true, false, 5));
+        meals.add(new MealSchedule("schedule_3", Timestamp.from(Instant.now()), repeatDays1, true, false, 10));
+        meals.add(new MealSchedule("schedule_4", Timestamp.from(Instant.now()), repeatDays1, true, false, 10));
+        meals.add(new MealSchedule("schedule_5", Timestamp.from(Instant.now()), repeatDays1, true, false, 10));
+
+        MealScheduleAdapter mealScheduleAdapter = new MealScheduleAdapter(meals);
+        holder.schedulesRecycler.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
+        holder.schedulesRecycler.setAdapter(mealScheduleAdapter);
 
         Device viewPagerItem = viewPagerIDeviceArrayList.get(position);
 
@@ -71,12 +98,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
         TextView deviceID;
         ImageButton treatButton;
+        RecyclerView schedulesRecycler;
 
         public HomeViewHolder(@NonNull View homeView) {
             super(homeView);
 
             deviceID = itemView.findViewById(R.id.petNameText);
             treatButton = itemView.findViewById(R.id.treatButton);
+            schedulesRecycler = itemView.findViewById(R.id.schedulesRecycler);
 
         }
     }
