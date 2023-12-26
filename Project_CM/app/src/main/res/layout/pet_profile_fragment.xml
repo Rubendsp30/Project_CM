@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_background">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/arrowleft2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Pet Profile"
+            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <ImageView
+        android:id="@+id/profile_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/lovely_pet_portrait_isolated"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/box" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/box"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Pet Name TextView -->
+        <TextView
+            android:id="@+id/txtPetName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Princesa"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- New LinearLayout for Pet Info -->
+        <LinearLayout
+            android:id="@+id/pet_info_container"
+            android:layout_width="371dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:weightSum="3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtPetName">
+
+            <!-- Age View -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bordered_background"
+                android:gravity="center"
+                android:padding="10dp"
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="15 years"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Age"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+            </LinearLayout>
+
+            <!-- Weight View -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bordered_background"
+                android:gravity="center"
+                android:padding="10dp"
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4.5 kg"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Weight"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+            </LinearLayout>
+
+            <!-- Sex View -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bordered_background"
+                android:gravity="center"
+                android:padding="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Female"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sex"
+                    android:gravity="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/microship"
+            android:layout_width="0dp"
+            android:layout_height="67dp"
+            android:layout_marginTop="10dp"
+            android:text="Microchip"
+            app:cornerRadius="9dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pet_info_container"
+            app:layout_constraintWidth_percent="1" />
+
+        <Button
+            android:id="@+id/vaccines"
+            android:layout_width="0dp"
+            android:layout_height="67dp"
+            android:layout_marginTop="6dp"
+            android:text="Vaccines"
+            app:cornerRadius="9dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/microship"
+            app:layout_constraintWidth_percent="1" />
+
+        <Button
+            android:id="@+id/action_logout"
+            android:layout_width="0dp"
+            android:layout_height="67dp"
+            android:layout_marginTop="6dp"
+            android:text="History"
+            app:cornerRadius="9dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/vaccines"
+            app:layout_constraintWidth_percent="1" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
