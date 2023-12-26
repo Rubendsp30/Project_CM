@@ -5,46 +5,56 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    android:paddingHorizontal="5dp"
+    android:background="@drawable/vaccine_rounded_corner"
     app:cardCornerRadius="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:gravity="center_vertical">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/textViewVaccineName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:text="Vaccine 1"
+            android:textSize="20sp"
+            android:textColor="@android:color/white" />
 
-            <TextView
-                android:id="@+id/textViewVaccineName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Vaccine 1"
-                android:textAppearance="?attr/textAppearanceListItem"
-                android:textColor="?attr/colorOnSurface" />
+        <TextView
+            android:id="@+id/textViewVaccineDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="01/01/2023"
+            android:textSize="12sp"
+            android:textColor="@android:color/white" />
 
-            <TextView
-                android:id="@+id/textViewVaccineDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="01/01/2023"
-                android:textAppearance="?attr/textAppearanceBody2" />
-
-        </LinearLayout>
+        <!-- Envolver o textViewDaysLeft em um FrameLayout para aplicar o fundo com cantos arredondados -->
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="4dp"
+            android:background="@drawable/rounded_corner_background"
+            android:gravity="center">
 
         <TextView
             android:id="@+id/textViewDaysLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:text="60 days left"
-            android:textAppearance="?attr/textAppearanceBody2"
-            android:textColor="?attr/colorError" />
+            android:textSize="12sp"
+            android:paddingTop="2dp"
+            android:textColor="@color/green_400"
+            android:layout_gravity="center" />
+    </FrameLayout>
 
-    </LinearLayout>
+</LinearLayout>
 
-</RelativeLayout>
+
+    </RelativeLayout>
