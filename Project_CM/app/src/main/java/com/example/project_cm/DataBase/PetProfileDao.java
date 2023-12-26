@@ -6,33 +6,25 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.example.project_cm.DataBase.Tables.PetProfileEntity;
+
 import java.util.List;
 
 @Dao
 public interface PetProfileDao {
 
 
-
-
-
-
-    //Example Querys use
-   /* @Query("Select * from users")
-    List<UserEntity> getAllUsersList();
-
     @Insert
-    long insertUserEntity (UserEntity user);
+    long insertPetProfile(PetProfileEntity petProfile);
 
-    @Query("SELECT COUNT(*) FROM users WHERE username = :username")
-    int countUsersByUsername(String username);
-
-    @Query("SELECT * FROM users WHERE username = :username AND password = :password")
-    UserEntity getUserByUsernameAndPassword(String username, String password);
+    @Query("SELECT * FROM pet_profiles WHERE user_id = :userId")
+    List<PetProfileEntity> getPetProfilesByUserId(String userId);
 
     @Update
-    void updateUserEntity (UserEntity userEntity);
+    void updatePetProfile(PetProfileEntity petProfile);
 
     @Delete
-    void deleteUserEntity (UserEntity userEntity);*/
+    void deletePetProfile(PetProfileEntity petProfile);
+
 
 }

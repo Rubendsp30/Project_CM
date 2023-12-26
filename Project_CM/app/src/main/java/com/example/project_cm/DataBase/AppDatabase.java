@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import com.example.project_cm.DataBase.Tables.PetProfileEntity;
 import com.example.project_cm.DataBase.Tables.VaccineEntity;
 
-@Database(entities = {VaccineEntity.class, PetProfileEntity.class}, version = 1)
+@Database(entities = {VaccineEntity.class, PetProfileEntity.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
 
     //public abstract UserDao userDao();
@@ -20,6 +20,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public static AppDatabase getDBinstance(Context context) {
         if (INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "AppDatabase").build();
+
         }
         return INSTANCE;
     }

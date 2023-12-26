@@ -103,9 +103,12 @@ public class HomeScreenFragment extends Fragment {
         if (item.getItemId() == R.id.action_logout) {
             logoutUser();
         }
-        /* else if (item.getItemId() == R.id.action_menu) {
-
-        }*/
+        else if (item.getItemId() == R.id.action_menu) {
+            if (FragmentChangeListener != null) {
+                PetProfileCreationFragment petProfileCreationFragment = new PetProfileCreationFragment();
+                FragmentChangeListener.replaceFragment(petProfileCreationFragment);
+            }
+        }
         return true;
     }
 

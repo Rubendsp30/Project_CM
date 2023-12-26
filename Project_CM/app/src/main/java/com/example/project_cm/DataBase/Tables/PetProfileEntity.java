@@ -2,7 +2,6 @@ package com.example.project_cm.DataBase.Tables;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "pet_profiles")
@@ -38,8 +37,6 @@ public class PetProfileEntity {
     public String microchipNumber;
 
     @ColumnInfo(name = "user_id")
-    public int userID;
+    public String userID;
 
 }
-
-
