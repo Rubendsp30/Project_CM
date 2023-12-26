@@ -105,8 +105,8 @@ public class HomeScreenFragment extends Fragment {
         }
         else if (item.getItemId() == R.id.action_menu) {
             if (FragmentChangeListener != null) {
-                PetProfileCreationFragment petProfileCreationFragment = new PetProfileCreationFragment();
-                FragmentChangeListener.replaceFragment(petProfileCreationFragment);
+                MenuFragment menuFragment = new MenuFragment();
+                FragmentChangeListener.replaceFragment(menuFragment);
             }
         }
         return true;
