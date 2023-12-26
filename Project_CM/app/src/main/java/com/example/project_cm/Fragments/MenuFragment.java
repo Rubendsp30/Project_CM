@@ -47,13 +47,22 @@ public class MenuFragment extends Fragment {
             fragmentChangeListener = (com.example.project_cm.FragmentChangeListener) getActivity();
         }
 
-        Button profileButton = view.findViewById(R.id.profile);
-        profileButton.setOnClickListener(v -> {
+        Button profileCreationButton = view.findViewById(R.id.profile);
+        profileCreationButton.setOnClickListener(v -> {
             if (fragmentChangeListener != null) {
                 fragmentChangeListener.replaceFragment(new PetProfileCreationFragment());
             }
             //todo adicionar depois os outros botões quando estiverem feitos
         });
+
+        // o PetProfile Vai ficar para ja assim improvisado
+        Button profileButton = view.findViewById(R.id.about);
+        profileButton.setOnClickListener(v -> {
+            if (fragmentChangeListener != null) {
+                fragmentChangeListener.replaceFragment(new PetProfileFragment());
+            }
+        });
+
         Button logoutButton = view.findViewById(R.id.action_logout);
         logoutButton.setOnClickListener(v -> {
             logoutUser();
