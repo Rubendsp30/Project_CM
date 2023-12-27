@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:paddingHorizontal="5dp"
+    android:background="@drawable/vaccine_rounded_corner"
+    app:cardCornerRadius="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/textViewVaccineName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Vaccine 1"
+            android:textSize="20sp"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/textViewVaccineDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="01/01/2023"
+            android:textSize="12sp"
+            android:textColor="@android:color/white" />
+
+        <!-- Envolver o textViewDaysLeft em um FrameLayout para aplicar o fundo com cantos arredondados -->
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="4dp"
+            android:background="@drawable/rounded_corner_background"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/textViewDaysLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="60 days left"
+                android:textSize="12sp"
+                android:paddingTop="2dp"
+                android:textColor="@color/green_400"
+                android:layout_gravity="center" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

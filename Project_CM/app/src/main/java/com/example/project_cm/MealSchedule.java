@@ -1,41 +1,64 @@
 package com.example.project_cm;
 
+import com.google.type.DateTime;
+
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MealSchedule implements Serializable {
-    private List<Meal> meals;
-    private boolean[] repeatDays;
+    private String mealScheduleId;
+    private Date mealTime;
+    private Map<String, Boolean> repeatDays;
     private boolean isActive;
     private boolean notification;
+    private int portionSize;
 
-    public MealSchedule(boolean[] repeatDays, boolean isActive, boolean notification) {
-        this.meals = new ArrayList<>();
+    public MealSchedule(String mealScheduleId, Date mealTime, Map<String, Boolean> repeatDays, boolean isActive, boolean notification, int portionSize) {
+        this.mealScheduleId = mealScheduleId;
+        this.mealTime = mealTime;
         this.repeatDays = repeatDays;
         this.isActive = isActive;
         this.notification = notification;
-    }
-    public void addMeal(Meal meal) {
-        meals.add(meal);
+        this.portionSize = portionSize;
     }
 
-    // Getters and setters
-    public List<Meal> getMeals() {
-        return meals;
+    public MealSchedule( Date mealTime, Map<String, Boolean> repeatDays, boolean isActive, boolean notification, int portionSize) {
+        this.mealTime = mealTime;
+        this.repeatDays = repeatDays;
+        this.isActive = isActive;
+        this.notification = notification;
+        this.portionSize = portionSize;
     }
 
-    public void setMeals(List<Meal> meals) {
-        this.meals = meals;
+    public MealSchedule(){
+
     }
 
-    public boolean[] getRepeatDays() {
+    public String getMealScheduleId() {
+        return mealScheduleId;
+    }
+
+    public void setMealScheduleId(String mealScheduleId) {
+        this.mealScheduleId = mealScheduleId;
+    }
+
+    public Date getMealTime() {
+        return mealTime;
+    }
+
+    public void setMealTime(Date mealTime) {
+        this.mealTime = mealTime;
+    }
+
+    public Map<String, Boolean> getRepeatDays() {
         return repeatDays;
     }
 
-    public void setRepeatDays(boolean[] repeatDays) {
+    public void setRepeatDays(Map<String, Boolean> repeatDays) {
         this.repeatDays = repeatDays;
     }
 
@@ -55,31 +78,11 @@ public class MealSchedule implements Serializable {
         this.notification = notification;
     }
 
-}
-
-class Meal implements Serializable {
-    private Calendar mealTime;
-    private float portionSize;
-
-    public Meal(Calendar mealTime, float portionSize) {
-        this.mealTime = mealTime;
-        this.portionSize = portionSize;
-    }
-
-
-    public Calendar getMealTime() {
-        return mealTime;
-    }
-
-    public void setMealTime(Calendar mealTime) {
-        this.mealTime = mealTime;
-    }
-
-    public float getPortionSize() {
+    public int getPortionSize() {
         return portionSize;
     }
 
-    public void setPortionSize(float portionSize) {
+    public void setPortionSize(int portionSize) {
         this.portionSize = portionSize;
     }
 }

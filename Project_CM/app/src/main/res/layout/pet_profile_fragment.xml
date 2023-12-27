@@ -28,7 +28,7 @@
 
 
     <ImageView
-        android:id="@+id/profile_image"
+        android:id="@+id/petProfileImageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:src="@drawable/lovely_pet_portrait_isolated"
@@ -50,7 +50,7 @@
 
         <!-- Pet Name TextView -->
         <TextView
-            android:id="@+id/txtPetName"
+            android:id="@+id/petNameTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -71,7 +71,7 @@
             android:weightSum="3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txtPetName">
+            app:layout_constraintTop_toBottomOf="@id/petNameTextView">
 
             <!-- Age View -->
             <LinearLayout
@@ -85,6 +85,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/petAgeTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="15 years"
@@ -111,6 +112,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/petWeightTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="4.5 kg"
@@ -136,6 +138,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/petSexTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Female"
@@ -151,32 +154,35 @@
             </LinearLayout>
         </LinearLayout>
 
-        <Button
-            android:id="@+id/microship"
+        <TextView
+            android:id="@+id/petMicrochipTextView"
             android:layout_width="0dp"
-            android:layout_height="67dp"
+            android:layout_height="55dp"
             android:layout_marginTop="10dp"
             android:text="Microchip"
-            app:cornerRadius="9dp"
+            android:background="@drawable/vc_microship_view"
+            android:padding="10dp"
+            android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/pet_info_container"
             app:layout_constraintWidth_percent="1" />
 
+
         <Button
-            android:id="@+id/vaccines"
+            android:id="@+id/petVaccinesTextView"
             android:layout_width="0dp"
             android:layout_height="67dp"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="20dp"
             android:text="Vaccines"
             app:cornerRadius="9dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/microship"
+            app:layout_constraintTop_toBottomOf="@+id/petMicrochipTextView"
             app:layout_constraintWidth_percent="1" />
 
         <Button
-            android:id="@+id/action_logout"
+            android:id="@+id/petHistoryTextView"
             android:layout_width="0dp"
             android:layout_height="67dp"
             android:layout_marginTop="6dp"
@@ -184,11 +190,8 @@
             app:cornerRadius="9dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/vaccines"
+            app:layout_constraintTop_toBottomOf="@+id/petVaccinesTextView"
             app:layout_constraintWidth_percent="1" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
