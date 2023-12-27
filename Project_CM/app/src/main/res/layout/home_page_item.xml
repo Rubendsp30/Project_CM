@@ -1,32 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white_background">
+    android:background="@color/white_background"
+    android:orientation="vertical"
+    android:gravity="center">
 
     <ImageView
         android:id="@+id/petAvatar"
-        android:layout_width="130dp"
-        android:layout_height="130dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="16dp"
         app:srcCompat="@drawable/setup_final_icon" />
 
     <TextView
         android:id="@+id/petNameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="Pet Name"
         android:textColor="@color/green_400"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/petAvatar" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/nextMealText"
@@ -35,10 +31,7 @@
         android:layout_marginTop="8dp"
         android:text="Next meal at"
         android:textColor="@color/green_400"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/petNameText" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/nextMealHourText"
@@ -47,27 +40,24 @@
         android:layout_marginTop="8dp"
         android:text="10:30"
         android:textColor="@color/green_400"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nextMealText" />
+        android:textSize="24sp" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/schedulesBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
+        android:layout_weight="1"
         android:layout_marginTop="16dp"
         android:background="@drawable/custom_username_edit_text"
         android:padding="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/nextMealHourText">
+        android:orientation="vertical">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/schedulesRecycler"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             app:layout_constraintBottom_toTopOf="@+id/addScheduleButton"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -76,6 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/orange_300"
+            android:layout_gravity="end"
             android:elevation="8dp"
             android:stateListAnimator="@null"
             android:text="+"
@@ -85,7 +76,7 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/supplyProgressBar"
@@ -95,44 +86,43 @@
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="24dp"
         android:progress="25"
-        android:progressDrawable="@drawable/custom_progress_bar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/schedulesBox" />
+        android:progressDrawable="@drawable/custom_progress_bar" />
 
-    <ImageButton
-        android:id="@+id/supplyInfoButton"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@color/white_background"
-        app:layout_constraintEnd_toEndOf="@id/supplyProgressBar"
-        app:layout_constraintTop_toBottomOf="@id/supplyProgressBar"
-        app:srcCompat="@drawable/baseline_info_24" />
-
-    <TextView
-        android:id="@+id/supplyText"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="90% Food Suply"
-        android:textColor="@color/green_400"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@id/supplyInfoButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/supplyInfoButton" />
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="32dp">
+        <TextView
+            android:id="@+id/supplyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:text="90% Food Suply"
+            android:textColor="@color/green_400"
+            android:textSize="16sp"
+            />
+
+        <ImageButton
+            android:id="@+id/supplyInfoButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/white_background"
+            app:srcCompat="@drawable/baseline_info_24" />
+
+    </LinearLayout>
 
     <ImageButton
         android:id="@+id/treatButton"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_marginBottom="24dp"
+        android:scaleType="centerCrop"
         android:padding="0dp"
         android:backgroundTint="@color/white_background"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/treat_button" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
