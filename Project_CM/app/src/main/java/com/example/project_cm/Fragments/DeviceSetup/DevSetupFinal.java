@@ -39,7 +39,6 @@ public class DevSetupFinal extends Fragment {
     //Todo mover para o pet profile cration
     private UserViewModel userViewModel;
     private DeviceViewModel deviceViewModel;
-    private MQTTHelper mqttHelper;
 
 
     @Override
@@ -53,7 +52,6 @@ public class DevSetupFinal extends Fragment {
         //Todo mover para o pet profile cration
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
-        this.mqttHelper = setupMqtt();
 
         return view;
     }
@@ -63,20 +61,11 @@ public class DevSetupFinal extends Fragment {
 
         Button createProfileButton = view.findViewById(R.id.createProfileButton);
 
-        createProfileButton.setOnClickListener(v -> transitionToCreatePetFragment());
+        createProfileButton.setOnClickListener(v -> transitionToHomeScreenFragment());
     }
 
 
-    private void transitionToCreatePetFragment() {
-
-        //Todo mover para o pet profile cration
-        String userId = userViewModel.getCurrentUser().getValue().getUserID();
-
-        Device device = new Device();
-        device.setUser_id(userId);
-
-        // Register the device
-        deviceViewModel.registerDevice(device);
+    private void transitionToHomeScreenFragment() {
 
         if (FragmentChangeListener != null) {
             HomeScreenFragment fragment = new HomeScreenFragment();
@@ -88,38 +77,6 @@ public class DevSetupFinal extends Fragment {
 
     }
 
-    //Todo mover para o pet profile cration
-    private MQTTHelper setupMqtt() {
-        mqttHelper = new MQTTHelper(requireContext(), "ClientName");
-        mqttHelper.setCallback(new MqttCallbackExtended() {
-            @Override
-            public void connectComplete(boolean reconnect, String serverURI) {
-                Log.d("MQTT", "CONNECTED: " + serverURI);
-                mqttHelper.subscribeToTopic("/project/pet");
-            }
-
-            @Override
-            public void connectionLost(Throwable cause) {
-                Log.d("MQTT", "CONNECTION LOST");
-            }
-
-            @Override
-            public void messageArrived(String topic, MqttMessage message) {
-                /*
-                if (topic.equals(HUMIDITY_TOPIC)) {
-                    newHumidity.value = Double.parseDouble(message.toString());
-                }*/
-            }
-
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken token) {
-                Log.d("MQTT", "DELIVERY COMPLETED");
-            }
-        });
-
-        mqttHelper.connect();
-        return mqttHelper;
-    }
 
 
 }

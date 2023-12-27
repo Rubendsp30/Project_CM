@@ -3,9 +3,10 @@ package com.example.project_cm;
 import java.io.Serializable;
 
 public class Device implements Serializable {
-    private String user_id,pet_id,deviceID;
-    private int status;
+    private String user_id,deviceID;
+    private int status, foodSuply;
     private double sensor_temperature, sensor_humidity;
+    private long pet_id;
 
     public Device(String user_id) {
         this.user_id = user_id;
@@ -16,12 +17,13 @@ public class Device implements Serializable {
         this.deviceID = deviceID;
     }
 
-    public Device(String user_id, String pet_id, int status, double sensor_temperature, double sensor_humidity) {
+    public Device(String user_id, long pet_id, int status, double sensor_temperature, double sensor_humidity, int foodSuply) {
         this.user_id = user_id;
         this.pet_id = pet_id;
         this.status = status;
         this.sensor_temperature = sensor_temperature;
         this.sensor_humidity = sensor_humidity;
+        this.foodSuply = foodSuply;
     }
 
     public Device() {
@@ -44,11 +46,11 @@ public class Device implements Serializable {
         this.user_id = user_id;
     }
 
-    public String getPet_id() {
+    public long getPet_id() {
         return pet_id;
     }
 
-    public void setPet_id(String pet_id) {
+    public void setPet_id(long pet_id) {
         this.pet_id = pet_id;
     }
 
@@ -74,5 +76,13 @@ public class Device implements Serializable {
 
     public void setSensor_humidity(double sensor_humidity) {
         this.sensor_humidity = sensor_humidity;
+    }
+
+    public int getFoodSuply() {
+        return foodSuply;
+    }
+
+    public void setFoodSuply(int foodSuply) {
+        this.foodSuply = foodSuply;
     }
 }

@@ -28,6 +28,10 @@ public class DeviceViewModel extends ViewModel {
     private static final String DEVICES_COLLECTION = "DEVICES";
     private final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
     private final Handler uiHandler = new Handler(Looper.getMainLooper());
+    private final MutableLiveData<String> newDeviceId = new MutableLiveData<>();
+
+
+
 
     public DeviceViewModel() {
         try {
@@ -46,9 +50,8 @@ public class DeviceViewModel extends ViewModel {
 
         networkExecutor.execute(() -> {
             DocumentReference documentReference;
-            documentReference = firestore.collection(DEVICES_COLLECTION).document();
-            String newDeviceID = documentReference.getId();
-            device.setDeviceID(newDeviceID);
+            documentReference = firestore.collection(DEVICES_COLLECTION).document(newDeviceId.getValue());
+            device.setDeviceID(newDeviceId.getValue());
 
             documentReference.set(device).addOnSuccessListener(aVoid -> {
 
@@ -88,6 +91,14 @@ public class DeviceViewModel extends ViewModel {
     // Method to set the current device
     public void setCurrentDevice(Device device) {
         currentDevice.setValue(device);
+    }
+
+    public void setNewDeviceId(String deviceId) {
+        newDeviceId.setValue(deviceId);
+    }
+
+    public LiveData<String> getNewDeviceId() {
+        return newDeviceId;
     }
 
 

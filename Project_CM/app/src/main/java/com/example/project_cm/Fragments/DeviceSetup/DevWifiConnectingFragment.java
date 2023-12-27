@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.project_cm.Activities.HomeActivity;
+import com.example.project_cm.Fragments.PetProfileCreationFragment;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.BluetoothViewModel;
 
@@ -46,9 +47,9 @@ public class DevWifiConnectingFragment extends Fragment {
         bluetoothViewModel.setMessageListener(message -> {
             getActivity().runOnUiThread(() -> {
                 if ("CONNECTED".equals(message.trim())) {
-                    // Transition to Home Screen
+                    // Transition to PetProfileCreation
                     if (FragmentChangeListener != null) {
-                        DevSetupFinal fragment = new DevSetupFinal();
+                        PetProfileCreationFragment fragment = new PetProfileCreationFragment();
                         FragmentChangeListener.replaceFragment(fragment);
                     }
                 } else if ("FAILED".equals(message.trim())) {

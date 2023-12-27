@@ -24,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.project_cm.Activities.HomeActivity;
 import com.example.project_cm.ViewModels.BluetoothViewModel;
 import com.example.project_cm.R;
+import com.example.project_cm.ViewModels.DeviceViewModel;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -96,12 +97,23 @@ public class DevScanFragment extends Fragment {
             socket.connect();
 
             BluetoothViewModel bluetoothViewModel = new ViewModelProvider(requireActivity()).get(BluetoothViewModel.class);
+            DeviceViewModel deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
             bluetoothViewModel.setSocket(socket);
+            String deviceId = extractDeviceId(device.getName());
+            deviceViewModel.setNewDeviceId(deviceId);
             transitionToSendMessageFragment();
             scanTimeoutHandler.removeCallbacks(scanTimeoutRunnable);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String extractDeviceId(String deviceName) {
+        int index = deviceName.lastIndexOf("-");
+        if (index != -1) {
+            return deviceName.substring(index + 1);
+        }
+        return null;
     }
 
     private void transitionToSendMessageFragment() {

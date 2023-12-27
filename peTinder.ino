@@ -12,12 +12,13 @@ bool isBtOn;
 
 // Define random ID
 String ID_MQTT;
-char *letters = "abcdefghijklmnopqrstuvwxyz0123456789";
+char *letters = "XyP7rK9qJwZ2eFvN4mG8";
 
 // Define MQTT Topics
 #define TOPIC_TEST "/project/pet"
-#define  TOPIC_TREAT "/project/treat/GMCFo711FUaakBzcQ5Px"
-#define  TOPIC_TREAT_ANSWER "/project/treatAnswer/GMCFo711FUaakBzcQ5Px"
+#define  TOPIC_TREAT "/project/treat/XyP7rK9qJwZ2eFvN4mG8"
+#define  TOPIC_TREAT_ANSWER "/project/treatAnswer/XyP7rK9qJwZ2eFvN4mG8"
+#define  BT_NAME "ESP32-BT-XyP7rK9qJwZ2eFvN4mG8"
 
 
 // Define MQTT Broker and PORT
@@ -174,7 +175,7 @@ void setup() {
 #############################################################################*/
 
 
-  serialBT.begin("ESP32-BT-5XzQ3NpJU7mVbTw9Hc4F");
+  serialBT.begin(BT_NAME);
 }
 
 /*###########################################################################
@@ -286,7 +287,7 @@ void clearWiFiCredentials() {
   isBtOn = true; 
   String boolToString = isBtOn ? "true" : "false";
   preferences.putString("isBtOn", boolToString);       
-  serialBT.begin("ESP32-BT-5XzQ3NpJU7mVbTw9Hc4F");            
+  serialBT.begin(BT_NAME);            
 }
 /*################# END CLEARWIFICREDENTIALS ###########################################
 #############################################################################*/

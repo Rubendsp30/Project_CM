@@ -19,7 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.project_cm.DataBase.Tables.PetProfileEntity;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
-import com.example.project_cm.ViewModels.ViewModelFactory;
+//import com.example.project_cm.ViewModels.ViewModelFactory;
 import com.example.project_cm.FragmentChangeListener;
 import com.example.project_cm.DataBase.PetProfileDao;
 import com.example.project_cm.DataBase.AppDatabase;
@@ -30,6 +30,7 @@ import java.util.Locale;
 
 
 public class PetProfileFragment extends Fragment {
+    /*
     @Nullable
     private com.example.project_cm.FragmentChangeListener fragmentChangeListener;
     private UserViewModel userViewModel;
@@ -114,6 +115,6 @@ public class PetProfileFragment extends Fragment {
         });
 */
 
-    }
+   // }
 }
 
