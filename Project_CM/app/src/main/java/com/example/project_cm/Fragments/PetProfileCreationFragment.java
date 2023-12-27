@@ -28,7 +28,7 @@ public class PetProfileCreationFragment extends Fragment {
     private PetProfileViewModel petProfileViewModel;
 
     // UI stuff
-    private EditText inputName, inputAge, inputWeight, inputSex, inputMicrochip;
+    private EditText inputName, inputAge, inputWeight, inputGender, inputMicrochip;
     private Button saveButton;
     private ImageView profileImage;
 
@@ -61,16 +61,7 @@ public class PetProfileCreationFragment extends Fragment {
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         petProfileViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().getApplication())).get(PetProfileViewModel.class);
 
-        // UI shit
-        inputName = view.findViewById(R.id.inputName);
-        inputAge = view.findViewById(R.id.inputAge);
-        inputWeight = view.findViewById(R.id.inputWeight);
-        inputSex = view.findViewById(R.id.inputSex);
-        inputMicrochip = view.findViewById(R.id.inputMicrochip);
-        saveButton = view.findViewById(R.id.saveButton);
-        profileImage = view.findViewById(R.id.profile_image);
 
-        saveButton.setOnClickListener(v -> createPetProfile());
         return view;
     }
 
@@ -79,6 +70,17 @@ public class PetProfileCreationFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // Retrieve the current user
         User currentUser = userViewModel.getCurrentUser().getValue();
+
+        // UI things
+        inputName = view.findViewById(R.id.inputName);
+        inputAge = view.findViewById(R.id.inputAge);
+        inputWeight = view.findViewById(R.id.inputWeight);
+        inputGender = view.findViewById(R.id.inputGender);
+        inputMicrochip = view.findViewById(R.id.inputMicrochip);
+        saveButton = view.findViewById(R.id.saveButton);
+        profileImage = view.findViewById(R.id.profile_image);
+
+        saveButton.setOnClickListener(v -> createPetProfile());
         if (currentUser != null) {
             // If in edit mode and a pet profile ID is provided
             if (isEditMode && petProfileId != null) {
@@ -111,27 +113,41 @@ public class PetProfileCreationFragment extends Fragment {
     //Fill com as coisas da UI e as informações gravadas anteriormente
     private void fillInProfileDetails(PetProfileEntity petProfile) {
         if (petProfile != null) {
-            inputName.setText(petProfile.name != null ? petProfile.name : "");
+            if (petProfile.name != null) {
+                inputName.setText(petProfile.name);
+            } else {
+                inputName.setText("");
+            }
             inputAge.setText(String.valueOf(petProfile.age));
             inputWeight.setText(String.valueOf(petProfile.weight));
-            //female or male
-            String genderText = convertSexToGender(petProfile.gender == 0 ? "male" : "female") == 0 ? "male" : "female";
-            inputSex.setText(genderText);
-            inputMicrochip.setText(petProfile.microchipNumber != null ? petProfile.microchipNumber : "");
+            String genderText;
+            if (petProfile.gender == 0) {
+                genderText = "male";
+            } else {
+                genderText = "female";
+            }
+            inputGender.setText(genderText);
+            if (petProfile.microchipNumber != null) {
+                inputMicrochip.setText(petProfile.microchipNumber);
+            } else {
+                inputMicrochip.setText("");
+            }
         } else {
             Toast.makeText(getContext(), "Pet profile not found", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
     // Logic for creating a new pet profile or updating an existing one
     private void createPetProfile() {
         String name = inputName.getText().toString();
         String ageInput = inputAge.getText().toString();
         String weightInput = inputWeight.getText().toString();
-        String sex = inputSex.getText().toString();
+        String gender = inputGender.getText().toString();
         String microchip = inputMicrochip.getText().toString();
 
-        if (name.isEmpty() || ageInput.isEmpty() || weightInput.isEmpty() || sex.isEmpty() || microchip.isEmpty()) {
+        if (name.isEmpty() || ageInput.isEmpty() || weightInput.isEmpty() || gender.isEmpty() || microchip.isEmpty()) {
             Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -146,11 +162,17 @@ public class PetProfileCreationFragment extends Fragment {
                 return;
             }
 
-            PetProfileEntity petProfile = isEditMode ? currentPetProfile : new PetProfileEntity();
+            PetProfileEntity petProfile;
+            if (isEditMode) {
+                petProfile = currentPetProfile;
+            } else {
+                petProfile = new PetProfileEntity();
+            }
+
             petProfile.name = name;
             petProfile.age = age;
             petProfile.weight = weight;
-            petProfile.gender = convertSexToGender(sex);
+            petProfile.gender = convertToGender(gender);
             petProfile.microchipNumber = microchip;
 
             if (isEditMode) {
@@ -175,14 +197,18 @@ public class PetProfileCreationFragment extends Fragment {
     // Handle actions after saving pet profile information
     private void onPetInfoSaved() {
         if (getActivity() instanceof FragmentChangeListener) {
-            ((FragmentChangeListener) getActivity()).replaceFragment(new HomeScreenFragment());
+            ((FragmentChangeListener) getActivity()).replaceFragment(new PetProfileFragment());
         } else {
             Toast.makeText(getContext(), "Activity must implement FragmentChangeListener", Toast.LENGTH_SHORT).show();
         }
     }
 
-    // Convert the input sex string to a gender value
-    private int convertSexToGender(String sex) {
-        return sex.equalsIgnoreCase("male") ? 0 : 1;
+    // Convert the input gender string to a gender value
+    private int convertToGender(String gender) {
+        if (gender.equalsIgnoreCase("male")) {
+            return 0;
+        } else {
+            return 1;
+        }
     }
 }

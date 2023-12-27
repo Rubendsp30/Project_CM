@@ -96,12 +96,12 @@
         app:layout_constraintTop_toBottomOf="@+id/inputAge" />
 
     <EditText
-        android:id="@+id/inputSex"
+        android:id="@+id/inputGender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/inputWeight"
         android:layout_marginTop="20dp"
-        android:hint="Sex"
+        android:hint="Gender"
         android:inputType="text"
         app:layout_constraintTop_toBottomOf="@+id/inputWeight" />
 
@@ -109,11 +109,11 @@
         android:id="@+id/inputMicrochip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/inputSex"
+        android:layout_below="@id/inputGender"
         android:layout_marginTop="20dp"
         android:hint="Microchip"
         android:inputType="text"
-        app:layout_constraintTop_toBottomOf="@+id/inputSex" />
+        app:layout_constraintTop_toBottomOf="@+id/inputGender" />
 
     <Button
         android:id="@+id/saveButton"
