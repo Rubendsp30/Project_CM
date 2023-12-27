@@ -154,23 +154,26 @@
             </LinearLayout>
         </LinearLayout>
 
-        <Button
+        <TextView
             android:id="@+id/petMicrochipTextView"
             android:layout_width="0dp"
-            android:layout_height="67dp"
+            android:layout_height="55dp"
             android:layout_marginTop="10dp"
             android:text="Microchip"
-            app:cornerRadius="9dp"
+            android:background="@drawable/vc_microship_view"
+            android:padding="10dp"
+            android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/pet_info_container"
             app:layout_constraintWidth_percent="1" />
 
+
         <Button
             android:id="@+id/petVaccinesTextView"
             android:layout_width="0dp"
             android:layout_height="67dp"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="20dp"
             android:text="Vaccines"
             app:cornerRadius="9dp"
             app:layout_constraintEnd_toEndOf="parent"
