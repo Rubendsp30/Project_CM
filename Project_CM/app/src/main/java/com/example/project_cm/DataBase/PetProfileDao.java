@@ -5,6 +5,8 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.project_cm.DataBase.Tables.PetProfileEntity;
 
@@ -20,8 +22,13 @@ public interface PetProfileDao {
     @Query("SELECT * FROM pet_profiles WHERE user_id = :userId")
     List<PetProfileEntity> getPetProfilesByUserId(String userId);
 
+    @Query("SELECT * FROM pet_profiles WHERE id = :petProfileId")
+    PetProfileEntity getPetProfileById(String petProfileId);
+
+
     @Update
     void updatePetProfile(PetProfileEntity petProfile);
+
 
     @Delete
     void deletePetProfile(PetProfileEntity petProfile);

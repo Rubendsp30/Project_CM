@@ -50,7 +50,9 @@ public class MenuFragment extends Fragment {
         Button profileButton = view.findViewById(R.id.profile);
         profileButton.setOnClickListener(v -> {
             if (fragmentChangeListener != null) {
+
                 fragmentChangeListener.replaceFragment(new PetProfileCreationFragment());
+
             }
             //todo adicionar depois os outros botões quando estiverem feitos
         });
