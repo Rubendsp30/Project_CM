@@ -25,6 +25,7 @@ import com.example.project_cm.Activities.HomeActivity;
 import com.example.project_cm.Activities.LoginActivity;
 
 import com.example.project_cm.Device;
+import com.example.project_cm.Fragments.DeviceSetup.DevSetupInitial;
 import com.example.project_cm.R;
 import com.example.project_cm.Adapters.HomeAdapter;
 import com.example.project_cm.ViewModels.DeviceViewModel;
@@ -100,9 +101,14 @@ public class HomeScreenFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle menu item selections
+        //****************************************DEBUG ONLY***********************************************************************************************
         if (item.getItemId() == R.id.action_logout) {
-            logoutUser();
+            if (FragmentChangeListener != null) {
+                DevSetupInitial fragment = new DevSetupInitial();
+                FragmentChangeListener.replaceFragment(fragment);
+            }
         }
+        //****************************************DEBUG ONLY***********************************************************************************************
         else if (item.getItemId() == R.id.action_menu) {
             if (FragmentChangeListener != null) {
                 MenuFragment menuFragment = new MenuFragment();
@@ -112,16 +118,5 @@ public class HomeScreenFragment extends Fragment {
         return true;
     }
 
-    public void logoutUser() {
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("isLoggedIn", false);
-        editor.remove("loggedInUserId");
-        editor.apply();
-
-        Intent intent = new Intent(getActivity(), LoginActivity.class);
-        startActivity(intent);
-        getActivity().finish();
-    }
 
 }

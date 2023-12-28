@@ -10,9 +10,14 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.project_cm.Activities.HomeActivity;
+import com.example.project_cm.Fragments.PetProfileCreationFragment;
 import com.example.project_cm.R;
+import com.example.project_cm.ViewModels.DeviceViewModel;
+
+import java.security.SecureRandom;
 
 public class DevSetupInitial extends Fragment {
 
@@ -37,6 +42,31 @@ public class DevSetupInitial extends Fragment {
         Button deviceLightConfirmation = view.findViewById(R.id.deviceLightConfirmation);
 
         deviceLightConfirmation.setOnClickListener(v -> transitionToTurnBleFragment());
+        //****************************************DEBUG ONLY***********************************************************************************************
+        Button debugCreateDeviceButton = view.findViewById(R.id.debugCreateDeviceButton);
+        String CHAR_LOWER = "abcdefghijklmnopqrstuvwxyz";
+        String CHAR_UPPER = CHAR_LOWER.toUpperCase();
+        String NUMBER = "0123456789";
+        String DATA_FOR_RANDOM_STRING = CHAR_LOWER + CHAR_UPPER + NUMBER;
+        SecureRandom random = new SecureRandom();
+
+        StringBuilder sb = new StringBuilder(20);
+        for (int i = 0; i < 18; i++) {
+            int rndCharAt = random.nextInt(DATA_FOR_RANDOM_STRING.length());
+            char rndChar = DATA_FOR_RANDOM_STRING.charAt(rndCharAt);
+            sb.append(rndChar);
+        }
+        String deviceId = sb.toString();
+
+        debugCreateDeviceButton.setOnClickListener(v -> {
+            DeviceViewModel deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
+            deviceViewModel.setNewDeviceId(deviceId);
+            if (FragmentChangeListener != null) {
+                PetProfileCreationFragment fragment = new PetProfileCreationFragment();
+                FragmentChangeListener.replaceFragment(fragment);
+            }
+        });
+        //****************************************DEBUG ONLY***********************************************************************************************
     }
 
 
@@ -51,8 +81,6 @@ public class DevSetupInitial extends Fragment {
         }
 
     }
-
-
 
 
 }
