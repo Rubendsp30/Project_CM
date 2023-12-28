@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +19,7 @@ import com.example.project_cm.Fragments.TreatPopUpFragment;
 import com.example.project_cm.MealSchedule;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
+import com.example.project_cm.ViewModels.PetProfileViewModel;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -33,11 +35,16 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     private final ArrayList<Device> viewPagerIDeviceArrayList;
     private final DeviceViewModel deviceViewModel;
+    private final PetProfileViewModel petProfileViewModel;
+    private final LifecycleOwner lifecycleOwner;
 
-    public HomeAdapter(ArrayList<Device> viewPagerIDeviceArrayList , @Nullable FragmentManager fragmentManager, DeviceViewModel deviceViewModel) {
+
+    public HomeAdapter(ArrayList<Device> viewPagerIDeviceArrayList , @Nullable FragmentManager fragmentManager, DeviceViewModel deviceViewModel, PetProfileViewModel petProfileViewModel, LifecycleOwner lifecycleOwner) {
         this.viewPagerIDeviceArrayList = viewPagerIDeviceArrayList;
         this.fragmentManager = fragmentManager;
         this.deviceViewModel = deviceViewModel;
+        this.petProfileViewModel = petProfileViewModel;
+        this.lifecycleOwner = lifecycleOwner;
     }
 
     @Override
@@ -64,8 +71,16 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         holder.schedulesRecycler.setAdapter(mealScheduleAdapter);
 
         Device viewPagerItem = viewPagerIDeviceArrayList.get(position);
-
-        holder.deviceID.setText(viewPagerItem.getDeviceID());
+        long petProfileId = viewPagerItem.getPet_id();
+        //TODO CHange this to pet name
+        petProfileViewModel.getPetProfileById(petProfileId).observe(lifecycleOwner, petProfileEntity -> {
+            if (petProfileEntity != null) {
+                holder.petNameText.setText(petProfileEntity.name);
+            }
+        });
+        //String petName = petProfileViewModel.getPetProfileById(viewPagerItem.getPet_id()).getValue().name;
+        String petName = String.valueOf(viewPagerItem.getPet_id());
+        holder.petNameText.setText(petName);
         holder.treatButton.setOnClickListener(v -> {
 
 
@@ -96,14 +111,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     // ViewHolder class for holding the views of each note card.
     public static class HomeViewHolder extends RecyclerView.ViewHolder {
 
-        TextView deviceID;
+        TextView petNameText;
         ImageButton treatButton;
         RecyclerView schedulesRecycler;
 
         public HomeViewHolder(@NonNull View homeView) {
             super(homeView);
 
-            deviceID = itemView.findViewById(R.id.petNameText);
+            petNameText = itemView.findViewById(R.id.petNameText);
             treatButton = itemView.findViewById(R.id.treatButton);
             schedulesRecycler = itemView.findViewById(R.id.schedulesRecycler);
 

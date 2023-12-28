@@ -41,7 +41,7 @@ public class PetProfileCreationFragment extends Fragment {
 
     // Flags to determine if we are editing an existing pet profile
     private boolean isEditMode = false;
-    private String petProfileId = null;
+    private long petProfileId;
     private PetProfileEntity currentPetProfile;
     private long newPetProfileId = 0;
 
@@ -50,12 +50,12 @@ public class PetProfileCreationFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Check if arguments are passed to the fragment
-        if (getArguments() != null) {
-            petProfileId = getArguments().getString("petProfileId");
+        /*if (getArguments() != null) {
+            petProfileId = getArguments().getLong("petProfileId");
             // Determine if the fragment is in edit mode based on petProfileId
             isEditMode = petProfileId != null && !petProfileId.isEmpty();
             Log.d("PetProfileFragment", "onCreate: isEditMode = " + isEditMode + ", petProfileId = " + petProfileId);
-        }
+        }*/
     }
 
     @Nullable
@@ -93,20 +93,20 @@ public class PetProfileCreationFragment extends Fragment {
         saveButton.setOnClickListener(v -> createPetProfile());
         if (currentUser != null) {
             // If in edit mode and a pet profile ID is provided
-            if (isEditMode && petProfileId != null) {
+            /*if (isEditMode && petProfileId != null) {
                 // Load the pet profile for editing
                 observePetProfile();
-            }
+            }*/
         }
     }
 
 
     // Method to load pet profile details when in edit mode
-    private void observePetProfile() {
+   /* private void observePetProfile() {
         if (isEditMode && petProfileId != null) {
             petProfileViewModel.getPetProfileById(petProfileId).observe(getViewLifecycleOwner(), this::fillInProfileDetails);
         }
-    }
+    }*/
 
 
     //Fill com as coisas da UI e as informações gravadas anteriormente

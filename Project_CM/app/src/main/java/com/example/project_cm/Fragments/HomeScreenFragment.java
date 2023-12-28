@@ -29,6 +29,7 @@ import com.example.project_cm.Fragments.DeviceSetup.DevSetupInitial;
 import com.example.project_cm.R;
 import com.example.project_cm.Adapters.HomeAdapter;
 import com.example.project_cm.ViewModels.DeviceViewModel;
+import com.example.project_cm.ViewModels.PetProfileViewModel;
 import com.example.project_cm.ViewModels.UserViewModel;
 
 import java.util.ArrayList;
@@ -72,10 +73,11 @@ public class HomeScreenFragment extends Fragment {
         // Fetch devices for the current user
         String currentUserId = userViewModel.getCurrentUser().getValue().getUserID();
         DeviceViewModel deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
+        PetProfileViewModel petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
 
         viewPagerHome = view.findViewById(R.id.viewPagerHome);
         viewPagerItemDeviceList = new ArrayList<>();
-        HomeAdapter homeAdapter = new HomeAdapter(viewPagerItemDeviceList,  getChildFragmentManager(),deviceViewModel);
+        HomeAdapter homeAdapter = new HomeAdapter(viewPagerItemDeviceList,  getChildFragmentManager(),deviceViewModel, petProfileViewModel,  getViewLifecycleOwner());
         viewPagerHome.setAdapter(homeAdapter);
         viewPagerHome.setOffscreenPageLimit(2);
         viewPagerHome.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);

@@ -23,7 +23,7 @@ public interface PetProfileDao {
     List<PetProfileEntity> getPetProfilesByUserId(String userId);
 
     @Query("SELECT * FROM pet_profiles WHERE id = :petProfileId")
-    PetProfileEntity getPetProfileById(String petProfileId);
+    PetProfileEntity getPetProfileById(long petProfileId);
 
 
     @Update
