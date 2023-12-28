@@ -27,18 +27,10 @@
         android:hint="Name" />
 
     <EditText
-        android:id="@+id/editDayPopUp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/editNamePopUp"
-        tools:layout_editor_absoluteX="10dp"
-        android:hint="Day" />
-
-    <EditText
         android:id="@+id/editNextDosePopUp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/editDayPopUp"
+        app:layout_constraintTop_toBottomOf="@+id/editNamePopUp"
         tools:layout_editor_absoluteX="10dp"
         android:hint="Next Dose" />
 
