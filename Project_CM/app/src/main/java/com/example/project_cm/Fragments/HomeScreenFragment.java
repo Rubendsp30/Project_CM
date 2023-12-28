@@ -77,7 +77,7 @@ public class HomeScreenFragment extends Fragment {
 
         viewPagerHome = view.findViewById(R.id.viewPagerHome);
         viewPagerItemDeviceList = new ArrayList<>();
-        HomeAdapter homeAdapter = new HomeAdapter(viewPagerItemDeviceList,  getChildFragmentManager(),deviceViewModel, petProfileViewModel,  getViewLifecycleOwner());
+        HomeAdapter homeAdapter = new HomeAdapter(currentUserId ,viewPagerItemDeviceList,  getChildFragmentManager(),deviceViewModel, petProfileViewModel,  getViewLifecycleOwner());
         viewPagerHome.setAdapter(homeAdapter);
         viewPagerHome.setOffscreenPageLimit(2);
         viewPagerHome.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
