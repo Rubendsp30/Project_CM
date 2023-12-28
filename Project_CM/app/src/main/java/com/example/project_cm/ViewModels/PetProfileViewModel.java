@@ -55,7 +55,7 @@ public class PetProfileViewModel extends AndroidViewModel {
         return liveData;
     }
 
-    public LiveData<PetProfileEntity> getPetProfileById(String petProfileId) {
+    public LiveData<PetProfileEntity> getPetProfileById(long petProfileId) {
         MutableLiveData<PetProfileEntity> liveData = new MutableLiveData<>();
         executorService.execute(() -> {
             PetProfileEntity profile = petProfileDao.getPetProfileById(petProfileId);

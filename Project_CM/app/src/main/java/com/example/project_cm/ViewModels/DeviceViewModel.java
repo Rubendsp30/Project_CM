@@ -83,6 +83,27 @@ public class DeviceViewModel extends ViewModel {
         return devicesLiveData;
     }
 
+    public LiveData<ArrayList<Device>> listenForDeviceUpdates(String userId) {
+        MutableLiveData<ArrayList<Device>> devicesLiveData = new MutableLiveData<>();
+
+        firestore.collection(DEVICES_COLLECTION)
+                .whereEqualTo("user_id", userId)
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null) {
+                        Log.e("listenForDeviceUpdates", "Listen failed", e);
+                        return;
+                    }
+                    ArrayList<Device> devices = new ArrayList<>();
+                    for (DocumentSnapshot doc : snapshots) {
+                        devices.add(doc.toObject(Device.class));
+                    }
+                    devicesLiveData.postValue(devices);
+                });
+
+        return devicesLiveData;
+    }
+
+
     // Getter for currentDevice
     public MutableLiveData<Device> getCurrentDevice() {
         return currentDevice;

@@ -5,11 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +22,7 @@ import com.example.project_cm.Fragments.TreatPopUpFragment;
 import com.example.project_cm.MealSchedule;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
+import com.example.project_cm.ViewModels.PetProfileViewModel;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -28,17 +33,33 @@ import java.util.Map;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder> {
 
-    @Nullable private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
-    @Nullable private final FragmentManager fragmentManager;
+    @Nullable
+    private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
+    @Nullable
+    private final FragmentManager fragmentManager;
 
-    private final ArrayList<Device> viewPagerIDeviceArrayList;
+    private ArrayList<Device> viewPagerIDeviceArrayList;
     private final DeviceViewModel deviceViewModel;
+    private final PetProfileViewModel petProfileViewModel;
+    private final LifecycleOwner lifecycleOwner;
+    private LiveData<ArrayList<Device>> devicesLiveData;
 
-    public HomeAdapter(ArrayList<Device> viewPagerIDeviceArrayList , @Nullable FragmentManager fragmentManager, DeviceViewModel deviceViewModel) {
+
+    public HomeAdapter(String userId,ArrayList<Device> viewPagerIDeviceArrayList, @Nullable FragmentManager fragmentManager, DeviceViewModel deviceViewModel, PetProfileViewModel petProfileViewModel, LifecycleOwner lifecycleOwner) {
         this.viewPagerIDeviceArrayList = viewPagerIDeviceArrayList;
         this.fragmentManager = fragmentManager;
         this.deviceViewModel = deviceViewModel;
+        this.petProfileViewModel = petProfileViewModel;
+        this.lifecycleOwner = lifecycleOwner;
+        this.devicesLiveData = deviceViewModel.listenForDeviceUpdates(userId);
+        this.devicesLiveData.observe(lifecycleOwner, this::updateDevices);
     }
+
+    private void updateDevices(ArrayList<Device> devices) {
+        this.viewPagerIDeviceArrayList = devices;
+        notifyDataSetChanged(); // Note: For better performance, consider using more specific notify methods
+    }
+
 
     @Override
     public void onBindViewHolder(@NonNull HomeAdapter.HomeViewHolder holder, int position) {
@@ -64,8 +85,18 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         holder.schedulesRecycler.setAdapter(mealScheduleAdapter);
 
         Device viewPagerItem = viewPagerIDeviceArrayList.get(position);
+        long petProfileId = viewPagerItem.getPet_id();
+        petProfileViewModel.getPetProfileById(petProfileId).observe(lifecycleOwner, petProfileEntity -> {
+            if (petProfileEntity != null) {
+                holder.petNameText.setText(petProfileEntity.name);
+            }
+        });
 
-        holder.deviceID.setText(viewPagerItem.getDeviceID());
+        int foodSuply = viewPagerItem.getFoodSuply();
+        String foodSuplyText = foodSuply + "% Food Supply";
+        holder.supplyText.setText(foodSuplyText);
+        holder.supplyProgressBar.setProgress(foodSuply);
+
         holder.treatButton.setOnClickListener(v -> {
 
 
@@ -96,16 +127,20 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     // ViewHolder class for holding the views of each note card.
     public static class HomeViewHolder extends RecyclerView.ViewHolder {
 
-        TextView deviceID;
+        TextView petNameText;
         ImageButton treatButton;
         RecyclerView schedulesRecycler;
+        TextView supplyText;
+        ProgressBar supplyProgressBar;
 
         public HomeViewHolder(@NonNull View homeView) {
             super(homeView);
 
-            deviceID = itemView.findViewById(R.id.petNameText);
+            petNameText = itemView.findViewById(R.id.petNameText);
             treatButton = itemView.findViewById(R.id.treatButton);
             schedulesRecycler = itemView.findViewById(R.id.schedulesRecycler);
+            supplyText = homeView.findViewById(R.id.supplyText);
+            supplyProgressBar = itemView.findViewById(R.id.supplyProgressBar);
 
         }
     }

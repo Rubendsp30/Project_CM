@@ -19,6 +19,7 @@ import com.example.project_cm.Activities.HomeActivity;
 import com.example.project_cm.DataBase.Tables.PetProfileEntity;
 import com.example.project_cm.Device;
 import com.example.project_cm.Fragments.DeviceSetup.DevSetupFinal;
+import com.example.project_cm.MQTTHelper;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
@@ -31,6 +32,7 @@ public class PetProfileCreationFragment extends Fragment {
     private UserViewModel userViewModel;
     private PetProfileViewModel petProfileViewModel;
     private DeviceViewModel deviceViewModel;
+    private MQTTHelper mqttHelper;
     @Nullable
     private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
 
@@ -41,7 +43,7 @@ public class PetProfileCreationFragment extends Fragment {
 
     // Flags to determine if we are editing an existing pet profile
     private boolean isEditMode = false;
-    private String petProfileId = null;
+    private long petProfileId;
     private PetProfileEntity currentPetProfile;
     private long newPetProfileId = 0;
 
@@ -50,12 +52,12 @@ public class PetProfileCreationFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Check if arguments are passed to the fragment
-        if (getArguments() != null) {
-            petProfileId = getArguments().getString("petProfileId");
+        /*if (getArguments() != null) {
+            petProfileId = getArguments().getLong("petProfileId");
             // Determine if the fragment is in edit mode based on petProfileId
             isEditMode = petProfileId != null && !petProfileId.isEmpty();
             Log.d("PetProfileFragment", "onCreate: isEditMode = " + isEditMode + ", petProfileId = " + petProfileId);
-        }
+        }*/
     }
 
     @Nullable
@@ -71,6 +73,7 @@ public class PetProfileCreationFragment extends Fragment {
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
         petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
+        mqttHelper = MQTTHelper.getInstance(requireContext(),"CMProjectPet");
 
         return view;
     }
@@ -93,20 +96,20 @@ public class PetProfileCreationFragment extends Fragment {
         saveButton.setOnClickListener(v -> createPetProfile());
         if (currentUser != null) {
             // If in edit mode and a pet profile ID is provided
-            if (isEditMode && petProfileId != null) {
+            /*if (isEditMode && petProfileId != null) {
                 // Load the pet profile for editing
                 observePetProfile();
-            }
+            }*/
         }
     }
 
 
     // Method to load pet profile details when in edit mode
-    private void observePetProfile() {
+   /* private void observePetProfile() {
         if (isEditMode && petProfileId != null) {
             petProfileViewModel.getPetProfileById(petProfileId).observe(getViewLifecycleOwner(), this::fillInProfileDetails);
         }
-    }
+    }*/
 
 
     //Fill com as coisas da UI e as informações gravadas anteriormente
@@ -188,6 +191,7 @@ public class PetProfileCreationFragment extends Fragment {
                         device.setUser_id(currentUser.getUserID());
                         device.setPet_id(newPetProfileId);
                         deviceViewModel.registerDevice(device);
+                        mqttHelper.subscribeToDeviceTopic(deviceViewModel.getNewDeviceId().getValue());
                         transitionToDevSetFinal();
                         // Rest of your logic
                     }

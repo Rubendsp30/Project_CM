@@ -101,7 +101,7 @@ public class DevScanFragment extends Fragment {
             bluetoothViewModel.setSocket(socket);
             String deviceId = extractDeviceId(device.getName());
             deviceViewModel.setNewDeviceId(deviceId);
-            transitionToSendMessageFragment();
+            transitionWifiScanFragment();
             scanTimeoutHandler.removeCallbacks(scanTimeoutRunnable);
         } catch (IOException e) {
             e.printStackTrace();
@@ -116,7 +116,7 @@ public class DevScanFragment extends Fragment {
         return null;
     }
 
-    private void transitionToSendMessageFragment() {
+    private void transitionWifiScanFragment() {
         if (FragmentChangeListener != null) {
             DevWiFiScanFragment fragment = new DevWiFiScanFragment();
 
