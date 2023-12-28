@@ -71,7 +71,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentChangeLis
     }
 
     private MQTTHelper setupMqtt() {
-        mqttHelper = MQTTHelper.getInstance(this,"yourClientName");
+        mqttHelper = MQTTHelper.getInstance(this,"CMProjectPet");
         mqttHelper.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {

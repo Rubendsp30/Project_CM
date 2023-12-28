@@ -19,6 +19,7 @@ import com.example.project_cm.Activities.HomeActivity;
 import com.example.project_cm.DataBase.Tables.PetProfileEntity;
 import com.example.project_cm.Device;
 import com.example.project_cm.Fragments.DeviceSetup.DevSetupFinal;
+import com.example.project_cm.MQTTHelper;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
@@ -31,6 +32,7 @@ public class PetProfileCreationFragment extends Fragment {
     private UserViewModel userViewModel;
     private PetProfileViewModel petProfileViewModel;
     private DeviceViewModel deviceViewModel;
+    private MQTTHelper mqttHelper;
     @Nullable
     private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
 
@@ -71,6 +73,7 @@ public class PetProfileCreationFragment extends Fragment {
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
         petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
+        mqttHelper = MQTTHelper.getInstance(requireContext(),"CMProjectPet");
 
         return view;
     }
@@ -188,6 +191,7 @@ public class PetProfileCreationFragment extends Fragment {
                         device.setUser_id(currentUser.getUserID());
                         device.setPet_id(newPetProfileId);
                         deviceViewModel.registerDevice(device);
+                        mqttHelper.subscribeToDeviceTopic(deviceViewModel.getNewDeviceId().getValue());
                         transitionToDevSetFinal();
                         // Rest of your logic
                     }
