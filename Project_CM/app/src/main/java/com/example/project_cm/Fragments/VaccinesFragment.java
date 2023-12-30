@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Button;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +32,7 @@ import com.example.project_cm.ViewModels.PetProfileViewModel;
 import com.example.project_cm.ViewModels.UserViewModel;
 import com.example.project_cm.ViewModels.VaccinesViewModel;
 import com.example.project_cm.Fragments.VaccineAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -87,6 +90,8 @@ public class VaccinesFragment extends Fragment {
             }
         });
 
+        loadPetProfile();
+
         // Logic to get the data for vaccines
         MutableLiveData<User> loggedInUser = userViewModel.getCurrentUser();
         loggedInUser.observe(getViewLifecycleOwner(), user -> {
@@ -99,7 +104,21 @@ public class VaccinesFragment extends Fragment {
                                 setupRecyclerView(view);
                             });
                 }
-                // todo tratar do caso em que o currentPetProfileId for null
+                else {
+                    Log.e("VaccineFragment", "currentPetProfile is null.");
+                }
+            }
+        });
+
+        FloatingActionButton fabAddVaccine = view.findViewById(R.id.fabAddVaccine);
+        fabAddVaccine.setOnClickListener(v -> {
+            if (FragmentChangeListener != null) {
+                // Aqui você pode chamar a função para abrir o popup de criação de vacina
+                VaccineCreationPopUp vaccineCreationPopUp = new VaccineCreationPopUp(vaccinesViewModel);
+                vaccineCreationPopUp.show(getChildFragmentManager(), "vaccineCreationPopUp");
+            } else {
+                // Handle the case where FragmentChangeListener is null
+                Log.e("VaccineFragment", "FragmentChangeListener is null. Unable to open the vaccine creation popup.");
             }
         });
     }
@@ -119,10 +138,6 @@ public class VaccinesFragment extends Fragment {
         User currentUser = userViewModel.getCurrentUser().getValue();
         String userId = currentUser != null ? currentUser.getUserID() : "-1";
 
-        petProfileViewModel.getPetProfilesByUserId(userId).observe(getViewLifecycleOwner(), petProfiles -> {
-            if (petProfiles != null && !petProfiles.isEmpty()) {
-                currentPetProfile = petProfiles.get(0);
-            }
-        });
+        currentPetProfile = petProfileViewModel.getCurrentPet().getValue();
     }
 }

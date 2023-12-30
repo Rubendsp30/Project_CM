@@ -140,6 +140,7 @@ public class PetProfileFragment extends Fragment {
         petProfileViewModel.getPetProfilesByUserId(userId).observe(getViewLifecycleOwner(), petProfiles -> {
             if (petProfiles != null && !petProfiles.isEmpty()) {
                 currentPetProfile = petProfiles.get(0);
+                petProfileViewModel.setCurrentPet(currentPetProfile);
                 updateUI(currentPetProfile);
             }
         });

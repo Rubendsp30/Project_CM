@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.project_cm.DataBase.AppDatabase;
 import com.example.project_cm.DataBase.Tables.PetProfileEntity;
 import com.example.project_cm.DataBase.PetProfileDao;
+import com.example.project_cm.User;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -17,6 +18,7 @@ import java.util.concurrent.Executors;
 
 public class PetProfileViewModel extends AndroidViewModel {
     private PetProfileDao petProfileDao;
+    private final MutableLiveData<PetProfileEntity> currentPet = new MutableLiveData<>();
     private final ExecutorService executorService;
 
     public PetProfileViewModel(Application application) {
@@ -64,7 +66,14 @@ public class PetProfileViewModel extends AndroidViewModel {
         return liveData;
     }
 
+    public MutableLiveData<PetProfileEntity> getCurrentPet() {
+        return currentPet;
+    }
 
+    // Method to set the current pet
+    public void setCurrentPet(PetProfileEntity pet) {
+        currentPet.setValue(pet);
+    }
 
     @Override
     protected void onCleared() {

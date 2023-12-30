@@ -42,7 +42,6 @@ public class VaccinesViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<VaccineEntity>> getVaccines() {
-
         return vaccines;
     }
 
