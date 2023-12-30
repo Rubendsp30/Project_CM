@@ -8,8 +8,13 @@
   #include <Preferences.h>
   #include <PubSubClient.h>
   #include <ArduinoJson.h>
+  #include <Firebase_ESP_Client.h>
   BluetoothSerial serialBT;
   Preferences preferences;
+  // Initialize Firebase
+  FirebaseData firebaseData;
+  FirebaseAuth auth;
+  FirebaseConfig config;
 
 
   //Bluetooth stuff
@@ -20,13 +25,17 @@
 
   // Define random ID
   String ID_MQTT;
-  char *letters = "XyP7rK9qJwZ2eFvN4mG8";
+  char *letters = "rcL9kl2gSYbLusKe4N";
 
   // Define MQTT Topics
   #define  TOPIC_TEST "/project/pet"
-  #define  TOPIC_TREAT "/project/treat/XyP7rK9qJwZ2eFvN4mG8"
-  #define  TOPIC_TREAT_ANSWER "/project/treatAnswer/XyP7rK9qJwZ2eFvN4mG8"
-  #define  BT_NAME "ESP32-BT-XyP7rK9qJwZ2eFvN4mG8"
+  #define  TOPIC_TREAT "/project/treat/rcL9kl2gSYbLusKe4N"
+  #define  TOPIC_TREAT_ANSWER "/project/treatAnswer/rcL9kl2gSYbLusKe4N"
+  #define  BT_NAME "ESP32-BT-rcL9kl2gSYbLusKe4N"
+
+  // Define Firebase credentials
+  #define FIREBASE_PROJECT_ID "cm-project-pet"
+  #define API_KEY "AIzaSyAhLyvKS0Fte6829SHSe9hmva2524gJBto"
 
   // Define MQTT Broker and PORT
   const char *BROKER_MQTT = "broker.hivemq.com";
@@ -109,7 +118,9 @@
 
       if (String(topic) == TOPIC_TREAT) {
               int treatSize = msg.toInt();
-              dispenseFood(treatSize);
+              //dispenseFood(treatSize);
+              MQTT.publish(TOPIC_TREAT_ANSWER, "true");
+              updateValueInFirestore(treatSize);      
     }
     }
 
@@ -122,7 +133,7 @@
 
         int i = 0;
         for (i = 0; i < 10; i++) {
-          ID_MQTT = ID_MQTT + letters[random(0, 36)];
+          ID_MQTT = ID_MQTT + String(letters[random(0, 36)]);
         }
 
     if (MQTT.connect(ID_MQTT.c_str())) {
@@ -148,8 +159,16 @@
 
     //Reconnect Wifi
     void reconnectWiFi(void) {
-      if (WiFi.status() == WL_CONNECTED)
-        return;
+      if (WiFi.status() == WL_CONNECTED){
+        // Initialize Firebase
+          config.api_key = API_KEY;
+          auth.user.email = "feederdevice@test.com";
+          auth.user.password = "123456";
+          Firebase.begin(&config, &auth);
+          Firebase.reconnectWiFi(true);
+          return;
+      }
+        
 
       WiFi.begin(ssid, password); // Conecta na rede WI-FI
 
@@ -270,7 +289,6 @@
 //////////////////////////////////////////////
 
   void stepper(float Screw_turns, int motorpin, bool direction) {
-
     int speed = 600;  
     int full_turn = 10000;
 
@@ -299,6 +317,33 @@
   }
 //////////////////////////////////////////////
 //                   End Motor              //
+//////////////////////////////////////////////
+
+//////////////////////////////////////////////
+//        Aux functions for Firebase        //
+//////////////////////////////////////////////
+
+  //Update value on Firebase
+  void updateValueInFirestore(int newValue) {
+    // Define the document path
+    String documentPath = "DEVICES/rcL9kl2gSYbLusKe4N";
+
+    // Prepare the data to update
+    FirebaseJson json;
+
+    // Set the new value for the foodSuply field
+    json.set("fields/foodSuply/integerValue", newValue);
+
+    // Update the document
+    if (Firebase.Firestore.patchDocument(&firebaseData, FIREBASE_PROJECT_ID, "", documentPath, json.raw(), "foodSuply")) {
+      Serial.println("Updated value successfully");
+    } else {
+      Serial.println("Failed to update value");
+      Serial.println(firebaseData.errorReason());
+    }
+  }
+//////////////////////////////////////////////
+//      End Aux functions for Firebase      //
 //////////////////////////////////////////////
 
 //////////////////////////////////////////////
@@ -365,12 +410,12 @@
         String receivedData = Serial.readStringUntil('\n'); // Read data until newline
         receivedData.trim(); // Remove any whitespace
 
-    // Check if the received data is "CLEAR"
-    if (receivedData.equals("CLEAR")) {
-      clearWiFiCredentials();
-      Serial.println("WiFi credentials cleared.");
-    }
-  }
+          // Check if the received data is "CLEAR"
+          if (receivedData.equals("CLEAR")) {
+            clearWiFiCredentials();
+            Serial.println("WiFi credentials cleared.");
+          }
+        }
   }
   
 
@@ -378,9 +423,9 @@
     checkWiFIAndMQTT();
     MQTT.loop();
     }
-
+    
     delay(200);
-
+    /*
     if (isWiFiConnected) {
 
     scale.set_scale(calibration_factor); //Adjust to this calibration factor
@@ -431,7 +476,7 @@
     Serial.println();
 
     //delay(1000);
-  }
+  }*/
   }
 //////////////////////////////////////////////
 //                 End Loop                 //

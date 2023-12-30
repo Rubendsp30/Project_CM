@@ -89,11 +89,18 @@ public class MQTTHelper {
     }
 
     public void stop() {
+        Log.e("MQTT", "Stoping MQTT");
+        //mqttAndroidClient.disconnect();
+        mqttAndroidClient.unregisterResources();
         mqttAndroidClient.disconnect();
+        //mqttAndroidClient.close();
+        Log.e("MQTT", "Stopped MQTT");
+        //mqttAndroidClient.disconnect();
+
     }
 
     public void subscribeToDeviceTopic(String deviceId) {
-        Log.e("MQTT","Subscribing");
+        Log.e("MQTT", "Subscribing");
 
         String treatTopic = "/project/treat/" + deviceId;
         subscribeToTopic(treatTopic);
@@ -107,7 +114,7 @@ public class MQTTHelper {
         mqttAndroidClient.subscribe(topic, 0, null, new IMqttActionListener() {
             @Override
             public void onSuccess(IMqttToken asyncActionToken) {
-                Log.w(TAG, "Subscribed to: "+ topic);
+                Log.w(TAG, "Subscribed to: " + topic);
             }
 
             @Override
