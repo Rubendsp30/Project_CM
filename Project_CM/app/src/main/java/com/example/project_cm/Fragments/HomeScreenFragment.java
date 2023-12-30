@@ -31,6 +31,7 @@ import com.example.project_cm.Adapters.HomeAdapter;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
 import com.example.project_cm.FragmentChangeListener;
+import com.example.project_cm.ViewModels.ScheduleViewModel;
 import com.example.project_cm.ViewModels.UserViewModel;
 
 import java.util.ArrayList;
@@ -75,10 +76,11 @@ public class HomeScreenFragment extends Fragment {
         String currentUserId = userViewModel.getCurrentUser().getValue().getUserID();
         DeviceViewModel deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
         PetProfileViewModel petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
+        ScheduleViewModel scheduleViewModel = new ViewModelProvider(requireActivity()).get(ScheduleViewModel.class);
 
         viewPagerHome = view.findViewById(R.id.viewPagerHome);
         viewPagerItemDeviceList = new ArrayList<>();
-        HomeAdapter homeAdapter = new HomeAdapter(currentUserId ,viewPagerItemDeviceList,  getChildFragmentManager(),deviceViewModel, petProfileViewModel,  getViewLifecycleOwner());
+        HomeAdapter homeAdapter = new HomeAdapter(currentUserId ,viewPagerItemDeviceList,  getChildFragmentManager(),deviceViewModel, petProfileViewModel,  getViewLifecycleOwner(), scheduleViewModel);
         homeAdapter.setFragmentChangeListener(this.FragmentChangeListener);
         viewPagerHome.setAdapter(homeAdapter);
         viewPagerHome.setOffscreenPageLimit(2);

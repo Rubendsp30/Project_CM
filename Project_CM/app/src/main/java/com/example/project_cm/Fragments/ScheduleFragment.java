@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 public class ScheduleFragment extends Fragment {
     private FragmentChangeListener fragmentChangeListener;
-    private String deviceId;
+    //private String deviceId;
     private DeviceViewModel deviceViewModel;
     private NumberPicker numberPickerHour, numberPickerMinute;
     private SeekBar portionSeekBar;
@@ -43,6 +43,7 @@ public class ScheduleFragment extends Fragment {
         mealScheduleViewModel = new ViewModelProvider(this).get(ScheduleViewModel.class);
         deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
 
+        //TODO Mover UI e Listeners para o OnViewCreated
         // Initialize UI components
         initUI(view);
 
@@ -51,9 +52,9 @@ public class ScheduleFragment extends Fragment {
 
         return view;
     }
-    public void setDeviceId(String deviceId) {
+    /*public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
-    }
+    }*/
     public void setFragmentChangeListener(FragmentChangeListener fragmentChangeListener) {
         this.fragmentChangeListener = fragmentChangeListener;
     }
@@ -108,6 +109,7 @@ public class ScheduleFragment extends Fragment {
             return;
         }
         String deviceId = currentDevice.getDeviceID();
+        //TODO estes 2 ifs provavelmente podem-se juntar visto q estão muito ligados
         if (deviceId == null || deviceId.isEmpty()) {
             Toast.makeText(getContext(), "Device ID is invalid", Toast.LENGTH_SHORT).show();
             return;
@@ -139,6 +141,7 @@ public class ScheduleFragment extends Fragment {
 
         // Save to Firebase
         mealScheduleViewModel.addMealSchedule(deviceId, mealSchedule);
+        //TODO este toast é misleading pq na vdd aquilo devia estar a correr em thread ent pode falhar mais tarde
         Toast.makeText(getContext(), "Schedule saved successfully", Toast.LENGTH_SHORT).show();
         switchToHomePage();
     }

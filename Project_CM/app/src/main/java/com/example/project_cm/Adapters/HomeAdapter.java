@@ -26,6 +26,7 @@ import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
 import com.example.project_cm.FragmentChangeListener;
 import com.example.project_cm.Fragments.ScheduleFragment;
+import com.example.project_cm.ViewModels.ScheduleViewModel;
 
 
 import java.sql.Timestamp;
@@ -47,9 +48,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     private final PetProfileViewModel petProfileViewModel;
     private final LifecycleOwner lifecycleOwner;
     private LiveData<ArrayList<Device>> devicesLiveData;
+    private final ScheduleViewModel scheduleViewModel;
 
 
-    public HomeAdapter(String userId,ArrayList<Device> viewPagerIDeviceArrayList, @Nullable FragmentManager fragmentManager, DeviceViewModel deviceViewModel, PetProfileViewModel petProfileViewModel, LifecycleOwner lifecycleOwner) {
+    public HomeAdapter(String userId,ArrayList<Device> viewPagerIDeviceArrayList, @Nullable FragmentManager fragmentManager, DeviceViewModel deviceViewModel, PetProfileViewModel petProfileViewModel, LifecycleOwner lifecycleOwner, ScheduleViewModel scheduleViewModel) {
         this.viewPagerIDeviceArrayList = viewPagerIDeviceArrayList;
         this.fragmentManager = fragmentManager;
         this.deviceViewModel = deviceViewModel;
@@ -57,6 +59,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         this.lifecycleOwner = lifecycleOwner;
         this.devicesLiveData = deviceViewModel.listenForDeviceUpdates(userId);
         this.devicesLiveData.observe(lifecycleOwner, this::updateDevices);
+        this.scheduleViewModel = scheduleViewModel;
     }
 
     private void updateDevices(ArrayList<Device> devices) {
@@ -81,16 +84,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         repeatDays1.put("Saturday", true);
         repeatDays1.put("Sunday", true);
 
-        List<MealSchedule> meals = new ArrayList<MealSchedule>();
-        meals.add(new MealSchedule("schedule_1", Timestamp.from(Instant.now()), repeatDays1, true, false, 3));
-        meals.add(new MealSchedule("schedule_2", Timestamp.from(Instant.now()), repeatDays1, true, false, 5));
-        meals.add(new MealSchedule("schedule_3", Timestamp.from(Instant.now()), repeatDays1, true, false, 10));
-        meals.add(new MealSchedule("schedule_4", Timestamp.from(Instant.now()), repeatDays1, true, false, 10));
-        meals.add(new MealSchedule("schedule_5", Timestamp.from(Instant.now()), repeatDays1, true, false, 10));
-
-        MealScheduleAdapter mealScheduleAdapter = new MealScheduleAdapter(meals);
-        holder.schedulesRecycler.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
-        holder.schedulesRecycler.setAdapter(mealScheduleAdapter);
 
         Device viewPagerItem = viewPagerIDeviceArrayList.get(position);
         long petProfileId = viewPagerItem.getPet_id();
@@ -99,6 +92,33 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 holder.petNameText.setText(petProfileEntity.name);
             }
         });
+
+        List<MealSchedule> meals = new ArrayList<MealSchedule>();
+
+
+        /*scheduleViewModel.getMealSchedulesForDevice(viewPagerItem.getDeviceID())
+                .observe(lifecycleOwner, mealSchedules -> {
+                    meals.clear();
+                    meals.addAll(mealSchedules);
+                    //mealScheduleAdapter.notifyDataSetChanged();
+                });*/
+
+        MealScheduleAdapter mealScheduleAdapter = new MealScheduleAdapter(meals);
+        holder.schedulesRecycler.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
+        holder.schedulesRecycler.setAdapter(mealScheduleAdapter);
+        scheduleViewModel.getMealSchedulesForDevice(viewPagerItem.getDeviceID()).observe(lifecycleOwner, mealSchedules -> {
+            // Update your meals list here
+            meals.clear();
+            meals.addAll(mealSchedules);
+            mealScheduleAdapter.notifyDataSetChanged();
+        });
+       /* meals.add(new MealSchedule("schedule_1", Timestamp.from(Instant.now()), repeatDays1, true, false, 3));
+        meals.add(new MealSchedule("schedule_2", Timestamp.from(Instant.now()), repeatDays1, true, false, 5));
+        meals.add(new MealSchedule("schedule_3", Timestamp.from(Instant.now()), repeatDays1, true, false, 10));
+        meals.add(new MealSchedule("schedule_4", Timestamp.from(Instant.now()), repeatDays1, true, false, 10));
+        meals.add(new MealSchedule("schedule_5", Timestamp.from(Instant.now()), repeatDays1, true, false, 10));*/
+
+
 
         int foodSuply = viewPagerItem.getFoodSuply();
         String foodSuplyText = foodSuply + "% Food Supply";
@@ -118,7 +138,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             deviceViewModel.setCurrentDevice(selectedDevice);
             if (FragmentChangeListener != null) {
                 ScheduleFragment scheduleFragment = new ScheduleFragment();
-                scheduleFragment.setDeviceId(selectedDevice.getDeviceID());
+                //scheduleFragment.setDeviceId(selectedDevice.getDeviceID());
                 scheduleFragment.setFragmentChangeListener(FragmentChangeListener);
                 FragmentChangeListener.replaceFragment(scheduleFragment);
             }
