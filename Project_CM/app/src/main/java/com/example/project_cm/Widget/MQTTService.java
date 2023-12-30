@@ -1,4 +1,4 @@
-package com.example.project_cm;
+package com.example.project_cm.Widget;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -10,6 +10,9 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+
+import com.example.project_cm.MQTTHelper;
+import com.example.project_cm.R;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -47,8 +50,8 @@ public class MQTTService extends Service {
     private Notification createNotification() {
         // Create a notification channel for Android O and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    "200",
+                NotificationChannel channel = new NotificationChannel(
+                    "Widget Notification",
                     "MQTT Service Channel",
                     NotificationManager.IMPORTANCE_DEFAULT
             );
@@ -56,10 +59,10 @@ public class MQTTService extends Service {
             notificationManager.createNotificationChannel(channel);
         }
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "200")
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Widget Notification")
                 .setContentTitle("MQTT Service")
                 .setContentText("Sending MQTT message")
-                .setSmallIcon(R.drawable.ic_launcher_background) // Replace with your app's icon
+                .setSmallIcon(R.drawable.treat_button)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         return builder.build();
