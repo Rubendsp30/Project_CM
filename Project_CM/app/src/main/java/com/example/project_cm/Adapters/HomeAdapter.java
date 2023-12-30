@@ -28,13 +28,8 @@ import com.example.project_cm.FragmentChangeListener;
 import com.example.project_cm.Fragments.ScheduleFragment;
 import com.example.project_cm.ViewModels.ScheduleViewModel;
 
-
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder> {
 
@@ -47,18 +42,17 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     private final DeviceViewModel deviceViewModel;
     private final PetProfileViewModel petProfileViewModel;
     private final LifecycleOwner lifecycleOwner;
-    private LiveData<ArrayList<Device>> devicesLiveData;
     private final ScheduleViewModel scheduleViewModel;
 
 
-    public HomeAdapter(String userId,ArrayList<Device> viewPagerIDeviceArrayList, @Nullable FragmentManager fragmentManager, DeviceViewModel deviceViewModel, PetProfileViewModel petProfileViewModel, LifecycleOwner lifecycleOwner, ScheduleViewModel scheduleViewModel) {
+    public HomeAdapter(String userId, ArrayList<Device> viewPagerIDeviceArrayList, @Nullable FragmentManager fragmentManager, DeviceViewModel deviceViewModel, PetProfileViewModel petProfileViewModel, LifecycleOwner lifecycleOwner, ScheduleViewModel scheduleViewModel) {
         this.viewPagerIDeviceArrayList = viewPagerIDeviceArrayList;
         this.fragmentManager = fragmentManager;
         this.deviceViewModel = deviceViewModel;
         this.petProfileViewModel = petProfileViewModel;
         this.lifecycleOwner = lifecycleOwner;
-        this.devicesLiveData = deviceViewModel.listenForDeviceUpdates(userId);
-        this.devicesLiveData.observe(lifecycleOwner, this::updateDevices);
+        LiveData<ArrayList<Device>> devicesLiveData = deviceViewModel.listenForDeviceUpdates(userId);
+        devicesLiveData.observe(lifecycleOwner, this::updateDevices);
         this.scheduleViewModel = scheduleViewModel;
     }
 
@@ -66,24 +60,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         this.viewPagerIDeviceArrayList = devices;
         notifyDataSetChanged(); // Note: For better performance, consider using more specific notify methods
     }
-    public void setFragmentChangeListener(FragmentChangeListener fragmentChangeListener) {
+
+    public void setFragmentChangeListener(@Nullable FragmentChangeListener fragmentChangeListener) {
         this.FragmentChangeListener = fragmentChangeListener;
     }
 
 
-
     @Override
     public void onBindViewHolder(@NonNull HomeAdapter.HomeViewHolder holder, int position) {
-
-        Map<String, Boolean> repeatDays1 = new HashMap<>();
-        repeatDays1.put("Monday", true);
-        repeatDays1.put("Tuesday", false);
-        repeatDays1.put("Wednesday", true);
-        repeatDays1.put("Thursday", false);
-        repeatDays1.put("Friday", false);
-        repeatDays1.put("Saturday", true);
-        repeatDays1.put("Sunday", true);
-
 
         Device viewPagerItem = viewPagerIDeviceArrayList.get(position);
         long petProfileId = viewPagerItem.getPet_id();
@@ -93,32 +77,16 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             }
         });
 
-        List<MealSchedule> meals = new ArrayList<MealSchedule>();
-
-
-        /*scheduleViewModel.getMealSchedulesForDevice(viewPagerItem.getDeviceID())
-                .observe(lifecycleOwner, mealSchedules -> {
-                    meals.clear();
-                    meals.addAll(mealSchedules);
-                    //mealScheduleAdapter.notifyDataSetChanged();
-                });*/
+        List<MealSchedule> meals = new ArrayList<>();
 
         MealScheduleAdapter mealScheduleAdapter = new MealScheduleAdapter(meals);
         holder.schedulesRecycler.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
         holder.schedulesRecycler.setAdapter(mealScheduleAdapter);
         scheduleViewModel.getMealSchedulesForDevice(viewPagerItem.getDeviceID()).observe(lifecycleOwner, mealSchedules -> {
-            // Update your meals list here
             meals.clear();
             meals.addAll(mealSchedules);
             mealScheduleAdapter.notifyDataSetChanged();
         });
-       /* meals.add(new MealSchedule("schedule_1", Timestamp.from(Instant.now()), repeatDays1, true, false, 3));
-        meals.add(new MealSchedule("schedule_2", Timestamp.from(Instant.now()), repeatDays1, true, false, 5));
-        meals.add(new MealSchedule("schedule_3", Timestamp.from(Instant.now()), repeatDays1, true, false, 10));
-        meals.add(new MealSchedule("schedule_4", Timestamp.from(Instant.now()), repeatDays1, true, false, 10));
-        meals.add(new MealSchedule("schedule_5", Timestamp.from(Instant.now()), repeatDays1, true, false, 10));*/
-
-
 
         int foodSuply = viewPagerItem.getFoodSuply();
         String foodSuplyText = foodSuply + "% Food Supply";
@@ -143,7 +111,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 FragmentChangeListener.replaceFragment(scheduleFragment);
             }
         });
-
 
 
     }

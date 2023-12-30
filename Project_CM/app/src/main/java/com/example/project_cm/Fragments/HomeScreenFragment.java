@@ -1,8 +1,6 @@
 package com.example.project_cm.Fragments;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +20,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.project_cm.Activities.HomeActivity;
-import com.example.project_cm.Activities.LoginActivity;
 
 import com.example.project_cm.Device;
 import com.example.project_cm.Fragments.DeviceSetup.DevSetupInitial;
@@ -30,7 +27,6 @@ import com.example.project_cm.R;
 import com.example.project_cm.Adapters.HomeAdapter;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
-import com.example.project_cm.FragmentChangeListener;
 import com.example.project_cm.ViewModels.ScheduleViewModel;
 import com.example.project_cm.ViewModels.UserViewModel;
 
@@ -80,7 +76,7 @@ public class HomeScreenFragment extends Fragment {
 
         viewPagerHome = view.findViewById(R.id.viewPagerHome);
         viewPagerItemDeviceList = new ArrayList<>();
-        HomeAdapter homeAdapter = new HomeAdapter(currentUserId ,viewPagerItemDeviceList,  getChildFragmentManager(),deviceViewModel, petProfileViewModel,  getViewLifecycleOwner(), scheduleViewModel);
+        HomeAdapter homeAdapter = new HomeAdapter(currentUserId, viewPagerItemDeviceList, getChildFragmentManager(), deviceViewModel, petProfileViewModel, getViewLifecycleOwner(), scheduleViewModel);
         homeAdapter.setFragmentChangeListener(this.FragmentChangeListener);
         viewPagerHome.setAdapter(homeAdapter);
         viewPagerHome.setOffscreenPageLimit(2);
@@ -92,7 +88,6 @@ public class HomeScreenFragment extends Fragment {
             homeAdapter.notifyDataSetChanged();
 
         });
-
 
 
     }

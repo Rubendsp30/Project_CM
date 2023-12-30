@@ -13,12 +13,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentReference;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
 import com.example.project_cm.MealSchedule;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -57,24 +54,5 @@ public class ScheduleViewModel extends ViewModel {
 
         return mealSchedulesLiveData;
     }
-
-    /*
-    public LiveData<List<MealSchedule>> getMealSchedulesForDevice(String deviceId) {
-        MutableLiveData<List<MealSchedule>> mealSchedulesLiveData = new MutableLiveData<>();
-
-        firestore.collection("DEVICES").document(deviceId).collection("MEAL_SCHEDULES")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<MealSchedule> mealSchedules = new ArrayList<>();
-                    for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
-                        MealSchedule schedule = snapshot.toObject(MealSchedule.class);
-                        mealSchedules.add(schedule);
-                    }
-                    mealSchedulesLiveData.postValue(mealSchedules);
-                })
-                .addOnFailureListener(e -> Log.e("getMealSchedules", "Error getting meal schedules: " + e.getMessage()));
-
-        return mealSchedulesLiveData;
-    }*/
 
 }
