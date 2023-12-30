@@ -54,7 +54,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Princesa"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -88,7 +88,7 @@
                     android:id="@+id/petAgeTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="15 years"
+                    android:text=""
                     android:gravity="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
@@ -115,7 +115,7 @@
                     android:id="@+id/petWeightTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="4.5 kg"
+                    android:text=""
                     android:gravity="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
@@ -141,7 +141,7 @@
                     android:id="@+id/petSexTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Female"
+                    android:text=""
                     android:gravity="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 

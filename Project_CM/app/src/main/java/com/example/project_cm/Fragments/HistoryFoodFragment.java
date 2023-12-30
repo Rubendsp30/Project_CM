@@ -17,23 +17,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project_cm.Activities.HomeActivity;
+import com.example.project_cm.Adapters.HistoryAdapter;
 import com.example.project_cm.DataBase.Tables.PetProfileEntity;
 import com.example.project_cm.R;
 import com.example.project_cm.User;
+import com.example.project_cm.ViewModels.HistoryViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
 import com.example.project_cm.ViewModels.UserViewModel;
-import com.example.project_cm.ViewModels.VaccinesViewModel;
-import com.example.project_cm.Adapters.VaccineAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class VaccinesFragment extends Fragment {
+public class HistoryFoodFragment extends Fragment {
 
     private UserViewModel userViewModel;
     private PetProfileEntity currentPetProfile;
     private PetProfileViewModel petProfileViewModel;
-
-    private VaccinesViewModel vaccinesViewModel;
-    private VaccineAdapter vaccineAdapter;
+    private HistoryViewModel historyViewModel;
+    private HistoryAdapter historyAdapter;
     @Nullable
     private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
 
@@ -41,7 +40,7 @@ public class VaccinesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.vaccines_fragment, container, false);
+        View view = inflater.inflate(R.layout.pet_profile_history, container, false);
         this.FragmentChangeListener = (HomeActivity) inflater.getContext();
 
         // Initialize ViewModel instances
@@ -51,15 +50,17 @@ public class VaccinesFragment extends Fragment {
             Log.e("PetProfileFragment", "Error creating UserViewModel: " + e.getMessage());
         }
         try {
-            vaccinesViewModel = new ViewModelProvider(requireActivity()).get(VaccinesViewModel.class);
-        } catch (Exception e) {
-            Log.e("ListVaccinesFragment", "Error creating VaccinesViewModel: " + e.getMessage());
-        }
-        try {
             petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
         } catch (Exception e) {
             Log.e("PetProfileFragment", "Error creating PetProfileViewModel: " + e.getMessage());
         }
+        /*
+        try {
+            historyViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
+        } catch (Exception e) {
+            Log.e("PetProfileFragment", "Error creating PetProfileViewModel: " + e.getMessage());
+        }
+        */
 
         return view;
     }
@@ -81,53 +82,20 @@ public class VaccinesFragment extends Fragment {
         });
 
         loadPetProfile();
-
-        // Logic to get the data for vaccines
-        MutableLiveData<User> loggedInUser = userViewModel.getCurrentUser();
-        loggedInUser.observe(getViewLifecycleOwner(), user -> {
-            if (user != null) {
-                if (currentPetProfile != null) {
-                    int currentPetProfileId = currentPetProfile.id;
-                    vaccinesViewModel.getVaccinesByPetProfileId(currentPetProfileId)
-                            .observe(getViewLifecycleOwner(), vaccines -> {
-                                vaccineAdapter = new VaccineAdapter(vaccines);
-                                setupRecyclerView(view);
-                            });
-                }
-                else {
-                    Log.e("VaccineFragment", "currentPetProfile is null.");
-                }
-            }
-        });
-
-        FloatingActionButton fabAddVaccine = view.findViewById(R.id.fabAddVaccine);
-        fabAddVaccine.setOnClickListener(v -> {
-            if (FragmentChangeListener != null) {
-                // Aqui você pode chamar a função para abrir o popup de criação de vacina
-                VaccineCreationPopUp vaccineCreationPopUp = new VaccineCreationPopUp(vaccinesViewModel);
-                vaccineCreationPopUp.show(getChildFragmentManager(), "vaccineCreationPopUp");
-            } else {
-                // Handle the case where FragmentChangeListener is null
-                Log.e("VaccineFragment", "FragmentChangeListener is null. Unable to open the vaccine creation popup.");
-            }
-        });
     }
 
     public void setupRecyclerView(@NonNull View view){
         // RecyclerView Layout Manager
-        LinearLayoutManager vaccinesLayoutManager = new LinearLayoutManager(getContext(),
+        LinearLayoutManager historyLayoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false);
 
-        // RecyclerView for displaying vaccines
-        RecyclerView vaccinesListRecycler = view.findViewById(R.id.recyclerViewVaccines);
-        vaccinesListRecycler.setLayoutManager(vaccinesLayoutManager);
-        vaccinesListRecycler.setAdapter(vaccineAdapter);
+        // RecyclerView for displaying history
+        RecyclerView historyListRecycler = view.findViewById(R.id.recyclerViewHistory);
+        historyListRecycler.setLayoutManager(historyLayoutManager);
+        historyListRecycler.setAdapter(historyAdapter);
     }
 
     private void loadPetProfile() {
-        User currentUser = userViewModel.getCurrentUser().getValue();
-        String userId = currentUser != null ? currentUser.getUserID() : "-1";
-
         currentPetProfile = petProfileViewModel.getCurrentPet().getValue();
     }
 }

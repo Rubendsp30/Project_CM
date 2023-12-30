@@ -118,19 +118,17 @@ public class PetProfileFragment extends Fragment {
             }
         });
 
-        /*
+
         // Botão Histórico
         Button historyButton = view.findViewById(R.id.petHistoryTextView);
         historyButton.setOnClickListener(v -> {
             if (FragmentChangeListener != null) {
-                FragmentChangeListener.replaceFragment(new HistoryFragment());
+                FragmentChangeListener.replaceFragment(new HistoryFoodFragment());
             } else {
                 // Handle the case where FragmentChangeListener is null
                 Log.e("RegisterFragment", "FragmentChangeListener is null. Unable to replace the fragment.");
             }
         });
-
-         */
     }
 
     private void loadPetProfile() {

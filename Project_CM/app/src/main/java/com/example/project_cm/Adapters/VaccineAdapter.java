@@ -1,10 +1,8 @@
-package com.example.project_cm.Fragments;
+package com.example.project_cm.Adapters;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
