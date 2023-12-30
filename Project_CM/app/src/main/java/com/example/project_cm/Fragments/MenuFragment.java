@@ -69,7 +69,6 @@ public class MenuFragment extends Fragment {
         logoutButton.setOnClickListener(v -> {
             logoutUser();
         });
-
     }
     private void logoutUser() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);

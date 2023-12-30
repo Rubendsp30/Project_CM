@@ -103,7 +103,6 @@ public class DeviceViewModel extends ViewModel {
         return devicesLiveData;
     }
 
-
     // Getter for currentDevice
     public MutableLiveData<Device> getCurrentDevice() {
         return currentDevice;

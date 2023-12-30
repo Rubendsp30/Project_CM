@@ -30,6 +30,7 @@ import com.example.project_cm.R;
 import com.example.project_cm.Adapters.HomeAdapter;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
+import com.example.project_cm.FragmentChangeListener;
 import com.example.project_cm.ViewModels.UserViewModel;
 
 import java.util.ArrayList;
@@ -78,6 +79,7 @@ public class HomeScreenFragment extends Fragment {
         viewPagerHome = view.findViewById(R.id.viewPagerHome);
         viewPagerItemDeviceList = new ArrayList<>();
         HomeAdapter homeAdapter = new HomeAdapter(currentUserId ,viewPagerItemDeviceList,  getChildFragmentManager(),deviceViewModel, petProfileViewModel,  getViewLifecycleOwner());
+        homeAdapter.setFragmentChangeListener(this.FragmentChangeListener);
         viewPagerHome.setAdapter(homeAdapter);
         viewPagerHome.setOffscreenPageLimit(2);
         viewPagerHome.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);

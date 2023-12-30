@@ -4,6 +4,7 @@ package com.example.project_cm.Adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -23,6 +24,9 @@ import com.example.project_cm.MealSchedule;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
+import com.example.project_cm.FragmentChangeListener;
+import com.example.project_cm.Fragments.ScheduleFragment;
+
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -59,6 +63,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         this.viewPagerIDeviceArrayList = devices;
         notifyDataSetChanged(); // Note: For better performance, consider using more specific notify methods
     }
+    public void setFragmentChangeListener(FragmentChangeListener fragmentChangeListener) {
+        this.FragmentChangeListener = fragmentChangeListener;
+    }
+
 
 
     @Override
@@ -98,8 +106,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         holder.supplyProgressBar.setProgress(foodSuply);
 
         holder.treatButton.setOnClickListener(v -> {
-
-
             deviceViewModel.setCurrentDevice(viewPagerItem);
             TreatPopUpFragment fragment = new TreatPopUpFragment(deviceViewModel);
             if (fragmentManager != null) {
@@ -107,8 +113,21 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             }
 
         });
+        holder.addScheduleButton.setOnClickListener(v -> {
+            Device selectedDevice = viewPagerIDeviceArrayList.get(position);
+            deviceViewModel.setCurrentDevice(selectedDevice);
+            if (FragmentChangeListener != null) {
+                ScheduleFragment scheduleFragment = new ScheduleFragment();
+                scheduleFragment.setDeviceId(selectedDevice.getDeviceID());
+                scheduleFragment.setFragmentChangeListener(FragmentChangeListener);
+                FragmentChangeListener.replaceFragment(scheduleFragment);
+            }
+        });
+
+
 
     }
+
 
     @Override
     public int getItemCount() {
@@ -126,7 +145,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     // ViewHolder class for holding the views of each note card.
     public static class HomeViewHolder extends RecyclerView.ViewHolder {
-
+        Button addScheduleButton;
         TextView petNameText;
         ImageButton treatButton;
         RecyclerView schedulesRecycler;
@@ -136,11 +155,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         public HomeViewHolder(@NonNull View homeView) {
             super(homeView);
 
+            addScheduleButton = itemView.findViewById(R.id.addScheduleButton);
             petNameText = itemView.findViewById(R.id.petNameText);
             treatButton = itemView.findViewById(R.id.treatButton);
             schedulesRecycler = itemView.findViewById(R.id.schedulesRecycler);
             supplyText = homeView.findViewById(R.id.supplyText);
             supplyProgressBar = itemView.findViewById(R.id.supplyProgressBar);
+
 
         }
     }
