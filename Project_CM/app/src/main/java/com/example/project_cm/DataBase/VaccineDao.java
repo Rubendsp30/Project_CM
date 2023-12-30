@@ -1,5 +1,6 @@
 package com.example.project_cm.DataBase;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -17,7 +18,10 @@ public interface VaccineDao {
     List<VaccineEntity> getAllVaccinesList();
 
     @Insert
-    long insertUserEntity (VaccineEntity vaccine);
+    long insertVaccineEntity (VaccineEntity vaccine);
+
+    @Query("SELECT * FROM vaccines WHERE pet_id = :petId")
+    LiveData<List<VaccineEntity>> getVaccinesForPet(int petId);
 
     /*
     @Query("SELECT COUNT(*) FROM users WHERE username = :username")

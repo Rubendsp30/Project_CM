@@ -1,5 +1,6 @@
 package com.example.project_cm.Fragments;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ public class VaccineAdapter extends RecyclerView.Adapter<VaccineAdapter.VaccineV
         holder.textViewVaccineName.setText(vaccine.getVaccineName());
         holder.textViewVaccineDate.setText(vaccine.getVaccineDate());
 
+
         int daysLeft = vaccine.getDaysLeft();
 
         if (daysLeft <= 5) {
@@ -47,11 +49,13 @@ public class VaccineAdapter extends RecyclerView.Adapter<VaccineAdapter.VaccineV
             holder.textViewDaysLeft.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.orange_300));
         } else {
             // Mais de 10 dias: verde
-            holder.textViewDaysLeft.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.white));
+            holder.textViewDaysLeft.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.green_400));
         }
 
         // Atualizar o texto dos dias restantes
-        holder.textViewDaysLeft.setText(daysLeft + " days left");
+        String daysLeftText = daysLeft + " days left";
+
+        holder.textViewDaysLeft.setText(daysLeftText);
     }
 
     @Override

@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingVertical="10dp"
+    android:paddingVertical="15dp"
     android:paddingHorizontal="20dp"
     android:background="@drawable/rounded_corner"
     >
     <TextView
-        android:id="@+id/titlePopUp"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Vaccine"
@@ -19,48 +19,40 @@
         />
 
     <EditText
-        android:id="@+id/editNamePopUp"
+        android:id="@+id/editName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/titlePopUp"
+        app:layout_constraintTop_toBottomOf="@+id/title"
         tools:layout_editor_absoluteX="10dp"
         android:hint="Name" />
 
     <EditText
-        android:id="@+id/editDayPopUp"
+        android:id="@+id/editNextDose"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/editNamePopUp"
-        tools:layout_editor_absoluteX="10dp"
-        android:hint="Day" />
-
-    <EditText
-        android:id="@+id/editNextDosePopUp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/editDayPopUp"
+        app:layout_constraintTop_toBottomOf="@+id/editName"
         tools:layout_editor_absoluteX="10dp"
         android:hint="Next Dose" />
 
     <Button
-        android:id="@+id/erasePopUpButton"
+        android:id="@+id/eraseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="10dp"
         android:layout_gravity="center"
         android:text="Cancel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editNextDosePopUp" />
+        app:layout_constraintTop_toBottomOf="@+id/editNextDose" />
 
     <Button
-        android:id="@+id/savePopUpButton"
+        android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="10dp"
         android:layout_gravity="end"
         android:text="Save"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editNextDosePopUp" />
+        app:layout_constraintTop_toBottomOf="@+id/editNextDose" />
 
 
 

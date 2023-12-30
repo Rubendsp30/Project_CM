@@ -14,7 +14,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     //public abstract UserDao userDao();
     public abstract PetProfileDao petProfileDao();
-    public abstract VaccineDao VaccineDao();
+    public abstract VaccineDao vaccineDao();
     public static AppDatabase INSTANCE;
 
     public static AppDatabase getDBinstance(Context context) {
