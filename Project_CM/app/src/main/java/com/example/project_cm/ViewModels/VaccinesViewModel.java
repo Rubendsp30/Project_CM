@@ -2,6 +2,8 @@ package com.example.project_cm.ViewModels;
 
 import android.app.Application;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -19,7 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class VaccinesViewModel extends ViewModel {
+public class VaccinesViewModel extends AndroidViewModel {
 
     private VaccineDao vaccineDao;
     private final ExecutorService executorService;
@@ -29,11 +31,13 @@ public class VaccinesViewModel extends ViewModel {
         void onInsertCompleted(long vaccineId);
     }
 
-    public VaccinesViewModel(Application application) {
+    public VaccinesViewModel(@NonNull Application application) {
+        super(application);
+
         vaccines = new MutableLiveData<>();
 
         AppDatabase database = AppDatabase.getDBinstance(application.getApplicationContext());
-        vaccineDao = database.VaccineDao();
+        vaccineDao = database.vaccineDao();
         executorService = Executors.newSingleThreadExecutor();
     }
 

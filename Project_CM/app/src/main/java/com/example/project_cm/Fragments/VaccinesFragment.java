@@ -48,7 +48,7 @@ public class VaccinesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.pet_profile_fragment, container, false);
+        View view = inflater.inflate(R.layout.vaccines_fragment, container, false);
         this.FragmentChangeListener = (HomeActivity) inflater.getContext();
 
         // Initialize ViewModel instances
@@ -91,12 +91,15 @@ public class VaccinesFragment extends Fragment {
         MutableLiveData<User> loggedInUser = userViewModel.getCurrentUser();
         loggedInUser.observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                int currentPetProfileId = currentPetProfile.id;
-                vaccinesViewModel.getVaccinesByPetProfileId(currentPetProfileId)
-                        .observe(getViewLifecycleOwner(), vaccines -> {
-                            vaccineAdapter = new VaccineAdapter(vaccines);
-                            setupRecyclerView(view);
-                        });
+                if (currentPetProfile != null) {
+                    int currentPetProfileId = currentPetProfile.id;
+                    vaccinesViewModel.getVaccinesByPetProfileId(currentPetProfileId)
+                            .observe(getViewLifecycleOwner(), vaccines -> {
+                                vaccineAdapter = new VaccineAdapter(vaccines);
+                                setupRecyclerView(view);
+                            });
+                }
+                // todo tratar do caso em que o currentPetProfileId for null
             }
         });
     }
