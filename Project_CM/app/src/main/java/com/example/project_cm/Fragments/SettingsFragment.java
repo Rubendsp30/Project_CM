@@ -58,6 +58,7 @@ public class SettingsFragment extends Fragment {
         this.FragmentChangeListener = (HomeActivity) inflater.getContext();
 
         // Initialize ViewModel instances
+        //todo pq é q estás a chamar se nem vais usar nenhum
         try {
             userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         } catch (Exception e) {

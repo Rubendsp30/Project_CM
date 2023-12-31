@@ -30,6 +30,8 @@ public class VaccineDetailsPopUp extends DialogFragment {
 
     @NonNull
     @Override
+    //todo este pop up em vez de só dar os detalhes podia ser mais como o do challenge 2 em q dava para editar o titulo
+    //O popup mostrava o nome da vacina, daria apra editar a data e apagar
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 

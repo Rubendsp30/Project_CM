@@ -44,6 +44,7 @@ public class HistoryFoodFragment extends Fragment {
         this.FragmentChangeListener = (HomeActivity) inflater.getContext();
 
         // Initialize ViewModel instances
+        //todo userviewmodel desnecessário
         try {
             userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         } catch (Exception e) {
@@ -96,6 +97,7 @@ public class HistoryFoodFragment extends Fragment {
     }
 
     private void loadPetProfile() {
+        //TODO, provavelmente só queres o ID ent vai buscar só o ID e n o objeto todo
         currentPetProfile = petProfileViewModel.getCurrentPet().getValue();
     }
 }

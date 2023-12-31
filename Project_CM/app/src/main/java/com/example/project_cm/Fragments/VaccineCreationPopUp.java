@@ -79,6 +79,7 @@ public class VaccineCreationPopUp extends DialogFragment {
         String newNextDose = editNextDose.getText().toString();
 
         if (newNameVaccine.isEmpty() || newNextDose.isEmpty()) {
+            //todo Usar os seterrors
             Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -90,8 +91,8 @@ public class VaccineCreationPopUp extends DialogFragment {
             VaccineEntity newVaccine = new VaccineEntity();
             newVaccine.vaccineName = newNameVaccine;
             newVaccine.vaccineDate = vaccineDate.getTime();
-            //todo
 
+            //todo guarda e vai logo buscar só o ID, n precisamos de estar a meter sempre o objeto todo de um lado para o outro
             PetProfileEntity currentPetProfile = petProfileViewModel.getCurrentPet().getValue();
             newVaccine.petId = currentPetProfile.id;
 
@@ -99,6 +100,7 @@ public class VaccineCreationPopUp extends DialogFragment {
             vaccinesViewModel.insertVaccine(newVaccine, new VaccinesViewModel.InsertCallback() {
                 @Override
                 public void onInsertCompleted(long vaccineId) {
+                    //todo, pq é q estas a criar um handler só para um toast
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
@@ -117,6 +119,7 @@ public class VaccineCreationPopUp extends DialogFragment {
         dismiss();
     }
 
+    //todo porquê esta validação? no maximo verificamos se está empty, n sabemos os nomes das vacinas. also, mudar o setError
     private boolean validateNameVaccine(String input) {
         if (input != null && input.length() >= 3) {
             editName.setError(null);
@@ -138,6 +141,7 @@ public class VaccineCreationPopUp extends DialogFragment {
         } else return false;
     }
 
+    //todo em vez de usar strig usar mesmo aquela cena de aparecer o calendário e escolher a data
     private long converteStringParaData(String dataString) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -150,6 +154,7 @@ public class VaccineCreationPopUp extends DialogFragment {
         }
     }
 
+    //todo melhorar um pouco o nome das variaveis q eu nem tinha apercebido q era bools
     private boolean validateAllInput() {
         boolean name = validateNameVaccine(editName.getText().toString());
         boolean date = validateDateVaccine(editNextDose.getText().toString());

@@ -49,6 +49,7 @@ public class VaccinesFragment extends Fragment {
         this.FragmentChangeListener = (HomeActivity) inflater.getContext();
 
         // Initialize ViewModel instances
+        //todo userviewmodel n será necessário
         try {
             userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         } catch (Exception e) {
@@ -73,6 +74,8 @@ public class VaccinesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
+        //todo tens isto do set title em branco em tudo n sei porquê. temos implementações diferentes do toolbar, ou se usa uma ou outra mas n ambas
+        //Tenta entender as coisas antes de usar pq estás a usar isto em todo o lado e nem vês que n faz nada nesta situação
         toolbar.setTitle(" ");
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> {
@@ -80,16 +83,18 @@ public class VaccinesFragment extends Fragment {
                 FragmentChangeListener.replaceFragment(new PetProfileFragment());
             } else {
                 // Handle the case where FragmentChangeListener is null
+                //todo Logs
                 Log.e("RegisterFragment", "FragmentChangeListener is null. Unable to replace the fragment.");
             }
         });
-
+        //todo só petID
         loadPetProfile();
 
         tvEmptyMessage = view.findViewById(R.id.tvEmptyMessage);
 
 
         // Logic to get the data for vaccines
+        //todo melhorar esta logica, só precisas do petID e um get das vacinas pelo petID, n é necessário observers nem nada disso aqui
         MutableLiveData<User> loggedInUser = userViewModel.getCurrentUser();
         loggedInUser.observe(getViewLifecycleOwner(), user -> {
             if (user != null) {

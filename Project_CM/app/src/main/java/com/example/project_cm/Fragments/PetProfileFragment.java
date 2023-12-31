@@ -22,10 +22,7 @@ import com.example.project_cm.Device;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
-//import com.example.project_cm.ViewModels.ViewModelFactory;
-import com.example.project_cm.FragmentChangeListener;
-import com.example.project_cm.DataBase.PetProfileDao;
-import com.example.project_cm.DataBase.AppDatabase;
+
 import com.example.project_cm.ViewModels.UserViewModel;
 import com.example.project_cm.User;
 import android.util.Log;
@@ -33,7 +30,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Locale;
 
-
+//todo este fragemnto tem q ter um adapter para ter um viewpager e temos a feature do swipe aqui tb
 public class PetProfileFragment extends Fragment {
 
     @Nullable
@@ -61,6 +58,7 @@ public class PetProfileFragment extends Fragment {
         } catch (Exception e) {
             Log.e("PetProfileFragment", "Error creating UserViewModel: " + e.getMessage());
         }
+        //todo apagar isto q n estás a usar para nada
         try {
             deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
         } catch (Exception e) {
@@ -96,18 +94,13 @@ public class PetProfileFragment extends Fragment {
                 FragmentChangeListener.replaceFragment(new MenuFragment());
             } else {
                 // Handle the case where FragmentChangeListener is null
+                //todo verifica o texto dos logs- isto vai dar log do fragmento errado
                 Log.e("RegisterFragment", "FragmentChangeListener is null. Unable to replace the fragment.");
             }
         });
 
-        /*
-        if (getActivity() instanceof com.example.project_cm.FragmentChangeListener) {
-            FragmentChangeListener = (com.example.project_cm.FragmentChangeListener) getActivity();
-        }
-         */
-
-
         // Botão Vacinas
+        //todo vais ter q dar um set do currentpetID no petviewmodel antes de mudar para as vacinas
         Button vaccinesButton = view.findViewById(R.id.petVaccinesTextView);
         vaccinesButton.setOnClickListener(v -> {
             if (FragmentChangeListener != null) {
@@ -120,6 +113,7 @@ public class PetProfileFragment extends Fragment {
 
 
         // Botão Histórico
+        //todo vais ter q dar um set do currentpetID no petviewmodel antes de mudar parao historico
         Button historyButton = view.findViewById(R.id.petHistoryTextView);
         historyButton.setOnClickListener(v -> {
             if (FragmentChangeListener != null) {
@@ -133,6 +127,7 @@ public class PetProfileFragment extends Fragment {
 
     private void loadPetProfile() {
         User currentUser = userViewModel.getCurrentUser().getValue();
+        //todo tratar do null como deve ser
         String userId = currentUser != null ? currentUser.getUserID() : "-1";
 
         petProfileViewModel.getPetProfilesByUserId(userId).observe(getViewLifecycleOwner(), petProfiles -> {

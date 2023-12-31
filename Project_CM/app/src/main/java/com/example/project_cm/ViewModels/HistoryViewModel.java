@@ -42,6 +42,7 @@ public class HistoryViewModel extends AndroidViewModel {
 
         try {
             firestore = FirebaseFirestore.getInstance();
+            //todo pq decidis-te aqui descomentar isto? para já vamos deixar isto a guardar na cache
             // Disable Firestore cache
             FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                     .setLocalCacheSettings(MemoryCacheSettings.newBuilder().build())

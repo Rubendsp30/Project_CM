@@ -45,6 +45,7 @@ public class VaccinesViewModel extends AndroidViewModel {
         return vaccines;
     }
 
+    //todo falta o executor nas cenas para correr em thread
     public LiveData<List<VaccineEntity>> getVaccinesByPetProfileId(int petProfileId) {
         return vaccineDao.getVaccinesForPet(petProfileId);
     }
