@@ -36,7 +36,8 @@ public class ScheduleFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.schedule_fragment, container, false);
 
 
@@ -45,16 +46,20 @@ public class ScheduleFragment extends Fragment {
 
         //TODO Mover UI e Listeners para o OnViewCreated
         // Initialize UI components
-        initUI(view);
-
-        // Set listeners
-        setListeners();
 
         return view;
     }
-    /*public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }*/
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        initUI(view);
+        setListeners();
+    }
+    private void setListeners() {
+        saveButton.setOnClickListener(v -> saveMealSchedule());
+        cancelButton.setOnClickListener(v -> switchToHomePage());
+    }
+
     public void setFragmentChangeListener(FragmentChangeListener fragmentChangeListener) {
         this.fragmentChangeListener = fragmentChangeListener;
     }
@@ -93,10 +98,7 @@ public class ScheduleFragment extends Fragment {
         }
     }
 
-    private void setListeners() {
-        saveButton.setOnClickListener(v -> saveMealSchedule());
-        cancelButton.setOnClickListener(v -> switchToHomePage());
-    }
+
     private void switchToHomePage() {
         if (fragmentChangeListener != null) {
             fragmentChangeListener.replaceFragment(new HomeScreenFragment());
@@ -104,16 +106,13 @@ public class ScheduleFragment extends Fragment {
     }
     private void saveMealSchedule() {
         Device currentDevice = deviceViewModel.getCurrentDevice().getValue();
-        if (currentDevice == null) {
-            Toast.makeText(getContext(), "Device not found", Toast.LENGTH_SHORT).show();
+        if (currentDevice == null || currentDevice.getDeviceID() == null || currentDevice.getDeviceID().isEmpty()) {
+            Toast.makeText(getContext(), "Invalid or missing device", Toast.LENGTH_SHORT).show();
             return;
         }
         String deviceId = currentDevice.getDeviceID();
         //TODO estes 2 ifs provavelmente podem-se juntar visto q estão muito ligados
-        if (deviceId == null || deviceId.isEmpty()) {
-            Toast.makeText(getContext(), "Device ID is invalid", Toast.LENGTH_SHORT).show();
-            return;
-        }
+
         // Get data from UI
         int hour = numberPickerHour.getValue();
         int minute = numberPickerMinute.getValue();
@@ -140,10 +139,19 @@ public class ScheduleFragment extends Fragment {
         );
 
         // Save to Firebase
-        mealScheduleViewModel.addMealSchedule(deviceId, mealSchedule);
         //TODO este toast é misleading pq na vdd aquilo devia estar a correr em thread ent pode falhar mais tarde
-        Toast.makeText(getContext(), "Schedule saved successfully", Toast.LENGTH_SHORT).show();
-        switchToHomePage();
+        mealScheduleViewModel.addMealSchedule(deviceId, mealSchedule, new ScheduleViewModel.MealScheduleCallback() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(getContext(), "Schedule saved successfully", Toast.LENGTH_SHORT).show();
+                switchToHomePage();
+            }
+
+            @Override
+            public void onFailure() {
+                Toast.makeText(getContext(), "Failed to save schedule", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private String getDayString(int dayIndex) {
