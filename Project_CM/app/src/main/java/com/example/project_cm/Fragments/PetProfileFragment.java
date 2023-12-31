@@ -38,7 +38,6 @@ public class PetProfileFragment extends Fragment {
     private UserViewModel userViewModel;
     private PetProfileEntity currentPetProfile;
     private PetProfileViewModel petProfileViewModel;
-    private DeviceViewModel deviceViewModel;
     private TextView petNameTextView, petAgeTextView, petWeightTextView, petSexTextView, petMicrochipTextView;
     private ImageView petProfileImageView;
     ArrayList<Device> viewPagerItemDeviceList;
@@ -57,12 +56,6 @@ public class PetProfileFragment extends Fragment {
             userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         } catch (Exception e) {
             Log.e("PetProfileFragment", "Error creating UserViewModel: " + e.getMessage());
-        }
-        //todo apagar isto q n estás a usar para nada
-        try {
-            deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
-        } catch (Exception e) {
-            Log.e("PetProfileFragment", "Error creating DeviceViewModel: " + e.getMessage());
         }
         try {
             petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
@@ -93,42 +86,42 @@ public class PetProfileFragment extends Fragment {
             if (FragmentChangeListener != null) {
                 FragmentChangeListener.replaceFragment(new MenuFragment());
             } else {
-                // Handle the case where FragmentChangeListener is null
-                //todo verifica o texto dos logs- isto vai dar log do fragmento errado
-                Log.e("RegisterFragment", "FragmentChangeListener is null. Unable to replace the fragment.");
+                Log.e("PetProfileFragment", "FragmentChangeListener is null. Unable to replace the fragment.");
             }
         });
 
         // Botão Vacinas
-        //todo vais ter q dar um set do currentpetID no petviewmodel antes de mudar para as vacinas
         Button vaccinesButton = view.findViewById(R.id.petVaccinesTextView);
         vaccinesButton.setOnClickListener(v -> {
             if (FragmentChangeListener != null) {
+                petProfileViewModel.setCurrentPet(currentPetProfile);
                 FragmentChangeListener.replaceFragment(new VaccinesFragment());
             } else {
-                // Handle the case where FragmentChangeListener is null
-                Log.e("RegisterFragment", "FragmentChangeListener is null. Unable to replace the fragment.");
+                Log.e("PetProfileFragment", "FragmentChangeListener is null. Unable to replace the fragment.");
             }
         });
 
 
         // Botão Histórico
-        //todo vais ter q dar um set do currentpetID no petviewmodel antes de mudar parao historico
         Button historyButton = view.findViewById(R.id.petHistoryTextView);
         historyButton.setOnClickListener(v -> {
             if (FragmentChangeListener != null) {
+                petProfileViewModel.setCurrentPet(currentPetProfile);
                 FragmentChangeListener.replaceFragment(new HistoryFoodFragment());
             } else {
-                // Handle the case where FragmentChangeListener is null
-                Log.e("RegisterFragment", "FragmentChangeListener is null. Unable to replace the fragment.");
+                Log.e("PetProfileFragment", "FragmentChangeListener is null. Unable to replace the fragment.");
             }
         });
     }
 
     private void loadPetProfile() {
         User currentUser = userViewModel.getCurrentUser().getValue();
-        //todo tratar do null como deve ser
-        String userId = currentUser != null ? currentUser.getUserID() : "-1";
+
+        if (currentUser == null) {
+            Log.e("PetProfileFragment", "Erro: currentUser é null");
+            return;
+        }
+        String userId = currentUser.getUserID();
 
         petProfileViewModel.getPetProfilesByUserId(userId).observe(getViewLifecycleOwner(), petProfiles -> {
             if (petProfiles != null && !petProfiles.isEmpty()) {

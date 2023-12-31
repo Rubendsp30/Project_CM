@@ -45,7 +45,7 @@ public class VaccinesViewModel extends AndroidViewModel {
         return vaccines;
     }
 
-    //todo falta o executor nas cenas para correr em thread
+    // Retorna diretamente o LiveData do Room (não é necessário executor)
     public LiveData<List<VaccineEntity>> getVaccinesByPetProfileId(int petProfileId) {
         return vaccineDao.getVaccinesForPet(petProfileId);
     }

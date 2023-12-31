@@ -26,10 +26,11 @@ import com.example.project_cm.ViewModels.PetProfileViewModel;
 import com.example.project_cm.ViewModels.UserViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.Objects;
+
 public class HistoryFoodFragment extends Fragment {
 
-    private UserViewModel userViewModel;
-    private PetProfileEntity currentPetProfile;
+    private int currentPetProfile;
     private PetProfileViewModel petProfileViewModel;
     private HistoryViewModel historyViewModel;
     private HistoryAdapter historyAdapter;
@@ -44,12 +45,6 @@ public class HistoryFoodFragment extends Fragment {
         this.FragmentChangeListener = (HomeActivity) inflater.getContext();
 
         // Initialize ViewModel instances
-        //todo userviewmodel desnecessário
-        try {
-            userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
-        } catch (Exception e) {
-            Log.e("PetProfileFragment", "Error creating UserViewModel: " + e.getMessage());
-        }
         try {
             petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
         } catch (Exception e) {
@@ -78,7 +73,7 @@ public class HistoryFoodFragment extends Fragment {
                 FragmentChangeListener.replaceFragment(new PetProfileFragment());
             } else {
                 // Handle the case where FragmentChangeListener is null
-                Log.e("RegisterFragment", "FragmentChangeListener is null. Unable to replace the fragment.");
+                Log.e("HistoryFoodFragment", "FragmentChangeListener is null. Unable to replace the fragment.");
             }
         });
 
@@ -97,7 +92,6 @@ public class HistoryFoodFragment extends Fragment {
     }
 
     private void loadPetProfile() {
-        //TODO, provavelmente só queres o ID ent vai buscar só o ID e n o objeto todo
-        currentPetProfile = petProfileViewModel.getCurrentPet().getValue();
+        currentPetProfile = petProfileViewModel.getCurrentPet().getValue().id;
     }
 }

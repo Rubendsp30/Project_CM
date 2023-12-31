@@ -45,8 +45,6 @@ public class SettingsFragment extends Fragment {
     private Button buttonLanguage;
     @Nullable
     private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
-    private UserViewModel userViewModel;
-    private DeviceViewModel deviceViewModel;
 
     @Nullable
     @Override
@@ -56,19 +54,6 @@ public class SettingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.settings_fragment, container, false);
 
         this.FragmentChangeListener = (HomeActivity) inflater.getContext();
-
-        // Initialize ViewModel instances
-        //todo pq é q estás a chamar se nem vais usar nenhum
-        try {
-            userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
-        } catch (Exception e) {
-            Log.e("PetProfileFragment", "Error creating UserViewModel: " + e.getMessage());
-        }
-        try {
-            deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
-        } catch (Exception e) {
-            Log.e("PetProfileFragment", "Error creating DeviceViewModel: " + e.getMessage());
-        }
 
         return view;
     }
@@ -87,7 +72,6 @@ public class SettingsFragment extends Fragment {
         buttonLanguage = view.findViewById(R.id.buttonLanguage);
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        toolbar.setTitle(" ");
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> {
             if (FragmentChangeListener != null) {

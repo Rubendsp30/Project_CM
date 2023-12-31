@@ -31,6 +31,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class VaccineCreationPopUp extends DialogFragment {
 
@@ -79,8 +80,12 @@ public class VaccineCreationPopUp extends DialogFragment {
         String newNextDose = editNextDose.getText().toString();
 
         if (newNameVaccine.isEmpty() || newNextDose.isEmpty()) {
-            //todo Usar os seterrors
-            Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            if (newNameVaccine.isEmpty()) {
+                editName.setError("This field is required");
+            }
+            if (newNextDose.isEmpty()) {
+                editNextDose.setError("This field is required");
+            }
             return;
         }
 
@@ -92,21 +97,13 @@ public class VaccineCreationPopUp extends DialogFragment {
             newVaccine.vaccineName = newNameVaccine;
             newVaccine.vaccineDate = vaccineDate.getTime();
 
-            //todo guarda e vai logo buscar só o ID, n precisamos de estar a meter sempre o objeto todo de um lado para o outro
-            PetProfileEntity currentPetProfile = petProfileViewModel.getCurrentPet().getValue();
-            newVaccine.petId = currentPetProfile.id;
+            newVaccine.petId = petProfileViewModel.getCurrentPet().getValue().id;
 
-            Log.d("VaccineFragment", "Creating new vaccine: " + newVaccine.petId);
+            Log.d("VaccineCreationPopUp", "Creating new vaccine: " + newVaccine.petId);
             vaccinesViewModel.insertVaccine(newVaccine, new VaccinesViewModel.InsertCallback() {
                 @Override
                 public void onInsertCompleted(long vaccineId) {
-                    //todo, pq é q estas a criar um handler só para um toast
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getContext(), "Vaccine added successfully", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    Toast.makeText(getContext(), "Vaccine added successfully", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -119,15 +116,11 @@ public class VaccineCreationPopUp extends DialogFragment {
         dismiss();
     }
 
-    //todo porquê esta validação? no maximo verificamos se está empty, n sabemos os nomes das vacinas. also, mudar o setError
     private boolean validateNameVaccine(String input) {
-        if (input != null && input.length() >= 3) {
-            editName.setError(null);
-            return true;
-        } else {
-            editName.setError("Username too short");
+        if (input == null || input.trim().isEmpty()) { // o trim verifica se o nome tem espaços em branco (o input == null é necessário)
+            editName.setError("This field is required");
             return false;
-        }
+        } else return true;
     }
 
     private boolean validateDateVaccine(String dataString) {
@@ -136,7 +129,7 @@ public class VaccineCreationPopUp extends DialogFragment {
             return false;
         }
         else if (dateMillis > System.currentTimeMillis()) {
-            editNextDose.setError("Esta vacina já foi administrada");
+            editNextDose.setError("This vaccine has already been administered");
             return true;
         } else return false;
     }
@@ -154,12 +147,11 @@ public class VaccineCreationPopUp extends DialogFragment {
         }
     }
 
-    //todo melhorar um pouco o nome das variaveis q eu nem tinha apercebido q era bools
     private boolean validateAllInput() {
-        boolean name = validateNameVaccine(editName.getText().toString());
-        boolean date = validateDateVaccine(editNextDose.getText().toString());
+        boolean nameIsValid = validateNameVaccine(editName.getText().toString());
+        boolean dateIsValid = validateDateVaccine(editNextDose.getText().toString());
 
-        return name && date;
+        return nameIsValid && dateIsValid;
     }
 
 }

@@ -29,11 +29,11 @@ import com.example.project_cm.Adapters.VaccineAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
+import java.util.Objects;
 
 public class VaccinesFragment extends Fragment {
     private TextView tvEmptyMessage;
-    private UserViewModel userViewModel;
-    private PetProfileEntity currentPetProfile;
+    private int currentPetProfile = -1;
     private PetProfileViewModel petProfileViewModel;
 
     private VaccinesViewModel vaccinesViewModel;
@@ -49,21 +49,15 @@ public class VaccinesFragment extends Fragment {
         this.FragmentChangeListener = (HomeActivity) inflater.getContext();
 
         // Initialize ViewModel instances
-        //todo userviewmodel n será necessário
-        try {
-            userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
-        } catch (Exception e) {
-            Log.e("PetProfileFragment", "Error creating UserViewModel: " + e.getMessage());
-        }
         try {
             vaccinesViewModel = new ViewModelProvider(requireActivity()).get(VaccinesViewModel.class);
         } catch (Exception e) {
-            Log.e("ListVaccinesFragment", "Error creating VaccinesViewModel: " + e.getMessage());
+            Log.e("VaccinesFragment", "Error creating VaccinesViewModel: " + e.getMessage());
         }
         try {
             petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
         } catch (Exception e) {
-            Log.e("PetProfileFragment", "Error creating PetProfileViewModel: " + e.getMessage());
+            Log.e("VaccinesFragment", "Error creating PetProfileViewModel: " + e.getMessage());
         }
 
         return view;
@@ -74,48 +68,36 @@ public class VaccinesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        //todo tens isto do set title em branco em tudo n sei porquê. temos implementações diferentes do toolbar, ou se usa uma ou outra mas n ambas
-        //Tenta entender as coisas antes de usar pq estás a usar isto em todo o lado e nem vês que n faz nada nesta situação
         toolbar.setTitle(" ");
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> {
             if (FragmentChangeListener != null) {
                 FragmentChangeListener.replaceFragment(new PetProfileFragment());
             } else {
-                // Handle the case where FragmentChangeListener is null
-                //todo Logs
-                Log.e("RegisterFragment", "FragmentChangeListener is null. Unable to replace the fragment.");
+                Log.e("VaccineFragment", "FragmentChangeListener is null. Unable to replace the fragment.");
             }
         });
-        //todo só petID
         loadPetProfile();
 
+        // frase que indica que a lista está vazia
         tvEmptyMessage = view.findViewById(R.id.tvEmptyMessage);
 
-
         // Logic to get the data for vaccines
-        //todo melhorar esta logica, só precisas do petID e um get das vacinas pelo petID, n é necessário observers nem nada disso aqui
-        MutableLiveData<User> loggedInUser = userViewModel.getCurrentUser();
-        loggedInUser.observe(getViewLifecycleOwner(), user -> {
-            if (user != null) {
-                if (currentPetProfile != null) {
-                    int currentPetProfileId = currentPetProfile.id;
-                    vaccinesViewModel.getVaccinesByPetProfileId(currentPetProfileId)
-                            .observe(getViewLifecycleOwner(), vaccines -> {
-                                if (vaccines.isEmpty()) {
-                                    tvEmptyMessage.setVisibility(View.VISIBLE);
-                                } else {
-                                    tvEmptyMessage.setVisibility(View.GONE);
-                                    vaccineAdapter = new VaccineAdapter(vaccines);
-                                    setupRecyclerView(view, vaccines);;
-                                }
-                            });
-                }
-                else {
-                    Log.e("VaccineFragment", "currentPetProfile is null.");
-                }
-            }
-        });
+        // eu sei que o observer aqui não é preciso, mas se tirar, vai dar muitos problemas por causa de se tratar de um livedata
+        if (currentPetProfile != -1) {
+            vaccinesViewModel.getVaccinesByPetProfileId(currentPetProfile)
+                    .observe(getViewLifecycleOwner(), vaccines -> {
+                        if (vaccines == null || vaccines.isEmpty()) {
+                            tvEmptyMessage.setVisibility(View.VISIBLE);
+                        } else {
+                            tvEmptyMessage.setVisibility(View.GONE);
+                            vaccineAdapter = new VaccineAdapter(vaccines);
+                            setupRecyclerView(view, vaccines);
+                        }
+                    });
+        } else {
+            Log.e("VaccineFragment", "currentPetProfile is null.");
+        }
 
         FloatingActionButton fabAddVaccine = view.findViewById(R.id.fabAddVaccine);
         fabAddVaccine.setOnClickListener(v -> {
@@ -151,6 +133,6 @@ public class VaccinesFragment extends Fragment {
     }
 
     private void loadPetProfile() {
-        currentPetProfile = petProfileViewModel.getCurrentPet().getValue();
+        currentPetProfile = petProfileViewModel.getCurrentPet().getValue().id;
     }
 }
