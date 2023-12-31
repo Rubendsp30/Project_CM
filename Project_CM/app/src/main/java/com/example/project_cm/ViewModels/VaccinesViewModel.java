@@ -56,6 +56,10 @@ public class VaccinesViewModel extends AndroidViewModel {
         });
     }
 
+    public void deleteVaccine(VaccineEntity vaccine) {
+        executorService.execute(() -> vaccineDao.deleteVaccineEntity(vaccine));
+    }
+
     public void setVaccines(List<VaccineEntity> vaccineList) {
         vaccines.setValue(vaccineList);
     }

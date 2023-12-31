@@ -17,6 +17,11 @@ import java.util.List;
 public class VaccineAdapter extends RecyclerView.Adapter<VaccineAdapter.VaccineViewHolder> {
 
     private final List<VaccineEntity> vaccineList;
+    private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(VaccineEntity vaccine);
+    }
 
     public VaccineAdapter(List<VaccineEntity> vaccineList) {
         this.vaccineList = vaccineList;
@@ -54,6 +59,12 @@ public class VaccineAdapter extends RecyclerView.Adapter<VaccineAdapter.VaccineV
         String daysLeftText = daysLeft + " days left";
 
         holder.textViewDaysLeft.setText(daysLeftText);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(vaccine);
+            }
+        });
     }
 
     @Override
@@ -72,5 +83,9 @@ public class VaccineAdapter extends RecyclerView.Adapter<VaccineAdapter.VaccineV
             this.textViewVaccineDate = itemView.findViewById(R.id.textViewVaccineDate);
             this.textViewDaysLeft = itemView.findViewById(R.id.textViewDaysLeft);
         }
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 }

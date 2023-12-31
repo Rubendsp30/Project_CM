@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project_cm.Activities.HomeActivity;
 import com.example.project_cm.DataBase.Tables.PetProfileEntity;
+import com.example.project_cm.DataBase.Tables.VaccineEntity;
 import com.example.project_cm.R;
 import com.example.project_cm.User;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
@@ -26,8 +28,10 @@ import com.example.project_cm.ViewModels.VaccinesViewModel;
 import com.example.project_cm.Adapters.VaccineAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class VaccinesFragment extends Fragment {
+import java.util.List;
 
+public class VaccinesFragment extends Fragment {
+    private TextView tvEmptyMessage;
     private UserViewModel userViewModel;
     private PetProfileEntity currentPetProfile;
     private PetProfileViewModel petProfileViewModel;
@@ -82,6 +86,9 @@ public class VaccinesFragment extends Fragment {
 
         loadPetProfile();
 
+        tvEmptyMessage = view.findViewById(R.id.tvEmptyMessage);
+
+
         // Logic to get the data for vaccines
         MutableLiveData<User> loggedInUser = userViewModel.getCurrentUser();
         loggedInUser.observe(getViewLifecycleOwner(), user -> {
@@ -90,8 +97,13 @@ public class VaccinesFragment extends Fragment {
                     int currentPetProfileId = currentPetProfile.id;
                     vaccinesViewModel.getVaccinesByPetProfileId(currentPetProfileId)
                             .observe(getViewLifecycleOwner(), vaccines -> {
-                                vaccineAdapter = new VaccineAdapter(vaccines);
-                                setupRecyclerView(view);
+                                if (vaccines.isEmpty()) {
+                                    tvEmptyMessage.setVisibility(View.VISIBLE);
+                                } else {
+                                    tvEmptyMessage.setVisibility(View.GONE);
+                                    vaccineAdapter = new VaccineAdapter(vaccines);
+                                    setupRecyclerView(view, vaccines);;
+                                }
                             });
                 }
                 else {
@@ -113,7 +125,7 @@ public class VaccinesFragment extends Fragment {
         });
     }
 
-    public void setupRecyclerView(@NonNull View view){
+    public void setupRecyclerView(@NonNull View view, List<VaccineEntity> vaccines){
         // RecyclerView Layout Manager
         LinearLayoutManager vaccinesLayoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false);
@@ -122,12 +134,18 @@ public class VaccinesFragment extends Fragment {
         RecyclerView vaccinesListRecycler = view.findViewById(R.id.recyclerViewVaccines);
         vaccinesListRecycler.setLayoutManager(vaccinesLayoutManager);
         vaccinesListRecycler.setAdapter(vaccineAdapter);
+
+        vaccineAdapter = new VaccineAdapter(vaccines);
+        vaccineAdapter.setOnItemClickListener(vaccine -> openVaccineDetailsPopup(vaccine));
+        vaccinesListRecycler.setAdapter(vaccineAdapter);
+    }
+
+    private void openVaccineDetailsPopup(VaccineEntity vaccine) {
+        VaccineDetailsPopUp vaccineDetailsPopUp = new VaccineDetailsPopUp(vaccinesViewModel, vaccine);
+        vaccineDetailsPopUp.show(getChildFragmentManager(), "vaccineDetailsPopUp");
     }
 
     private void loadPetProfile() {
-        User currentUser = userViewModel.getCurrentUser().getValue();
-        String userId = currentUser != null ? currentUser.getUserID() : "-1";
-
         currentPetProfile = petProfileViewModel.getCurrentPet().getValue();
     }
 }
