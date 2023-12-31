@@ -17,11 +17,4 @@
         <item name="trackTint">@color/orange_300</item>
     </style>
 
-    <!--todo o custom seekbar já está a ser feito noutro sítio, cuidado com isto para n estar a refazer-->
-    <style name="SeekBarStyle">
-        <item name="colorControlNormal">@color/orange_100</item>
-        <item name="colorControlActivated">@color/orange_300</item>
-        <item name="colorControlHighlight">@color/orange_100</item>
-    </style>
-
 </resources>
