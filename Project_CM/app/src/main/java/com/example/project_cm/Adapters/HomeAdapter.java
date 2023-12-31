@@ -28,7 +28,9 @@ import com.example.project_cm.FragmentChangeListener;
 import com.example.project_cm.Fragments.ScheduleFragment;
 import com.example.project_cm.ViewModels.ScheduleViewModel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder> {
@@ -58,7 +60,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     private void updateDevices(ArrayList<Device> devices) {
         this.viewPagerIDeviceArrayList = devices;
-        notifyDataSetChanged(); // Note: For better performance, consider using more specific notify methods
+        notifyDataSetChanged();
     }
 
     public void setFragmentChangeListener(@Nullable FragmentChangeListener fragmentChangeListener) {
@@ -79,14 +81,16 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
         List<MealSchedule> meals = new ArrayList<>();
 
-        MealScheduleAdapter mealScheduleAdapter = new MealScheduleAdapter(meals);
+        MealScheduleAdapter mealScheduleAdapter = new MealScheduleAdapter(fragmentManager,meals,viewPagerItem.getDeviceID());
         holder.schedulesRecycler.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
         holder.schedulesRecycler.setAdapter(mealScheduleAdapter);
         scheduleViewModel.getMealSchedulesForDevice(viewPagerItem.getDeviceID()).observe(lifecycleOwner, mealSchedules -> {
             meals.clear();
             meals.addAll(mealSchedules);
             mealScheduleAdapter.notifyDataSetChanged();
+            updateNextMealHourText( meals,holder.nextMealHourText);
         });
+
 
         int foodSuply = viewPagerItem.getFoodSuply();
         String foodSuplyText = foodSuply + "% Food Supply";
@@ -99,7 +103,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             if (fragmentManager != null) {
                 fragment.show(fragmentManager, "TreatPopUpFragment");
             }
-
         });
         holder.addScheduleButton.setOnClickListener(v -> {
             Device selectedDevice = viewPagerIDeviceArrayList.get(position);
@@ -114,6 +117,86 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
 
     }
+
+    private void updateNextMealHourText(List<MealSchedule> mealScheduleList, TextView nextMealHourText) {
+        Calendar current = Calendar.getInstance();
+        int currentDayOfWeek = current.get(Calendar.DAY_OF_WEEK);
+        long currentTimeInMillis = current.getTimeInMillis();
+
+        MealSchedule nextMeal = null;
+        long minTimeDiff = Long.MAX_VALUE;
+
+        for (MealSchedule meal : mealScheduleList) {
+            // Check if the meal is active
+            if (!meal.isActive()) {
+                continue; // Skip this meal if it's not active
+            }
+
+            Calendar mealTimeCal = Calendar.getInstance();
+            mealTimeCal.setTime(meal.getMealTime());
+            int mealHour = mealTimeCal.get(Calendar.HOUR_OF_DAY);
+            int mealMinute = mealTimeCal.get(Calendar.MINUTE);
+
+            if (!meal.getRepeatDays().containsValue(true)) {
+                // Non-repeating meal
+                if (mealTimeCal.before(current)) {
+                    mealTimeCal.add(Calendar.DAY_OF_YEAR, 1); // Consider it for the next day
+                }
+                long diff = mealTimeCal.getTimeInMillis() - currentTimeInMillis;
+                if (diff < minTimeDiff) {
+                    minTimeDiff = diff;
+                    nextMeal = meal;
+                }
+            } else {
+                // Repeating meal
+                for (String day : meal.getRepeatDays().keySet()) {
+                    if (meal.getRepeatDays().get(day)) {
+                        int dayIndex = getDayIndex(day);
+                        Calendar nextMealTime = (Calendar) current.clone();
+                        nextMealTime.set(Calendar.HOUR_OF_DAY, mealHour);
+                        nextMealTime.set(Calendar.MINUTE, mealMinute);
+                        nextMealTime.set(Calendar.SECOND, 0);
+                        nextMealTime.set(Calendar.MILLISECOND, 0);
+
+                        int daysUntilNext = (dayIndex - currentDayOfWeek + 7) % 7;
+                        if (daysUntilNext == 0 && nextMealTime.before(current)) {
+                            daysUntilNext = 7; // Next week
+                        }
+                        nextMealTime.add(Calendar.DAY_OF_YEAR, daysUntilNext);
+
+                        long diff = nextMealTime.getTimeInMillis() - currentTimeInMillis;
+                        if (diff < minTimeDiff) {
+                            minTimeDiff = diff;
+                            nextMeal = meal;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (nextMeal != null) {
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            String formattedTime = timeFormat.format(nextMeal.getMealTime());
+            nextMealHourText.setText(formattedTime);
+        } else {
+            nextMealHourText.setText("No upcoming meals");
+        }
+    }
+
+
+    private int getDayIndex(String day) {
+        switch (day) {
+            case "Sunday": return Calendar.SUNDAY;
+            case "Monday": return Calendar.MONDAY;
+            case "Tuesday": return Calendar.TUESDAY;
+            case "Wednesday": return Calendar.WEDNESDAY;
+            case "Thursday": return Calendar.THURSDAY;
+            case "Friday": return Calendar.FRIDAY;
+            case "Saturday": return Calendar.SATURDAY;
+            default: return -1;
+        }
+    }
+
 
 
     @Override
@@ -137,6 +220,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         ImageButton treatButton;
         RecyclerView schedulesRecycler;
         TextView supplyText;
+        TextView nextMealHourText;
         ProgressBar supplyProgressBar;
 
         public HomeViewHolder(@NonNull View homeView) {
@@ -148,6 +232,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             schedulesRecycler = itemView.findViewById(R.id.schedulesRecycler);
             supplyText = homeView.findViewById(R.id.supplyText);
             supplyProgressBar = itemView.findViewById(R.id.supplyProgressBar);
+            nextMealHourText = itemView.findViewById(R.id.nextMealHourText);
 
 
         }

@@ -8,8 +8,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.project_cm.FragmentChangeListener;
+import com.example.project_cm.Fragments.HomeDeleteMealPop;
 import com.example.project_cm.MealSchedule;
 import com.example.project_cm.R;
 
@@ -20,9 +24,13 @@ import java.util.Map;
 public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapter.MealScheduleViewHolder> {
 
     List<MealSchedule> mealScheduleList;
+    @Nullable private final FragmentManager fragmentManager;
+    private String deviceId;
 
-    public MealScheduleAdapter(List<MealSchedule> mealScheduleList) {
+    public MealScheduleAdapter(@Nullable FragmentManager fragmentManager, List<MealSchedule> mealScheduleList, String deviceId) {
         this.mealScheduleList = mealScheduleList;
+        this.fragmentManager = fragmentManager;
+        this.deviceId = deviceId;
     }
 
     @NonNull
@@ -46,12 +54,28 @@ public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapte
 
         holder.scheduleActiveSwitch.setChecked(meal.isActive());
 
+        holder.itemView.setOnLongClickListener((v) -> {
+            //set mealID
+            HomeDeleteMealPop fragment = new HomeDeleteMealPop(deviceId,meal.getMealScheduleId());
+            // Show the pop-up fragment using the FragmentManager.
+            if (fragmentManager != null) {
+                fragment.show(fragmentManager, "HomeDeleteMealPop");
+            }
+
+            return true;
+
+        });
+
     }
 
     private String getRepeatDaysText(Map<String, Boolean> repeatDays) {
         if (repeatDays != null && !repeatDays.containsValue(false)) {
             return "All Days";
-        } else {
+        }
+        else if(repeatDays != null && !repeatDays.containsValue(true)){
+            return "Only once";
+        }
+        else {
             boolean weekdaysOnly = true;
             for (String day : repeatDays.keySet()) {
                 if ((day.equals("Saturday") || day.equals("Sunday")) && repeatDays.get(day)) {

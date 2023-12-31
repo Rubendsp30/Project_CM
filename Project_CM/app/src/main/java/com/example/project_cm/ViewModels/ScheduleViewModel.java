@@ -77,4 +77,18 @@ public class ScheduleViewModel extends ViewModel {
         return mealSchedulesLiveData;
     }
 
+    public void deleteMealSchedule(String deviceId, String mealScheduleId) {
+
+        networkExecutor.execute(() -> {
+            DocumentReference scheduleRef = firestore.collection("DEVICES")
+                    .document(deviceId)
+                    .collection("MEAL_SCHEDULES")
+                    .document(mealScheduleId);
+            scheduleRef.delete()
+                    .addOnSuccessListener(aVoid -> Log.d("deleteMealSchedule", "Meal schedule successfully deleted"))
+                    .addOnFailureListener(e -> Log.e("deleteMealSchedule", "Error deleting meal schedule: " + e.getMessage()));
+        });
+    }
+
+
 }
