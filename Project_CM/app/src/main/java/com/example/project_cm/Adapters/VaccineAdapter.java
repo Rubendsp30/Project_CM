@@ -60,10 +60,11 @@ public class VaccineAdapter extends RecyclerView.Adapter<VaccineAdapter.VaccineV
 
         holder.textViewDaysLeft.setText(daysLeftText);
 
-        holder.itemView.setOnClickListener(v -> {
+        holder.itemView.setOnLongClickListener(v -> {
             if (listener != null) {
                 listener.onItemClick(vaccine);
             }
+            return true;
         });
     }
 
