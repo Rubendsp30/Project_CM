@@ -79,18 +79,7 @@ public class VaccineCreationPopUp extends DialogFragment {
         String newNameVaccine = editName.getText().toString();
         String newNextDose = editNextDose.getText().toString();
 
-        if (newNameVaccine.isEmpty() || newNextDose.isEmpty()) {
-            if (newNameVaccine.isEmpty()) {
-                editName.setError("This field is required");
-            }
-            if (newNextDose.isEmpty()) {
-                editNextDose.setError("This field is required");
-            }
-            return;
-        }
-
         try {
-            // Aqui você pode converter a string da data em um formato de data ou long, conforme necessário
             Date vaccineDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(newNextDose);
 
             VaccineEntity newVaccine = new VaccineEntity();
@@ -128,10 +117,10 @@ public class VaccineCreationPopUp extends DialogFragment {
         if (dateMillis == -1) {
             return false;
         }
-        else if (dateMillis > System.currentTimeMillis()) {
+        else if (dateMillis < System.currentTimeMillis()) {
             editNextDose.setError("This vaccine has already been administered");
-            return true;
-        } else return false;
+            return false;
+        } else return true;
     }
 
     //todo em vez de usar strig usar mesmo aquela cena de aparecer o calendário e escolher a data
