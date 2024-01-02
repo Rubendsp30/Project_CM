@@ -15,8 +15,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.project_cm.Activities.HomeActivity;
+import com.example.project_cm.Adapters.PetProfileAdapter;
 import com.example.project_cm.DataBase.Tables.PetProfileEntity;
 import com.example.project_cm.Device;
 import com.example.project_cm.R;
@@ -28,26 +30,27 @@ import com.example.project_cm.User;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 //todo este fragemnto tem q ter um adapter para ter um viewpager e temos a feature do swipe aqui tb
 public class PetProfileFragment extends Fragment {
-
     @Nullable
     private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
     private UserViewModel userViewModel;
     private PetProfileEntity currentPetProfile;
     private PetProfileViewModel petProfileViewModel;
-    private TextView petNameTextView, petAgeTextView, petWeightTextView, petSexTextView, petMicrochipTextView;
-    private ImageView petProfileImageView;
-    ArrayList<Device> viewPagerItemDeviceList;
+    ViewPager2 viewPagerPetProfile;
+    PetProfileAdapter petProfileAdapter;
+    ArrayList<PetProfileEntity> viewPagerItemDeviceList;
+    private List<PetProfileEntity> petProfilesList = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.pet_profile_fragment, container, false);
+        View view = inflater.inflate(R.layout.pet_profile, container, false);
 
         this.FragmentChangeListener = (HomeActivity) inflater.getContext();
 
@@ -70,18 +73,15 @@ public class PetProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        petProfileImageView = view.findViewById(R.id.petProfileImageView);
-        petNameTextView = view.findViewById(R.id.petNameTextView);
-        petAgeTextView = view.findViewById(R.id.petAgeTextView);
-        petWeightTextView = view.findViewById(R.id.petWeightTextView);
-        petSexTextView = view.findViewById(R.id.petSexTextView);
-        petMicrochipTextView = view.findViewById(R.id.petMicrochipTextView);
-
-        loadPetProfile();
-
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        Toolbar toolbar = view.findViewById(R.id.toolbarPet);
         toolbar.setTitle(" ");
-        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+        AppCompatActivity activity = (AppCompatActivity) requireActivity();
+        activity.setSupportActionBar(toolbar);
+
+        if (activity.getSupportActionBar() != null) {
+            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            activity.getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
         toolbar.setNavigationOnClickListener(v -> {
             if (FragmentChangeListener != null) {
                 FragmentChangeListener.replaceFragment(new MenuFragment());
@@ -90,28 +90,14 @@ public class PetProfileFragment extends Fragment {
             }
         });
 
-        // Botão Vacinas
-        Button vaccinesButton = view.findViewById(R.id.petVaccinesTextView);
-        vaccinesButton.setOnClickListener(v -> {
-            if (FragmentChangeListener != null) {
-                petProfileViewModel.setCurrentPet(currentPetProfile);
-                FragmentChangeListener.replaceFragment(new VaccinesFragment());
-            } else {
-                Log.e("PetProfileFragment", "FragmentChangeListener is null. Unable to replace the fragment.");
-            }
-        });
+        loadPetProfile();
 
+        viewPagerPetProfile = view.findViewById(R.id.viewPagerPetProfile);
+        petProfileAdapter = new PetProfileAdapter(petProfilesList, petProfileViewModel, getChildFragmentManager(), getViewLifecycleOwner(), FragmentChangeListener);
+        viewPagerPetProfile.setAdapter(petProfileAdapter);
 
-        // Botão Histórico
-        Button historyButton = view.findViewById(R.id.petHistoryTextView);
-        historyButton.setOnClickListener(v -> {
-            if (FragmentChangeListener != null) {
-                petProfileViewModel.setCurrentPet(currentPetProfile);
-                FragmentChangeListener.replaceFragment(new HistoryFoodFragment());
-            } else {
-                Log.e("PetProfileFragment", "FragmentChangeListener is null. Unable to replace the fragment.");
-            }
-        });
+        String userId = userViewModel.getCurrentUser().getValue().getUserID();
+        petProfileViewModel.getPetProfilesByUserId(userId).observe(getViewLifecycleOwner(), this::updatePetProfiles);
     }
 
     private void loadPetProfile() {
@@ -127,17 +113,14 @@ public class PetProfileFragment extends Fragment {
             if (petProfiles != null && !petProfiles.isEmpty()) {
                 currentPetProfile = petProfiles.get(0);
                 petProfileViewModel.setCurrentPet(currentPetProfile);
-                updateUI(currentPetProfile);
             }
         });
     }
 
-    private void updateUI(PetProfileEntity petProfile) {
-        petNameTextView.setText(petProfile.name);
-        petAgeTextView.setText(String.format(Locale.getDefault(), "%d years", petProfile.age));
-        petWeightTextView.setText(String.format(Locale.getDefault(), "%.1f kg", petProfile.weight));
-        petSexTextView.setText(petProfile.gender == 0 ? "Male" : "Female");
-        petMicrochipTextView.setText(petProfile.microchipNumber);
+    private void updatePetProfiles(List<PetProfileEntity> petProfiles) {
+        petProfilesList.clear();
+        petProfilesList.addAll(petProfiles);
+        petProfileAdapter.notifyDataSetChanged();
     }
 }
 
