@@ -2,13 +2,14 @@ package com.example.project_cm.Fragments;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,20 +27,23 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Calendar;
 
-public class VaccineCreationPopUp extends DialogFragment {
-
+public class VaccinePopUp extends DialogFragment {
+    private TextView title;
     private EditText editName;
     private EditText editNextDose;
+    private VaccineEntity vaccine;
     private PetProfileViewModel petProfileViewModel;
     private VaccinesViewModel vaccinesViewModel;
-
     final Calendar calendar = Calendar.getInstance();
 
-    public VaccineCreationPopUp(VaccinesViewModel vaccinesViewModel) {
-
+    public VaccinePopUp(VaccinesViewModel vaccinesViewModel) {
         this.vaccinesViewModel = vaccinesViewModel;
+    }
+
+    public VaccinePopUp (VaccinesViewModel vaccinesViewModel, VaccineEntity vaccine) {
+        this.vaccinesViewModel = vaccinesViewModel;
+        this.vaccine = vaccine;
     }
 
     @NonNull
@@ -47,16 +51,18 @@ public class VaccineCreationPopUp extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.CustomDialog);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.vaccine_input_pop_up, null);
+        View dialogView = inflater.inflate(R.layout.vaccine_pop_up, null);
 
         try {
             petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
         } catch (Exception e) {
-            Log.e("PetProfileFragment", "Error creating PetProfileViewModel: " + e.getMessage());
+            Log.e("VaccinePopUp", "Error creating PetProfileViewModel: " + e.getMessage());
         }
 
+        title = dialogView.findViewById(R.id.title);
         editName = dialogView.findViewById(R.id.editName);
         editNextDose = dialogView.findViewById(R.id.editNextDose);
+        ImageView deleteButton = dialogView.findViewById(R.id.deleteButton);
         Button erasePopUpButton = dialogView.findViewById(R.id.eraseButton);
         Button savePopUpButton = dialogView.findViewById(R.id.saveButton);
 
@@ -78,10 +84,26 @@ public class VaccineCreationPopUp extends DialogFragment {
             datePickerDialog.show();
         });
 
+        if (vaccine != null) {
+            title.setText("Vaccine");
+
+            editName.setText(vaccine.getVaccineName());
+            editNextDose.setText(vaccine.getVaccineDate());
+
+            deleteButton.setVisibility(View.VISIBLE);
+            deleteButton.setOnClickListener(v -> {
+                vaccinesViewModel.deleteVaccine(vaccine);
+                dismiss();
+            });
+        }
+
         erasePopUpButton.setOnClickListener((v) -> dismiss());
+
         savePopUpButton.setOnClickListener(v -> {
             if (validateAllInput()) {
-                saveNewVaccine();
+                if (vaccine == null){
+                    saveNewVaccine();
+                } else saveVaccine();
             }
         });
 
@@ -102,7 +124,7 @@ public class VaccineCreationPopUp extends DialogFragment {
 
             newVaccine.petId = petProfileViewModel.getCurrentPet().getValue().id;
 
-            Log.d("VaccineCreationPopUp", "Creating new vaccine: " + newVaccine.petId);
+            Log.d("VaccinePopUp", "Creating new vaccine: " + newVaccine.petId);
             vaccinesViewModel.insertVaccine(newVaccine, new VaccinesViewModel.InsertCallback() {
                 @Override
                 public void onInsertCompleted(long vaccineId) {
@@ -117,6 +139,24 @@ public class VaccineCreationPopUp extends DialogFragment {
         }
 
         dismiss();
+    }
+
+    public void saveVaccine() {
+        String vacineNameString = editName.getText().toString();
+        String vacineDateString = editNextDose.getText().toString();
+
+        if (validateNameVaccine(vacineNameString) && validateDateVaccine(vacineDateString)){
+            vaccine.vaccineName = vacineNameString;
+            vaccine.vaccineDate = converteStringParaData(vacineDateString);
+            vaccinesViewModel.updateVaccine(vaccine, new VaccinesViewModel.UpdateCallback() {
+                @Override
+                public void onUpdateCompleted(long vaccineId) {
+                    Toast.makeText(getContext(), "Vaccine updated successfully", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            dismiss();
+        }
     }
 
     private boolean validateNameVaccine(String input) {
@@ -137,15 +177,14 @@ public class VaccineCreationPopUp extends DialogFragment {
         } else return true;
     }
 
-    //todo em vez de usar strig usar mesmo aquela cena de aparecer o calendário e escolher a data
     private long converteStringParaData(String dataString) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            dateFormat.setLenient(false); // garante que strings inválidas como "30/02/2021" sejam rejeitadas
+            dateFormat.setLenient(false);
             Date data = dateFormat.parse(dataString);
             return data.getTime();
         } catch (ParseException e) {
-            editNextDose.setError("Formato de data inválido");
+            editNextDose.setError("Invalid date format.");
             return -1;
         }
     }
@@ -156,5 +195,5 @@ public class VaccineCreationPopUp extends DialogFragment {
 
         return nameIsValid && dateIsValid;
     }
-
 }
+

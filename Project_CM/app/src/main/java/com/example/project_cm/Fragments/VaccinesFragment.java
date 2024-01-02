@@ -102,11 +102,9 @@ public class VaccinesFragment extends Fragment {
         FloatingActionButton fabAddVaccine = view.findViewById(R.id.fabAddVaccine);
         fabAddVaccine.setOnClickListener(v -> {
             if (FragmentChangeListener != null) {
-                // Aqui você pode chamar a função para abrir o popup de criação de vacina
-                VaccineCreationPopUp vaccineCreationPopUp = new VaccineCreationPopUp(vaccinesViewModel);
-                vaccineCreationPopUp.show(getChildFragmentManager(), "vaccineCreationPopUp");
+                VaccinePopUp vaccinePopUp = new VaccinePopUp(vaccinesViewModel);
+                vaccinePopUp.show(getChildFragmentManager(), "vaccinePopUp");
             } else {
-                // Handle the case where FragmentChangeListener is null
                 Log.e("VaccineFragment", "FragmentChangeListener is null. Unable to open the vaccine creation popup.");
             }
         });
@@ -128,8 +126,8 @@ public class VaccinesFragment extends Fragment {
     }
 
     private void openVaccineDetailsPopup(VaccineEntity vaccine) {
-        VaccineDetailsPopUp vaccineDetailsPopUp = new VaccineDetailsPopUp(vaccinesViewModel, vaccine);
-        vaccineDetailsPopUp.show(getChildFragmentManager(), "vaccineDetailsPopUp");
+        VaccinePopUp vaccinePopUp = new VaccinePopUp(vaccinesViewModel, vaccine);
+        vaccinePopUp.show(getChildFragmentManager(), "vaccinePopUp");
     }
 
     private void loadPetProfile() {
