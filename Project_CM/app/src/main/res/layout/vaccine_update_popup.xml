@@ -31,7 +31,7 @@
         android:id="@+id/vaccineName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="vaccine name"
+        android:hint="Vaccine Name"
         android:textStyle="bold"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,12 +54,14 @@
         android:id="@+id/dateVaccine"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="date"
+        android:focusable="false"
+        android:hint="Select Date"
         android:textStyle="bold"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date"/>
+
 
     <Button
         android:id="@+id/cancelButton"

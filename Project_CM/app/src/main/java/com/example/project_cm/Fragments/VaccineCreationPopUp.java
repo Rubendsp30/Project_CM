@@ -1,12 +1,9 @@
 package com.example.project_cm.Fragments;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
+import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,23 +12,21 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.project_cm.DataBase.Tables.PetProfileEntity;
 import com.example.project_cm.DataBase.Tables.VaccineEntity;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
 import com.example.project_cm.ViewModels.VaccinesViewModel;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
+import java.util.Calendar;
 
 public class VaccineCreationPopUp extends DialogFragment {
 
@@ -39,6 +34,8 @@ public class VaccineCreationPopUp extends DialogFragment {
     private EditText editNextDose;
     private PetProfileViewModel petProfileViewModel;
     private VaccinesViewModel vaccinesViewModel;
+
+    final Calendar calendar = Calendar.getInstance();
 
     public VaccineCreationPopUp(VaccinesViewModel vaccinesViewModel) {
 
@@ -63,7 +60,23 @@ public class VaccineCreationPopUp extends DialogFragment {
         Button erasePopUpButton = dialogView.findViewById(R.id.eraseButton);
         Button savePopUpButton = dialogView.findViewById(R.id.saveButton);
 
-        builder.setView(dialogView);
+        editNextDose.setOnClickListener(v -> {
+            int currentYear = calendar.get(Calendar.YEAR);
+            int currentMonth = calendar.get(Calendar.MONTH);
+            int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    getContext(),
+                    (datePickerView, selectedYear, selectedMonth, selectedDay) -> {
+                        calendar.set(Calendar.YEAR, selectedYear);
+                        calendar.set(Calendar.MONTH, selectedMonth);
+                        calendar.set(Calendar.DAY_OF_MONTH, selectedDay);
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                        editNextDose.setText(dateFormat.format(calendar.getTime()));
+                    }, currentYear, currentMonth, currentDay);
+
+            datePickerDialog.show();
+        });
 
         erasePopUpButton.setOnClickListener((v) -> dismiss());
         savePopUpButton.setOnClickListener(v -> {
@@ -72,6 +85,7 @@ public class VaccineCreationPopUp extends DialogFragment {
             }
         });
 
+        builder.setView(dialogView);
         return builder.create();
     }
 

@@ -3,6 +3,7 @@ package com.example.project_cm.Fragments;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 
@@ -21,6 +22,7 @@ import com.example.project_cm.ViewModels.VaccinesViewModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -31,6 +33,7 @@ public class VaccineDetailsPopUp extends DialogFragment {
     EditText tvVaccineDate;
     private VaccineEntity vaccine;
     private VaccinesViewModel vaccinesViewModel;
+    final Calendar calendar = Calendar.getInstance();
 
     public VaccineDetailsPopUp (VaccinesViewModel vaccinesViewModel, VaccineEntity vaccine) {
         this.vaccinesViewModel = vaccinesViewModel;
@@ -39,8 +42,6 @@ public class VaccineDetailsPopUp extends DialogFragment {
 
     @NonNull
     @Override
-    //todo este pop up em vez de só dar os detalhes podia ser mais como o do challenge 2 em q dava para editar o titulo
-    //O popup mostrava o nome da vacina, daria apra editar a data e apagar
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -55,6 +56,24 @@ public class VaccineDetailsPopUp extends DialogFragment {
 
         tvVaccineName.setText(vaccine.getVaccineName());
         tvVaccineDate.setText(vaccine.getVaccineDate());
+
+        tvVaccineDate.setOnClickListener(v -> {
+            int currentYear = calendar.get(Calendar.YEAR);
+            int currentMonth = calendar.get(Calendar.MONTH);
+            int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    getContext(),
+                    (datePickerView, selectedYear, selectedMonth, selectedDay) -> {
+                        calendar.set(Calendar.YEAR, selectedYear);
+                        calendar.set(Calendar.MONTH, selectedMonth);
+                        calendar.set(Calendar.DAY_OF_MONTH, selectedDay);
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                        tvVaccineDate.setText(dateFormat.format(calendar.getTime()));
+                    }, currentYear, currentMonth, currentDay);
+
+            datePickerDialog.show();
+        });
 
         deleteButton.setOnClickListener(v -> {
             vaccinesViewModel.deleteVaccine(vaccine);

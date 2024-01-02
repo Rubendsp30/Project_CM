@@ -30,9 +30,10 @@
         android:id="@+id/editNextDose"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="false"
+        android:hint="Next Dose"
         app:layout_constraintTop_toBottomOf="@+id/editName"
-        tools:layout_editor_absoluteX="10dp"
-        android:hint="Next Dose" />
+        tools:layout_editor_absoluteX="10dp" />
 
     <Button
         android:id="@+id/eraseButton"
