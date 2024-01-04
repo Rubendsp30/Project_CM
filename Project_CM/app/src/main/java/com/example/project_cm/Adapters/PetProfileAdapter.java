@@ -32,6 +32,7 @@ public class PetProfileAdapter extends RecyclerView.Adapter<PetProfileAdapter.Pe
     private final com.example.project_cm.FragmentChangeListener fragmentChangeListener;
     private final LifecycleOwner lifecycleOwner;
 
+    //todo
     public PetProfileAdapter(List<PetProfileEntity> petProfiles, PetProfileViewModel petProfileViewModel,
                              @Nullable FragmentManager fragmentManager, LifecycleOwner lifecycleOwner,
                              @Nullable com.example.project_cm.FragmentChangeListener fragmentChangeListener) {
@@ -89,6 +90,9 @@ public class PetProfileAdapter extends RecyclerView.Adapter<PetProfileAdapter.Pe
             this.FragmentChangeListener = fragmentChangeListener;
         }
 
+        //todo n estou a dizer q está bem ou mal mas isto pode estar no onBindViewHolder pq n sei se é pesado passar viewmodels por parametro e assim
+        // como tip, para isso só tens q meter o "holder." antes das cenas q tens aqui
+        // tenta rever o homeadapter e o uso dos viewPagerItem q parecem ser os petProfiles q estás a usar
         public void bind(PetProfileEntity petProfile, PetProfileViewModel petProfileViewModel) {
             petNameTextView.setText(petProfile.name);
             petAgeTextView.setText(String.format(Locale.getDefault(), "%d years", petProfile.age));

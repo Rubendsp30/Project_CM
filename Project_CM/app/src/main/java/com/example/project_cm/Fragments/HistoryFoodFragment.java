@@ -91,6 +91,7 @@ public class HistoryFoodFragment extends Fragment {
         historyListRecycler.setAdapter(historyAdapter);
     }
 
+    //todo O current pet vamos guardar mesmo só o ID no viewmodel, essa mudança tb vai acontecer com os outros objetos, é só para estares a par q vai mudar ligeiramente
     private void loadPetProfile() {
         currentPetProfile = petProfileViewModel.getCurrentPet().getValue().id;
     }

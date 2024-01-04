@@ -28,6 +28,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+//todo pelo q entendi estás a usar isto tanto para a criação como para editar, teria sido melhor separar talvez pq torna-se confuso mas agora fica assim
 public class VaccinePopUp extends DialogFragment {
     private TextView title;
     private EditText editName;
@@ -37,6 +38,7 @@ public class VaccinePopUp extends DialogFragment {
     private VaccinesViewModel vaccinesViewModel;
     final Calendar calendar = Calendar.getInstance();
 
+    //todo adicionar uns comentários a identificar q métodos são para criar a vacina e quais são os de editar
     public VaccinePopUp(VaccinesViewModel vaccinesViewModel) {
         this.vaccinesViewModel = vaccinesViewModel;
     }
@@ -161,6 +163,7 @@ public class VaccinePopUp extends DialogFragment {
 
     private boolean validateNameVaccine(String input) {
         if (input == null || input.trim().isEmpty()) { // o trim verifica se o nome tem espaços em branco (o input == null é necessário)
+            //todo a vacina pode ter 2 nomes separados por espaço ex:Hepatite Viral, melhor só usar o empty sem o trim
             editName.setError("This field is required");
             return false;
         } else return true;
@@ -172,11 +175,15 @@ public class VaccinePopUp extends DialogFragment {
             return false;
         }
         else if (dateMillis < System.currentTimeMillis()) {
+            //todo o texto do erro pode ser mais a avisar que n se aceitam datas passadas, pode n ter sido dada
             editNextDose.setError("This vaccine has already been administered");
             return false;
         } else return true;
     }
 
+    //todo visto q estamos a usar o calendar n sei se isto vai ser necessário e tudo o q envolve isto de string.
+    //N sei mesmo como funciona o calendar mas onde está a ser usado ele parece estar a retornar um date mas dps estás tu a mudar para string para voltar a mudar para data
+    //revê essa lógica, posso estar enganado mas dá double check nisso
     private long converteStringParaData(String dataString) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());

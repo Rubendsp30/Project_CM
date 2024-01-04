@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+//todo como ainda n está a ser usada n vi
 public class HistoryViewModel extends AndroidViewModel {
 
     private FirebaseFirestore firestore;

@@ -35,7 +35,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Locale;
 
-
 public class SettingsFragment extends Fragment {
 
     private boolean isActiveNotifications;
