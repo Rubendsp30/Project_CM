@@ -65,6 +65,14 @@ public class MenuFragment extends Fragment {
             }
         });
 
+        //Food info
+        Button Food = view.findViewById(R.id.foodinfo);
+        Food.setOnClickListener(v -> {
+            if (fragmentChangeListener != null) {
+                fragmentChangeListener.replaceFragment(new FoodInfoFragment());
+            }
+        });
+
         Button logoutButton = view.findViewById(R.id.action_logout);
         logoutButton.setOnClickListener(v -> {
             logoutUser();

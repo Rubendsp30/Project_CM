@@ -44,8 +44,6 @@ public class ScheduleFragment extends Fragment {
         mealScheduleViewModel = new ViewModelProvider(this).get(ScheduleViewModel.class);
         deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
 
-        //TODO Mover UI e Listeners para o OnViewCreated
-        // Initialize UI components
 
         return view;
     }
@@ -111,7 +109,6 @@ public class ScheduleFragment extends Fragment {
             return;
         }
         String deviceId = currentDevice.getDeviceID();
-        //TODO estes 2 ifs provavelmente podem-se juntar visto q estão muito ligados
 
         // Get data from UI
         int hour = numberPickerHour.getValue();
@@ -139,7 +136,7 @@ public class ScheduleFragment extends Fragment {
         );
 
         // Save to Firebase
-        //TODO este toast é misleading pq na vdd aquilo devia estar a correr em thread ent pode falhar mais tarde
+
         mealScheduleViewModel.addMealSchedule(deviceId, mealSchedule, new ScheduleViewModel.MealScheduleCallback() {
             @Override
             public void onSuccess() {

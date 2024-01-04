@@ -36,7 +36,6 @@ public class DevSetupFinal extends Fragment {
 
     @Nullable
     private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
-    //Todo mover para o pet profile cration
     private UserViewModel userViewModel;
     private DeviceViewModel deviceViewModel;
 
@@ -49,7 +48,6 @@ public class DevSetupFinal extends Fragment {
         // Initialize the FragmentChangeListener
         this.FragmentChangeListener = (HomeActivity) inflater.getContext();
 
-        //Todo mover para o pet profile cration
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
 
