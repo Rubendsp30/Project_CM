@@ -26,11 +26,12 @@ import java.util.Map;
 public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapter.MealScheduleViewHolder> {
 
     List<MealSchedule> mealScheduleList;
-    @Nullable private final FragmentManager fragmentManager;
+    @Nullable
+    private final FragmentManager fragmentManager;
     private String deviceId;
     private ScheduleViewModel scheduleViewModel;
 
-    public MealScheduleAdapter(@Nullable FragmentManager fragmentManager, List<MealSchedule> mealScheduleList, String deviceId,  ScheduleViewModel scheduleViewModel) {
+    public MealScheduleAdapter(@Nullable FragmentManager fragmentManager, List<MealSchedule> mealScheduleList, String deviceId, ScheduleViewModel scheduleViewModel) {
         this.mealScheduleList = mealScheduleList;
         this.fragmentManager = fragmentManager;
         this.deviceId = deviceId;
@@ -39,13 +40,13 @@ public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapte
 
     @NonNull
     @Override
-    public MealScheduleAdapter.MealScheduleViewHolder onCreateViewHolder(@NonNull  ViewGroup parent, int viewType) {
+    public MealScheduleAdapter.MealScheduleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_meal_schedule_item, parent, false);
         return new MealScheduleViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull  MealScheduleViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MealScheduleViewHolder holder, int position) {
         MealSchedule meal = mealScheduleList.get(position);
 
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -75,7 +76,7 @@ public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapte
 
         holder.itemView.setOnLongClickListener((v) -> {
             //set mealID
-            HomeDeleteMealPop fragment = new HomeDeleteMealPop(deviceId,meal.getMealScheduleId());
+            HomeDeleteMealPop fragment = new HomeDeleteMealPop(deviceId, meal.getMealScheduleId());
             // Show the pop-up fragment using the FragmentManager.
             if (fragmentManager != null) {
                 fragment.show(fragmentManager, "HomeDeleteMealPop");
@@ -90,11 +91,9 @@ public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapte
     private String getRepeatDaysText(Map<String, Boolean> repeatDays) {
         if (repeatDays != null && !repeatDays.containsValue(false)) {
             return "All Days";
-        }
-        else if(repeatDays != null && !repeatDays.containsValue(true)){
+        } else if (repeatDays != null && !repeatDays.containsValue(true)) {
             return "Only once";
-        }
-        else {
+        } else {
             boolean weekdaysOnly = true;
             for (String day : repeatDays.keySet()) {
                 if ((day.equals("Saturday") || day.equals("Sunday")) && repeatDays.get(day)) {

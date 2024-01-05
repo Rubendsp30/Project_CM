@@ -81,14 +81,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
         List<MealSchedule> meals = new ArrayList<>();
 
-        MealScheduleAdapter mealScheduleAdapter = new MealScheduleAdapter(fragmentManager,meals,viewPagerItem.getDeviceID(), scheduleViewModel);
+        MealScheduleAdapter mealScheduleAdapter = new MealScheduleAdapter(fragmentManager, meals, viewPagerItem.getDeviceID(), scheduleViewModel);
         holder.schedulesRecycler.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
         holder.schedulesRecycler.setAdapter(mealScheduleAdapter);
         scheduleViewModel.getMealSchedulesForDevice(viewPagerItem.getDeviceID()).observe(lifecycleOwner, mealSchedules -> {
             meals.clear();
             meals.addAll(mealSchedules);
             mealScheduleAdapter.notifyDataSetChanged();
-            updateNextMealHourText( meals,holder.nextMealHourText);
+            updateNextMealHourText(meals, holder.nextMealHourText);
         });
 
 
@@ -186,17 +186,24 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     private int getDayIndex(String day) {
         switch (day) {
-            case "Sunday": return Calendar.SUNDAY;
-            case "Monday": return Calendar.MONDAY;
-            case "Tuesday": return Calendar.TUESDAY;
-            case "Wednesday": return Calendar.WEDNESDAY;
-            case "Thursday": return Calendar.THURSDAY;
-            case "Friday": return Calendar.FRIDAY;
-            case "Saturday": return Calendar.SATURDAY;
-            default: return -1;
+            case "Sunday":
+                return Calendar.SUNDAY;
+            case "Monday":
+                return Calendar.MONDAY;
+            case "Tuesday":
+                return Calendar.TUESDAY;
+            case "Wednesday":
+                return Calendar.WEDNESDAY;
+            case "Thursday":
+                return Calendar.THURSDAY;
+            case "Friday":
+                return Calendar.FRIDAY;
+            case "Saturday":
+                return Calendar.SATURDAY;
+            default:
+                return -1;
         }
     }
-
 
 
     @Override
