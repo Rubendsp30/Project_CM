@@ -94,6 +94,7 @@ public class PetProfileCreationFragment extends Fragment {
         profileImage = view.findViewById(R.id.profile_image);
 
         saveButton.setOnClickListener(v -> createPetProfile());
+        //todo estar em editmode já implica q o petProfileId é diferente de -1. tb mudar isto para antes do listener
         if (currentUser != null && isEditMode && petProfileId != -1) {
             petProfileViewModel.getPetProfileById(petProfileId).observe(getViewLifecycleOwner(), petProfile -> {
                 if (petProfile != null) {
@@ -153,6 +154,7 @@ public class PetProfileCreationFragment extends Fragment {
             int age = Integer.parseInt(ageInput);
             float weight = Float.parseFloat(weightInput);
 
+            //todo, já tens o current user no onViewCreated, pode passar a variavel global
             User currentUser = userViewModel.getCurrentUser().getValue();
             if (currentUser == null) {
                 Toast.makeText(getContext(), "User must be logged in to create or edit a pet profile", Toast.LENGTH_SHORT).show();

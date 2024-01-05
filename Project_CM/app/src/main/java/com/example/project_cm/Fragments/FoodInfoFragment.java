@@ -27,6 +27,7 @@ public class FoodInfoFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //todo Viewmodel e changeListener inicializa aqui, usa como exemplo o Home screen Fragment
         return inflater.inflate(R.layout.food_info_fragment, container, false);
     }
 
