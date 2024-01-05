@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +17,7 @@ import com.example.project_cm.FragmentChangeListener;
 import com.example.project_cm.Fragments.HomeDeleteMealPop;
 import com.example.project_cm.MealSchedule;
 import com.example.project_cm.R;
+import com.example.project_cm.ViewModels.ScheduleViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -26,11 +28,13 @@ public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapte
     List<MealSchedule> mealScheduleList;
     @Nullable private final FragmentManager fragmentManager;
     private String deviceId;
+    private ScheduleViewModel scheduleViewModel;
 
-    public MealScheduleAdapter(@Nullable FragmentManager fragmentManager, List<MealSchedule> mealScheduleList, String deviceId) {
+    public MealScheduleAdapter(@Nullable FragmentManager fragmentManager, List<MealSchedule> mealScheduleList, String deviceId,  ScheduleViewModel scheduleViewModel) {
         this.mealScheduleList = mealScheduleList;
         this.fragmentManager = fragmentManager;
         this.deviceId = deviceId;
+        this.scheduleViewModel = scheduleViewModel;
     }
 
     @NonNull
@@ -52,7 +56,22 @@ public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapte
         String daysText = getRepeatDaysText(meal.getRepeatDays());
         holder.homeMealScheduleDate.setText(daysText);
 
+        //holder.scheduleActiveSwitch.setOnCheckedChangeListener(null);
         holder.scheduleActiveSwitch.setChecked(meal.isActive());
+        holder.scheduleActiveSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (buttonView.isPressed()) {
+                scheduleViewModel.updateMealScheduleActiveStatus(deviceId, meal.getMealScheduleId(), isChecked, new ScheduleViewModel.MealScheduleCallback() {
+                    @Override
+                    public void onSuccess() {
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        holder.scheduleActiveSwitch.setChecked(!isChecked); // Revert switch state
+                    }
+                });
+            }
+        });
 
         holder.itemView.setOnLongClickListener((v) -> {
             //set mealID

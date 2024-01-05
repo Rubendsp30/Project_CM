@@ -81,7 +81,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
         List<MealSchedule> meals = new ArrayList<>();
 
-        MealScheduleAdapter mealScheduleAdapter = new MealScheduleAdapter(fragmentManager,meals,viewPagerItem.getDeviceID());
+        MealScheduleAdapter mealScheduleAdapter = new MealScheduleAdapter(fragmentManager,meals,viewPagerItem.getDeviceID(), scheduleViewModel);
         holder.schedulesRecycler.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
         holder.schedulesRecycler.setAdapter(mealScheduleAdapter);
         scheduleViewModel.getMealSchedulesForDevice(viewPagerItem.getDeviceID()).observe(lifecycleOwner, mealSchedules -> {

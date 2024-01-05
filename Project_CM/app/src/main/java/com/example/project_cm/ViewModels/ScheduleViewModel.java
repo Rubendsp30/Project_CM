@@ -90,5 +90,29 @@ public class ScheduleViewModel extends ViewModel {
         });
     }
 
+    public void updateMealScheduleActiveStatus(String deviceId, String mealScheduleId, boolean isActive, MealScheduleCallback callback) {
+        networkExecutor.execute(() -> {
+            DocumentReference scheduleRef = firestore.collection("DEVICES")
+                    .document(deviceId)
+                    .collection("MEAL_SCHEDULES")
+                    .document(mealScheduleId);
+
+            scheduleRef.update("active", isActive)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("updateActiveStatus", "Meal schedule active status updated successfully");
+                        uiHandler.post(() -> {
+                            if (callback != null) callback.onSuccess();
+                        });
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("updateActiveStatus", "Error updating meal schedule active status", e);
+                        uiHandler.post(() -> {
+                            if (callback != null) callback.onFailure();
+                        });
+                    });
+        });
+    }
+
+
 
 }
