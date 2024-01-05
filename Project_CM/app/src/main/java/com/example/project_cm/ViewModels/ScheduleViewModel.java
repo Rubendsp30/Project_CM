@@ -112,7 +112,6 @@ public class ScheduleViewModel extends ViewModel {
                         Log.d("updateActiveStatus", "Meal schedule active status updated successfully");
                         uiHandler.post(() -> {
                             if (callback != null) callback.onSuccess();
-                            //getMealSchedulesForDevice(deviceId);
                         });
                     })
                     .addOnFailureListener(e -> {
@@ -120,6 +119,30 @@ public class ScheduleViewModel extends ViewModel {
                         uiHandler.post(() -> {
                             if (callback != null) callback.onFailure();
                         });
+                    });
+        });
+    }
+
+    public void updateMealSchedule(String deviceId, MealSchedule schedule, MealScheduleCallback callback) {
+        networkExecutor.execute(() -> {
+            DocumentReference scheduleRef = firestore.collection("DEVICES")
+                    .document(deviceId)
+                    .collection("MEAL_SCHEDULES")
+                    .document(schedule.getMealScheduleId());
+
+            scheduleRef.set(schedule)
+                    .addOnSuccessListener(aVoid -> {
+                        uiHandler.post(() -> {
+                            if (callback != null) callback.onSuccess();
+                            Log.d("updateMealSchedule", "Meal schedule updated successfully");
+                        });
+                    })
+                    .addOnFailureListener(e -> {
+                        uiHandler.post(() -> {
+                            Log.e("updateMealSchedule", "Error updating meal schedule", e);
+                            if (callback != null) callback.onFailure();
+                        });
+
                     });
         });
     }

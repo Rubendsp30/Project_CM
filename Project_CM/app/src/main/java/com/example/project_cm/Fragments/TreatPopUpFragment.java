@@ -89,7 +89,7 @@ public class TreatPopUpFragment extends DialogFragment {
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                if (topic.equals("/project/treatAnswer/" + deviceViewModel.getCurrentDevice().getValue().getDeviceID())) {
+                if (topic.equals("/project/treatAnswer/" + deviceViewModel.getCurrentDeviceId())) {
                     responseReceived = true;
                     Log.d("MQTT", "Response received: " + new String(message.getPayload()));
 
@@ -140,11 +140,11 @@ public class TreatPopUpFragment extends DialogFragment {
                 dialog.setCanceledOnTouchOutside(false);
             }
 
-            String topic = "/project/treat/" + deviceViewModel.getCurrentDevice().getValue().getDeviceID();
+            String topic = "/project/treat/" + deviceViewModel.getCurrentDeviceId();
             String message = String.valueOf(treatSize); // Convert treatSize to string
             mqttHelper.publishToTopic(topic, message, 2);
 
-            Log.e("Treat", "Treat size: " + treatSize + "g to " + deviceViewModel.getCurrentDevice().getValue().getDeviceID());
+            Log.e("Treat", "Treat size: " + treatSize + "g to " + deviceViewModel.getCurrentDeviceId());
 
             // Reset the flag
             responseReceived = false;

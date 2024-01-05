@@ -15,8 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project_cm.FragmentChangeListener;
 import com.example.project_cm.Fragments.HomeDeleteMealPop;
+import com.example.project_cm.Fragments.ScheduleFragment;
 import com.example.project_cm.MealSchedule;
 import com.example.project_cm.R;
+import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.ScheduleViewModel;
 
 import java.text.SimpleDateFormat;
@@ -30,12 +32,17 @@ public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapte
     private final FragmentManager fragmentManager;
     private String deviceId;
     private ScheduleViewModel scheduleViewModel;
+    private DeviceViewModel deviceViewModel;
+    @Nullable
+    private com.example.project_cm.FragmentChangeListener fragmentChangeListener;
 
-    public MealScheduleAdapter(@Nullable FragmentManager fragmentManager, List<MealSchedule> mealScheduleList, String deviceId, ScheduleViewModel scheduleViewModel) {
+    public MealScheduleAdapter(@Nullable FragmentManager fragmentManager, List<MealSchedule> mealScheduleList, String deviceId, ScheduleViewModel scheduleViewModel, FragmentChangeListener fragmentChangeListener, DeviceViewModel deviceViewModel) {
         this.mealScheduleList = mealScheduleList;
         this.fragmentManager = fragmentManager;
         this.deviceId = deviceId;
         this.scheduleViewModel = scheduleViewModel;
+        this.fragmentChangeListener = fragmentChangeListener;
+        this.deviceViewModel = deviceViewModel;
     }
 
     @NonNull
@@ -71,6 +78,16 @@ public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapte
                         holder.scheduleActiveSwitch.setChecked(!isChecked); // Revert switch state
                     }
                 });
+            }
+        });
+
+        holder.itemView.setOnClickListener(v -> {
+            ScheduleFragment scheduleFragment = new ScheduleFragment();
+            deviceViewModel.setCurrentDeviceId(deviceId);
+            scheduleFragment.setMealSchedule(meal);
+            scheduleFragment.setFragmentChangeListener(fragmentChangeListener);
+            if (fragmentChangeListener != null) {
+                fragmentChangeListener.replaceFragment(scheduleFragment);
             }
         });
 
