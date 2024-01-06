@@ -28,11 +28,13 @@ import com.example.project_cm.ViewModels.UserViewModel;
 import com.example.project_cm.User;
 
 public class PetProfileCreationFragment extends Fragment {
-    // ViewModel instances for user and pet profile data
+    // ViewModel instances for managing user and pet profile data
     private UserViewModel userViewModel;
     private PetProfileViewModel petProfileViewModel;
     private DeviceViewModel deviceViewModel;
     private MQTTHelper mqttHelper;
+
+    // Nullable as it may not be initialized if the fragment is not attached to an activity
     @Nullable
     private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
 
@@ -40,8 +42,9 @@ public class PetProfileCreationFragment extends Fragment {
     private EditText inputName, inputAge, inputWeight, inputGender, inputMicrochip;
     private Button saveButton;
     private ImageView profileImage;
+    private User currentUser;
 
-    // Flags to determine if we are editing an existing pet profile
+    // Flags to determine if the fragment is in edit mode or creating a new pet profile
     private boolean isEditMode = false;
     private long petProfileId = -1;
     private PetProfileEntity currentPetProfile;
@@ -51,10 +54,9 @@ public class PetProfileCreationFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Check if arguments are passed to the fragment
+        // Check for any arguments passed to the fragment
         if (getArguments() != null) {
             petProfileId = getArguments().getLong("petProfileId");
-            // Determine if the fragment is in edit mode based on petProfileId
             isEditMode = petProfileId != -1;
             Log.d("PetProfileFragment", "onCreate: isEditMode = " + isEditMode + ", petProfileId = " + petProfileId);
         }
@@ -73,7 +75,7 @@ public class PetProfileCreationFragment extends Fragment {
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
         petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
-        mqttHelper = MQTTHelper.getInstance(requireContext(),"CMProjectPet");
+        mqttHelper = MQTTHelper.getInstance(requireContext(),"CMProjectPetDoDesespero");
 
         return view;
     }
@@ -82,7 +84,7 @@ public class PetProfileCreationFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Retrieve the current user
-        User currentUser = userViewModel.getCurrentUser().getValue();
+        currentUser = userViewModel.getCurrentUser().getValue();
 
         // UI things
         inputName = view.findViewById(R.id.inputName);
@@ -93,20 +95,34 @@ public class PetProfileCreationFragment extends Fragment {
         saveButton = view.findViewById(R.id.saveButton);
         profileImage = view.findViewById(R.id.profile_image);
 
-        saveButton.setOnClickListener(v -> createPetProfile());
-        //todo estar em editmode já implica q o petProfileId é diferente de -1. tb mudar isto para antes do listener
-        if (currentUser != null && isEditMode && petProfileId != -1) {
-            petProfileViewModel.getPetProfileById(petProfileId).observe(getViewLifecycleOwner(), petProfile -> {
-                if (petProfile != null) {
-                    currentPetProfile = petProfile;
-                    fillInProfileDetails(currentPetProfile);
-                } else {
-                    Toast.makeText(getContext(), "Pet profile not found", Toast.LENGTH_SHORT).show();
-                }
-            });
+        // Determine if editing an existing profile or creating a new one
+        if (currentUser != null) {
+            if (petProfileId != -1) {
+                // If we have a petProfileId, we are in edit mode. Retrieve the profile and populate the UI
+                petProfileViewModel.getPetProfileById(petProfileId).observe(getViewLifecycleOwner(), petProfile -> {
+                    if (petProfile != null) {
+                        currentPetProfile = petProfile;
+                        fillInProfileDetails(currentPetProfile);
+                        isEditMode = true;
+                    } else {
+                        // No profile was found
+                        isEditMode = false;
+                    }
+                });
+            } else {
+                // If no petProfileId was passed get the first pet profile for this user, if it exists
+                petProfileViewModel.getPetProfilesByUserId(currentUser.getUserID()).observe(getViewLifecycleOwner(), petProfiles -> {
+                    if (!petProfiles.isEmpty()) {
+                        currentPetProfile = petProfiles.get(0);
+                        petProfileId = currentPetProfile.id;
+                        fillInProfileDetails(currentPetProfile);
+                        isEditMode = true;
+                    }
+                });
+            }
         }
+        saveButton.setOnClickListener(v -> createPetProfile());
     }
-
 
 
     //Fill com as coisas da UI e as informações gravadas anteriormente
@@ -145,8 +161,9 @@ public class PetProfileCreationFragment extends Fragment {
         String gender = inputGender.getText().toString();
         String microchip = inputMicrochip.getText().toString();
 
+        //Fill all fields warning
         if (name.isEmpty() || ageInput.isEmpty() || weightInput.isEmpty() || gender.isEmpty() || microchip.isEmpty()) {
-            Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -154,41 +171,39 @@ public class PetProfileCreationFragment extends Fragment {
             int age = Integer.parseInt(ageInput);
             float weight = Float.parseFloat(weightInput);
 
-            //todo, já tens o current user no onViewCreated, pode passar a variavel global
-            User currentUser = userViewModel.getCurrentUser().getValue();
             if (currentUser == null) {
                 Toast.makeText(getContext(), "User must be logged in to create or edit a pet profile", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (isEditMode == true) {
-                if (currentPetProfile != null) {
-                    currentPetProfile.name = name;
-                    currentPetProfile.age = age;
-                    currentPetProfile.weight = weight;
-                    currentPetProfile.gender = convertToGender(gender);
-                    currentPetProfile.microchipNumber = microchip;
 
-                    petProfileViewModel.updatePetProfile(currentPetProfile);
-                    Toast.makeText(getContext(), "Pet Profile Updated", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "Error: No pet profile found to update", Toast.LENGTH_SHORT).show();
-                }
+            PetProfileEntity petProfile;
+            if (isEditMode && currentPetProfile != null) {
+                petProfile = currentPetProfile;
             } else {
-                PetProfileEntity newPetProfile = new PetProfileEntity();
-                newPetProfile.name = name;
-                newPetProfile.age = age;
-                newPetProfile.weight = weight;
-                newPetProfile.gender = convertToGender(gender);
-                newPetProfile.microchipNumber = microchip;
-                newPetProfile.userID = currentUser.getUserID();
+                petProfile = new PetProfileEntity();
+            }
+            petProfile.name = name;
+            petProfile.age = age;
+            petProfile.weight = weight;
+            petProfile.gender = convertToGender(gender);
+            petProfile.microchipNumber = microchip;
+            petProfile.userID = currentUser.getUserID();
 
-                petProfileViewModel.insertPetProfile(newPetProfile, new PetProfileViewModel.InsertCallback() {
+            if (isEditMode) {
+
+                // Atualiza o perfil existente
+                petProfileViewModel.updatePetProfile(currentPetProfile);
+                Toast.makeText(getContext(), "Pet Profile Updated", Toast.LENGTH_SHORT).show();
+                returnToHomepage();
+            } else {
+                // Cria um novo perfil
+                petProfileViewModel.insertPetProfile(petProfile, new PetProfileViewModel.InsertCallback() {
                     @Override
-                    public void onInsertCompleted(long petProfileId) {
+                    public void onInsertCompleted(long newPetProfileId) {
                         Device device = new Device();
                         device.setUser_id(currentUser.getUserID());
-                        device.setPet_id(petProfileId);
+                        device.setPet_id(newPetProfileId);
                         deviceViewModel.registerDevice(device);
                         mqttHelper.subscribeToDeviceTopic(deviceViewModel.getNewDeviceId().getValue());
                         transitionToDevSetFinal();
@@ -201,6 +216,7 @@ public class PetProfileCreationFragment extends Fragment {
             Toast.makeText(getContext(), "Invalid input", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     // Handle actions after saving pet profile information
     private void transitionToDevSetFinal() {
@@ -219,6 +235,14 @@ public class PetProfileCreationFragment extends Fragment {
             return 0;
         } else {
             return 1;
+        }
+    }
+    private void returnToHomepage() {
+        if (FragmentChangeListener != null) {
+            HomeScreenFragment homeFragment = new HomeScreenFragment();
+            FragmentChangeListener.replaceFragment(homeFragment);
+        } else {
+            Toast.makeText(getContext(), "Activity must implement FragmentChangeListener", Toast.LENGTH_SHORT).show();
         }
     }
 }
