@@ -24,7 +24,8 @@ import java.util.concurrent.Executors;
 public class DeviceViewModel extends ViewModel {
 
     private FirebaseFirestore firestore;
-    private final MutableLiveData<Device> currentDevice = new MutableLiveData<>();
+    //private final MutableLiveData<Device> currentDevice = new MutableLiveData<>();
+    private  String currentDeviceId;
     private static final String DEVICES_COLLECTION = "DEVICES";
     private final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
     private final Handler uiHandler = new Handler(Looper.getMainLooper());
@@ -102,7 +103,7 @@ public class DeviceViewModel extends ViewModel {
 
         return devicesLiveData;
     }
-
+/*
     // Getter for currentDevice
     public MutableLiveData<Device> getCurrentDevice() {
         return currentDevice;
@@ -111,6 +112,14 @@ public class DeviceViewModel extends ViewModel {
     // Method to set the current device
     public void setCurrentDevice(Device device) {
         currentDevice.setValue(device);
+    }*/
+
+    public String getCurrentDeviceId() {
+        return currentDeviceId;
+    }
+
+    public void setCurrentDeviceId(String currentDeviceId) {
+        this.currentDeviceId = currentDeviceId;
     }
 
     public void setNewDeviceId(String deviceId) {

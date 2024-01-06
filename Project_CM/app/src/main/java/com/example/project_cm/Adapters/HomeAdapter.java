@@ -72,6 +72,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     public void onBindViewHolder(@NonNull HomeAdapter.HomeViewHolder holder, int position) {
 
         Device viewPagerItem = viewPagerIDeviceArrayList.get(position);
+        String itemDeviceId = viewPagerItem.getDeviceID();
+        deviceViewModel.setCurrentDeviceId(itemDeviceId);
         long petProfileId = viewPagerItem.getPet_id();
         petProfileViewModel.getPetProfileById(petProfileId).observe(lifecycleOwner, petProfileEntity -> {
             if (petProfileEntity != null) {
@@ -81,14 +83,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
         List<MealSchedule> meals = new ArrayList<>();
 
-        MealScheduleAdapter mealScheduleAdapter = new MealScheduleAdapter(fragmentManager,meals,viewPagerItem.getDeviceID());
+        MealScheduleAdapter mealScheduleAdapter = new MealScheduleAdapter(fragmentManager, meals, viewPagerItem.getDeviceID(), scheduleViewModel, FragmentChangeListener, deviceViewModel);
         holder.schedulesRecycler.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
         holder.schedulesRecycler.setAdapter(mealScheduleAdapter);
         scheduleViewModel.getMealSchedulesForDevice(viewPagerItem.getDeviceID()).observe(lifecycleOwner, mealSchedules -> {
             meals.clear();
             meals.addAll(mealSchedules);
             mealScheduleAdapter.notifyDataSetChanged();
-            updateNextMealHourText( meals,holder.nextMealHourText);
+            updateNextMealHourText(meals, holder.nextMealHourText);
         });
 
 
@@ -98,15 +100,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         holder.supplyProgressBar.setProgress(foodSuply);
 
         holder.treatButton.setOnClickListener(v -> {
-            deviceViewModel.setCurrentDevice(viewPagerItem);
+            deviceViewModel.setCurrentDeviceId(itemDeviceId);
             TreatPopUpFragment fragment = new TreatPopUpFragment(deviceViewModel);
             if (fragmentManager != null) {
                 fragment.show(fragmentManager, "TreatPopUpFragment");
             }
         });
         holder.addScheduleButton.setOnClickListener(v -> {
-            Device selectedDevice = viewPagerIDeviceArrayList.get(position);
-            deviceViewModel.setCurrentDevice(selectedDevice);
+            deviceViewModel.setCurrentDeviceId(itemDeviceId);
             if (FragmentChangeListener != null) {
                 ScheduleFragment scheduleFragment = new ScheduleFragment();
                 //scheduleFragment.setDeviceId(selectedDevice.getDeviceID());
@@ -186,17 +187,24 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     private int getDayIndex(String day) {
         switch (day) {
-            case "Sunday": return Calendar.SUNDAY;
-            case "Monday": return Calendar.MONDAY;
-            case "Tuesday": return Calendar.TUESDAY;
-            case "Wednesday": return Calendar.WEDNESDAY;
-            case "Thursday": return Calendar.THURSDAY;
-            case "Friday": return Calendar.FRIDAY;
-            case "Saturday": return Calendar.SATURDAY;
-            default: return -1;
+            case "Sunday":
+                return Calendar.SUNDAY;
+            case "Monday":
+                return Calendar.MONDAY;
+            case "Tuesday":
+                return Calendar.TUESDAY;
+            case "Wednesday":
+                return Calendar.WEDNESDAY;
+            case "Thursday":
+                return Calendar.THURSDAY;
+            case "Friday":
+                return Calendar.FRIDAY;
+            case "Saturday":
+                return Calendar.SATURDAY;
+            default:
+                return -1;
         }
     }
-
 
 
     @Override

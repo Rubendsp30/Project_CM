@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,8 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project_cm.FragmentChangeListener;
 import com.example.project_cm.Fragments.HomeDeleteMealPop;
+import com.example.project_cm.Fragments.ScheduleFragment;
 import com.example.project_cm.MealSchedule;
 import com.example.project_cm.R;
+import com.example.project_cm.ViewModels.DeviceViewModel;
+import com.example.project_cm.ViewModels.ScheduleViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -24,24 +28,32 @@ import java.util.Map;
 public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapter.MealScheduleViewHolder> {
 
     List<MealSchedule> mealScheduleList;
-    @Nullable private final FragmentManager fragmentManager;
+    @Nullable
+    private final FragmentManager fragmentManager;
     private String deviceId;
+    private ScheduleViewModel scheduleViewModel;
+    private DeviceViewModel deviceViewModel;
+    @Nullable
+    private com.example.project_cm.FragmentChangeListener fragmentChangeListener;
 
-    public MealScheduleAdapter(@Nullable FragmentManager fragmentManager, List<MealSchedule> mealScheduleList, String deviceId) {
+    public MealScheduleAdapter(@Nullable FragmentManager fragmentManager, List<MealSchedule> mealScheduleList, String deviceId, ScheduleViewModel scheduleViewModel, FragmentChangeListener fragmentChangeListener, DeviceViewModel deviceViewModel) {
         this.mealScheduleList = mealScheduleList;
         this.fragmentManager = fragmentManager;
         this.deviceId = deviceId;
+        this.scheduleViewModel = scheduleViewModel;
+        this.fragmentChangeListener = fragmentChangeListener;
+        this.deviceViewModel = deviceViewModel;
     }
 
     @NonNull
     @Override
-    public MealScheduleAdapter.MealScheduleViewHolder onCreateViewHolder(@NonNull  ViewGroup parent, int viewType) {
+    public MealScheduleAdapter.MealScheduleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_meal_schedule_item, parent, false);
         return new MealScheduleViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull  MealScheduleViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MealScheduleViewHolder holder, int position) {
         MealSchedule meal = mealScheduleList.get(position);
 
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -52,11 +64,36 @@ public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapte
         String daysText = getRepeatDaysText(meal.getRepeatDays());
         holder.homeMealScheduleDate.setText(daysText);
 
+        //holder.scheduleActiveSwitch.setOnCheckedChangeListener(null);
         holder.scheduleActiveSwitch.setChecked(meal.isActive());
+        holder.scheduleActiveSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (buttonView.isPressed()) {
+                scheduleViewModel.updateMealScheduleActiveStatus(deviceId, meal.getMealScheduleId(), isChecked, new ScheduleViewModel.MealScheduleCallback() {
+                    @Override
+                    public void onSuccess() {
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        holder.scheduleActiveSwitch.setChecked(!isChecked); // Revert switch state
+                    }
+                });
+            }
+        });
+
+        holder.itemView.setOnClickListener(v -> {
+            ScheduleFragment scheduleFragment = new ScheduleFragment();
+            deviceViewModel.setCurrentDeviceId(deviceId);
+            scheduleFragment.setMealSchedule(meal);
+            scheduleFragment.setFragmentChangeListener(fragmentChangeListener);
+            if (fragmentChangeListener != null) {
+                fragmentChangeListener.replaceFragment(scheduleFragment);
+            }
+        });
 
         holder.itemView.setOnLongClickListener((v) -> {
             //set mealID
-            HomeDeleteMealPop fragment = new HomeDeleteMealPop(deviceId,meal.getMealScheduleId());
+            HomeDeleteMealPop fragment = new HomeDeleteMealPop(deviceId, meal.getMealScheduleId());
             // Show the pop-up fragment using the FragmentManager.
             if (fragmentManager != null) {
                 fragment.show(fragmentManager, "HomeDeleteMealPop");
@@ -71,11 +108,9 @@ public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapte
     private String getRepeatDaysText(Map<String, Boolean> repeatDays) {
         if (repeatDays != null && !repeatDays.containsValue(false)) {
             return "All Days";
-        }
-        else if(repeatDays != null && !repeatDays.containsValue(true)){
+        } else if (repeatDays != null && !repeatDays.containsValue(true)) {
             return "Only once";
-        }
-        else {
+        } else {
             boolean weekdaysOnly = true;
             for (String day : repeatDays.keySet()) {
                 if ((day.equals("Saturday") || day.equals("Sunday")) && repeatDays.get(day)) {
