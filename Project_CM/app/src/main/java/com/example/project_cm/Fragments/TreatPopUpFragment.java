@@ -20,6 +20,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.project_cm.MQTTHelper;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
+import com.example.project_cm.utils.ClientNameUtil;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -37,7 +38,8 @@ public class TreatPopUpFragment extends DialogFragment {
 
     public TreatPopUpFragment(DeviceViewModel deviceViewModel1) {
         this.deviceViewModel = deviceViewModel1;
-        this.mqttHelper = MQTTHelper.getInstance(getContext(), "yourClientName");
+        String clientName = ClientNameUtil.getClientName();
+        this.mqttHelper = MQTTHelper.getInstance(getContext(), clientName);
     }
 
     // This method is called to create and configure the dialog when this fragment is displayed.

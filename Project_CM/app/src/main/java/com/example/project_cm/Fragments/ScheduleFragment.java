@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.project_cm.MQTTHelper;
 import com.example.project_cm.MealSchedule;
 
 import androidx.fragment.app.Fragment;
@@ -26,6 +27,7 @@ import com.example.project_cm.FragmentChangeListener;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.project_cm.R;
+import com.example.project_cm.utils.ClientNameUtil;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -42,6 +44,7 @@ public class ScheduleFragment extends Fragment {
     private Button saveButton, cancelButton;
     private ScheduleViewModel mealScheduleViewModel;
     private MealSchedule existingMealSchedule;
+    private MQTTHelper mqttHelper;
 
     public void setMealSchedule(MealSchedule mealSchedule) {
         this.existingMealSchedule = mealSchedule;
@@ -56,6 +59,8 @@ public class ScheduleFragment extends Fragment {
 
         mealScheduleViewModel = new ViewModelProvider(this).get(ScheduleViewModel.class);
         deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
+        String clientName = ClientNameUtil.getClientName();
+        mqttHelper = MQTTHelper.getInstance(getContext(), clientName);
 
 
         return view;
@@ -187,6 +192,8 @@ public class ScheduleFragment extends Fragment {
             mealScheduleViewModel.addMealSchedule(deviceId, mealSchedule, new ScheduleViewModel.MealScheduleCallback() {
                 @Override
                 public void onSuccess() {
+                    String topic = "/project/updateMeals/" + deviceViewModel.getCurrentDeviceId();
+                    mqttHelper.publishToTopic(topic, "update", 2);
                     switchToHomePage();
                 }
 
@@ -199,7 +206,8 @@ public class ScheduleFragment extends Fragment {
             mealScheduleViewModel.updateMealSchedule(deviceId, mealSchedule, new ScheduleViewModel.MealScheduleCallback() {
                 @Override
                 public void onSuccess() {
-                    Log.e("Meal Update", "Recebeu e muda para home");
+                    String topic = "/project/updateMeals/" + deviceViewModel.getCurrentDeviceId();
+                    mqttHelper.publishToTopic(topic, "update", 2);
                     switchToHomePage();
                 }
 
