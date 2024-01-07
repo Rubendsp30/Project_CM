@@ -32,6 +32,7 @@ char * letters = "abcdefghijklmnopqrstuvwxyz0123456789";
 // Define Firebase paths
 #define MEAL_HISTORY_PATH "DEVICES/Q3sZ0r8Frv7G2hd8SE/MEAL_HISTORY/"
 #define MEAL_SCHEDULES_PATH "DEVICES/Q3sZ0r8Frv7G2hd8SE/MEAL_SCHEDULES"
+#define DELETE_MEAL_PATH "DEVICES/Q3sZ0r8Frv7G2hd8SE/MEAL_SCHEDULES/"
 
 // Define MQTT Broker and PORT
 const char * BROKER_MQTT = "broker.hivemq.com";
@@ -264,7 +265,7 @@ void readMealSchedulesFromFirestore() {
 
 void deleteDocumentFromFirestore(const String& documentId) {
     // Base path for meal schedules in Firestore
-    String basePath = "DEVICES/Q3sZ0r8Frv7G2hd8SE/MEAL_SCHEDULES/";
+    String basePath = DELETE_MEAL_PATH;
 
     // Construct the full document path
     String documentPath = basePath + documentId;
