@@ -262,6 +262,29 @@ void readMealSchedulesFromFirestore() {
   }
 }
 
+void deleteDocumentFromFirestore(const String& documentId) {
+    // Base path for meal schedules in Firestore
+    String basePath = "DEVICES/Q3sZ0r8Frv7G2hd8SE/MEAL_SCHEDULES/";
+
+    // Construct the full document path
+    String documentPath = basePath + documentId;
+
+    // Check if the documentId is not empty
+    if (documentId.isEmpty()) {
+        Serial.println("Document ID is empty. Cannot delete document.");
+        return;
+    }
+
+    // Delete the document
+    if (Firebase.Firestore.deleteDocument(&firebaseData, FIREBASE_PROJECT_ID, "", documentPath)) {
+        Serial.println("Document deleted successfully: " + documentPath);
+    } else {
+        Serial.println("Failed to delete document: " + documentPath);
+        Serial.println(firebaseData.errorReason());
+    }
+}
+
+
 //////////////////////////////////////////////
 //      End Aux functions for Firebase      //
 //////////////////////////////////////////////
@@ -443,6 +466,7 @@ void checkAndTriggerMeals() {
           //  Serial.println("Current time: " + String(currentHour) + ":" + String(currentMinute) + " // Schedule time: " + String(scheduleHour) + ":" + String(scheduleMinute));
             if (currentHour == scheduleHour && currentMinute == scheduleMinute) {
                 triggerMeal(schedule["portionSize"], schedule["id"]);
+                deleteDocumentFromFirestore(schedule["id"]);
             }
           
         }
