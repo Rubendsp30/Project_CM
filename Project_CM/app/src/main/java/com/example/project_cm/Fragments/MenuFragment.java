@@ -26,6 +26,9 @@ public class MenuFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //todo change listener aqui
+        if (getActivity() instanceof com.example.project_cm.FragmentChangeListener) {
+            fragmentChangeListener = (com.example.project_cm.FragmentChangeListener) getActivity();
+        }
         return inflater.inflate(R.layout.menu, container, false);
     }
 
@@ -43,10 +46,6 @@ public class MenuFragment extends Fragment {
                 fragmentChangeListener.replaceFragment(new HomeScreenFragment());
             }
         });
-
-        if (getActivity() instanceof com.example.project_cm.FragmentChangeListener) {
-            fragmentChangeListener = (com.example.project_cm.FragmentChangeListener) getActivity();
-        }
 
         Button profileCreationButton = view.findViewById(R.id.profile);
         profileCreationButton.setOnClickListener(v -> {

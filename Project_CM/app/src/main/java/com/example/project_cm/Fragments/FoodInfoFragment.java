@@ -27,7 +27,11 @@ public class FoodInfoFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //todo Viewmodel e changeListener inicializa aqui, usa como exemplo o Home screen Fragment
+        foodInfoViewModel = new ViewModelProvider(requireActivity()).get(FoodInfoViewModel.class);
+
+        if (getActivity() instanceof com.example.project_cm.FragmentChangeListener) {
+            fragmentChangeListener = (com.example.project_cm.FragmentChangeListener) getActivity();
+        }
         return inflater.inflate(R.layout.food_info_fragment, container, false);
     }
 
@@ -35,17 +39,10 @@ public class FoodInfoFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        foodInfoViewModel = new ViewModelProvider(requireActivity()).get(FoodInfoViewModel.class);
-
-
         textViewTemperature = view.findViewById(R.id.textViewTemperature);
         textViewHumidity = view.findViewById(R.id.textViewHumidity);
         textViewMealsLeft = view.findViewById(R.id.textViewMealsLeft);
         textViewDaysLeft = view.findViewById(R.id.textViewDaysLeft);
-
-        if (getActivity() instanceof com.example.project_cm.FragmentChangeListener) {
-            fragmentChangeListener = (com.example.project_cm.FragmentChangeListener) getActivity();
-        }
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> {
