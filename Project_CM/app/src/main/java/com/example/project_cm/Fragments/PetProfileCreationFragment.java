@@ -26,6 +26,7 @@ import com.example.project_cm.ViewModels.PetProfileViewModel;
 import com.example.project_cm.FragmentChangeListener;
 import com.example.project_cm.ViewModels.UserViewModel;
 import com.example.project_cm.User;
+import com.example.project_cm.utils.ClientNameUtil;
 
 public class PetProfileCreationFragment extends Fragment {
     // ViewModel instances for managing user and pet profile data
@@ -75,7 +76,8 @@ public class PetProfileCreationFragment extends Fragment {
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
         petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
-        mqttHelper = MQTTHelper.getInstance(requireContext(),"CMProjectPetDoDesespero");
+        String clientName = ClientNameUtil.getClientName();
+        mqttHelper = MQTTHelper.getInstance(requireContext(),clientName);
 
         return view;
     }

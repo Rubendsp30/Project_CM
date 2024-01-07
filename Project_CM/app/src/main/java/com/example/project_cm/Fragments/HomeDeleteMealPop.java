@@ -23,6 +23,7 @@ import com.example.project_cm.MQTTHelper;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.ScheduleViewModel;
+import com.example.project_cm.utils.ClientNameUtil;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -33,6 +34,7 @@ public class HomeDeleteMealPop extends DialogFragment {
     private String deleteMealId;
     private String mealDeviceId;
     private ScheduleViewModel scheduleViewModel;
+    private MQTTHelper mqttHelper;
 
     public HomeDeleteMealPop( String mealDeviceId,String deleteMealId) {
         this.deleteMealId = deleteMealId;
@@ -45,6 +47,8 @@ public class HomeDeleteMealPop extends DialogFragment {
         if (getActivity() != null) {
             scheduleViewModel = new ViewModelProvider(getActivity()).get(ScheduleViewModel.class);
         }
+        String clientName = ClientNameUtil.getClientName();
+        mqttHelper = MQTTHelper.getInstance(getContext(), clientName);
     }
 
     // This method is called to create and configure the dialog when this fragment is displayed.
@@ -66,6 +70,8 @@ public class HomeDeleteMealPop extends DialogFragment {
 
         mealYesButton.setOnClickListener(v -> {
            scheduleViewModel.deleteMealSchedule(mealDeviceId, deleteMealId);
+            String topic = "/project/updateMeals/" + mealDeviceId;
+            mqttHelper.publishToTopic(topic, "update", 2);
             dismiss();
         });
 

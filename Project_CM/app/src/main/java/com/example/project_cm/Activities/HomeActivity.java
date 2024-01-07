@@ -18,6 +18,7 @@ import com.example.project_cm.MQTTHelper;
 import com.example.project_cm.R;
 import com.example.project_cm.User;
 import com.example.project_cm.ViewModels.UserViewModel;
+import com.example.project_cm.utils.ClientNameUtil;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -71,8 +72,9 @@ public class HomeActivity extends AppCompatActivity implements FragmentChangeLis
     }
 
     private MQTTHelper setupMqtt() {
-        mqttHelper = MQTTHelper.getInstance(this,"CMProjectPetDoDesespero");
-
+        ClientNameUtil.generateClientName();
+        String clientName = ClientNameUtil.getClientName();
+        mqttHelper = MQTTHelper.getInstance(this,clientName);
         mqttHelper.setCallback(new MqttCallbackExtended() {
 
             @Override
