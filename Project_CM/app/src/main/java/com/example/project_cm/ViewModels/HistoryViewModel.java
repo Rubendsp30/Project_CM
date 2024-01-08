@@ -10,7 +10,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.project_cm.DataBase.AppDatabase;
 import com.example.project_cm.History;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -19,15 +18,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class HistoryViewModel extends AndroidViewModel {
 
     private FirebaseFirestore firestore;
-    private  String currentDeviceId;
-    private final MutableLiveData<List<History>> historyLiveData = new MutableLiveData<>();
     private static final String HISTORY_COLLECTION = "MEALS_HISTORY";
     private static final String DEVICES_COLLECTION = "DEVICES";
     private final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
@@ -48,7 +44,7 @@ public class HistoryViewModel extends AndroidViewModel {
         }
     }
 
-    public LiveData<ArrayList<History>> getHistoryMealsByPetProfileId() {
+    public LiveData<ArrayList<History>> getHistoryMeals(String currentDeviceId) {
         MutableLiveData<ArrayList<History>> historyLiveData = new MutableLiveData<>();
         Date sevenDaysAgo = getSevenDaysAgoDate();
         Timestamp sevenDaysAgoTimestamp = new Timestamp(sevenDaysAgo);
@@ -82,7 +78,7 @@ public class HistoryViewModel extends AndroidViewModel {
         return historyLiveData;
     }
 
-    public void deleteOldMealHistories () {
+    public void deleteOldMealHistories (String currentDeviceId) {
         Date sevenDaysAgo = getSevenDaysAgoDate();
 
         networkExecutor.execute(() -> {
@@ -106,9 +102,5 @@ public class HistoryViewModel extends AndroidViewModel {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, -7);
         return calendar.getTime();
-    }
-
-    public void setCurrentDeviceId(String currentDeviceId) {
-        this.currentDeviceId = currentDeviceId;
     }
 }

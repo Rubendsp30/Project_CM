@@ -78,22 +78,24 @@ public class HistoryFoodFragment extends Fragment {
 
         loadPetProfile();
 
+        String currentDevice;
+        currentDevice = deviceViewModel.getCurrentDeviceId();
+
         // frase que indica que a lista está vazia
         tvEmptyMessage = view.findViewById(R.id.tvEmptyHistoryMessage);
 
         // Logic to get the data for history
         if (currentPetProfile != -1) {
             // apaga as historys meal que já passaram dos 7 dias (fora de prazo de validade hehehe)
-            historyViewModel.deleteOldMealHistories();
+            historyViewModel.deleteOldMealHistories(currentDevice);
 
             // retorna a lista do historico de refeições
-            historyViewModel.getHistoryMealsByPetProfileId()
+            historyViewModel.getHistoryMeals(currentDevice)
                     .observe(getViewLifecycleOwner(), history -> {
                         if (history == null || history.isEmpty()) {
                             tvEmptyMessage.setVisibility(View.VISIBLE);
                         } else {
                             tvEmptyMessage.setVisibility(View.GONE);
-                            //Log.d("HistoryFoodFragment", "history: " + history.get(0).getPortionSize());
                             historyAdapter = new HistoryAdapter(history);
                             setupRecyclerView(view);
                         }
@@ -116,6 +118,5 @@ public class HistoryFoodFragment extends Fragment {
 
     private void loadPetProfile() {
         currentPetProfile = petProfileViewModel.getCurrentPet().getValue().id;
-        historyViewModel.setCurrentDeviceId(deviceViewModel.getCurrentDeviceId());
     }
 }

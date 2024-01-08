@@ -35,11 +35,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     @Override
     public void onBindViewHolder(@NonNull HistoryAdapter.HistoryViewHolder holder, int position) {
         History history = historyList.get(position);
-        holder.textViewQuantityFood.setText(String.valueOf(history.getQuantityServed()));
+        holder.textViewQuantityFood.setText(String.valueOf(history.getQuantityServed() + "g"));
 
         Date date = history.getMealTime();
         if (date != null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("EEEE, dd 'de' MMMM 'de' yyyy '\n' HH'h'mm", Locale.getDefault());
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE, d MMMM '('HH'h'mm)", Locale.getDefault());
             String formattedDate = formatter.format(date);
             holder.textViewDateFood.setText(formattedDate);
         } else {
