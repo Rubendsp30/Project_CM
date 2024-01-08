@@ -4,30 +4,31 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class History implements Serializable {
+    private Date meal_time;
+    private int quantity_served;
 
-    private Date date;
-    private int portionSize;
-
-    public History () {}
-
-    public History (Date date, int portionSize) {
-        this.date = date;
-        this.portionSize = portionSize;
+    public History() {
     }
 
-    public Date getDate() {
-        return date;
+    public History(Date meal_time, int quantity_served) {
+        this.meal_time = meal_time;
+        this.quantity_served = quantity_served;
     }
 
-    public int getPortionSize() {
-        return portionSize;
+    public Date getMealTime() {
+        return meal_time;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setMealTime(Date meal_time) {
+        this.meal_time = meal_time;
     }
 
-    public void setPortionSize(int portionSize) {
-        this.portionSize = portionSize;
+    public int getQuantityServed() {
+        return quantity_served;
+    }
+
+    public void setQuantityServed(int quantity_served) {
+        this.quantity_served = quantity_served;
     }
 }
+
