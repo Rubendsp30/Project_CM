@@ -1,4 +1,4 @@
-package com.example.project_cm;
+package com.example.project_cm.Widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import androidx.core.content.ContextCompat;
+
+import com.example.project_cm.R;
 
 public class MQTTWidgetProvider extends AppWidgetProvider {
 

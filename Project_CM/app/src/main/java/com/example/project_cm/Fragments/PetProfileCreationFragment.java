@@ -26,6 +26,7 @@ import com.example.project_cm.ViewModels.PetProfileViewModel;
 import com.example.project_cm.FragmentChangeListener;
 import com.example.project_cm.ViewModels.UserViewModel;
 import com.example.project_cm.User;
+import com.example.project_cm.utils.ClientNameUtil;
 
 public class PetProfileCreationFragment extends Fragment {
     // ViewModel instances for user and pet profile data
@@ -43,7 +44,7 @@ public class PetProfileCreationFragment extends Fragment {
 
     // Flags to determine if we are editing an existing pet profile
     private boolean isEditMode = false;
-    private long petProfileId;
+    private long petProfileId = -1;
     private PetProfileEntity currentPetProfile;
     private long newPetProfileId = 0;
 
@@ -52,12 +53,12 @@ public class PetProfileCreationFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Check if arguments are passed to the fragment
-        /*if (getArguments() != null) {
+        if (getArguments() != null) {
             petProfileId = getArguments().getLong("petProfileId");
             // Determine if the fragment is in edit mode based on petProfileId
-            isEditMode = petProfileId != null && !petProfileId.isEmpty();
+            isEditMode = petProfileId != -1;
             Log.d("PetProfileFragment", "onCreate: isEditMode = " + isEditMode + ", petProfileId = " + petProfileId);
-        }*/
+        }
     }
 
     @Nullable
@@ -73,7 +74,8 @@ public class PetProfileCreationFragment extends Fragment {
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
         petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
-        mqttHelper = MQTTHelper.getInstance(requireContext(),"CMProjectPet");
+        String clientName = ClientNameUtil.getClientName();
+        mqttHelper = MQTTHelper.getInstance(requireContext(),clientName);
 
         return view;
     }
@@ -94,22 +96,18 @@ public class PetProfileCreationFragment extends Fragment {
         profileImage = view.findViewById(R.id.profile_image);
 
         saveButton.setOnClickListener(v -> createPetProfile());
-        if (currentUser != null) {
-            // If in edit mode and a pet profile ID is provided
-            /*if (isEditMode && petProfileId != null) {
-                // Load the pet profile for editing
-                observePetProfile();
-            }*/
+        if (currentUser != null && isEditMode && petProfileId != -1) {
+            petProfileViewModel.getPetProfileById(petProfileId).observe(getViewLifecycleOwner(), petProfile -> {
+                if (petProfile != null) {
+                    currentPetProfile = petProfile;
+                    fillInProfileDetails(currentPetProfile);
+                } else {
+                    Toast.makeText(getContext(), "Pet profile not found", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
-
-    // Method to load pet profile details when in edit mode
-   /* private void observePetProfile() {
-        if (isEditMode && petProfileId != null) {
-            petProfileViewModel.getPetProfileById(petProfileId).observe(getViewLifecycleOwner(), this::fillInProfileDetails);
-        }
-    }*/
 
 
     //Fill com as coisas da UI e as informações gravadas anteriormente
@@ -163,40 +161,39 @@ public class PetProfileCreationFragment extends Fragment {
                 return;
             }
 
-            PetProfileEntity petProfile;
-            if (isEditMode) {
-                petProfile = currentPetProfile;
-            } else {
-                petProfile = new PetProfileEntity();
-            }
+            if (isEditMode == true) {
+                if (currentPetProfile != null) {
+                    currentPetProfile.name = name;
+                    currentPetProfile.age = age;
+                    currentPetProfile.weight = weight;
+                    currentPetProfile.gender = convertToGender(gender);
+                    currentPetProfile.microchipNumber = microchip;
 
-            petProfile.name = name;
-            petProfile.age = age;
-            petProfile.weight = weight;
-            petProfile.gender = convertToGender(gender);
-            petProfile.microchipNumber = microchip;
-
-            if (isEditMode) {
-                Log.d("PetProfileFragment", "Updating pet profile: " + petProfile.name);
-                petProfileViewModel.updatePetProfile(petProfile);
-                Toast.makeText(getContext(), "Pet Profile Updated", Toast.LENGTH_SHORT).show();
+                    petProfileViewModel.updatePetProfile(currentPetProfile);
+                    Toast.makeText(getContext(), "Pet Profile Updated", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Error: No pet profile found to update", Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Log.d("PetProfileFragment", "Creating new pet profile: " + petProfile.name);
-                petProfile.userID = currentUser.getUserID();
-                petProfileViewModel.insertPetProfile(petProfile, new PetProfileViewModel.InsertCallback() {
+                PetProfileEntity newPetProfile = new PetProfileEntity();
+                newPetProfile.name = name;
+                newPetProfile.age = age;
+                newPetProfile.weight = weight;
+                newPetProfile.gender = convertToGender(gender);
+                newPetProfile.microchipNumber = microchip;
+                newPetProfile.userID = currentUser.getUserID();
+
+                petProfileViewModel.insertPetProfile(newPetProfile, new PetProfileViewModel.InsertCallback() {
                     @Override
                     public void onInsertCompleted(long petProfileId) {
-                        newPetProfileId = petProfileId;
                         Device device = new Device();
                         device.setUser_id(currentUser.getUserID());
-                        device.setPet_id(newPetProfileId);
+                        device.setPet_id(petProfileId);
                         deviceViewModel.registerDevice(device);
                         mqttHelper.subscribeToDeviceTopic(deviceViewModel.getNewDeviceId().getValue());
                         transitionToDevSetFinal();
-                        // Rest of your logic
                     }
                 });
-
             }
 
         } catch (NumberFormatException e) {

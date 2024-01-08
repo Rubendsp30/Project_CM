@@ -1,4 +1,4 @@
-package com.example.project_cm;
+package com.example.project_cm.Widget;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -10,6 +10,10 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+
+import com.example.project_cm.MQTTHelper;
+import com.example.project_cm.R;
+import com.example.project_cm.utils.ClientNameUtil;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -47,8 +51,8 @@ public class MQTTService extends Service {
     private Notification createNotification() {
         // Create a notification channel for Android O and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    "200",
+                NotificationChannel channel = new NotificationChannel(
+                    "Widget Notification",
                     "MQTT Service Channel",
                     NotificationManager.IMPORTANCE_DEFAULT
             );
@@ -56,10 +60,10 @@ public class MQTTService extends Service {
             notificationManager.createNotificationChannel(channel);
         }
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "200")
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Widget Notification")
                 .setContentTitle("MQTT Service")
                 .setContentText("Sending MQTT message")
-                .setSmallIcon(R.drawable.ic_launcher_background) // Replace with your app's icon
+                .setSmallIcon(R.drawable.treat_button)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         return builder.build();
@@ -70,19 +74,8 @@ public class MQTTService extends Service {
     private void sendMQTTMessage() {
         Log.e("MQTT Widget", "Entered sendMqttMessage");
 
-        String CHAR_LOWER = "abcdefghijklmnopqrstuvwxyz";
-        String CHAR_UPPER = CHAR_LOWER.toUpperCase();
-        String NUMBER = "0123456789";
-        String DATA_FOR_RANDOM_STRING = CHAR_LOWER + CHAR_UPPER + NUMBER;
-        SecureRandom random = new SecureRandom();
-
-        StringBuilder sb = new StringBuilder(20);
-        for (int i = 0; i < 18; i++) {
-            int rndCharAt = random.nextInt(DATA_FOR_RANDOM_STRING.length());
-            char rndChar = DATA_FOR_RANDOM_STRING.charAt(rndCharAt);
-            sb.append(rndChar);
-        }
-        mqttHelper = MQTTHelper.getInstance(this, sb.toString());
+        String clientName = ClientNameUtil.getClientName();
+        mqttHelper = MQTTHelper.getInstance(this, clientName);
 
 
             // Connect and set a callback to publish when connected

@@ -2,35 +2,49 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/rounded_corner_meal_schedule"
     android:layout_marginBottom="10dp"
     android:paddingVertical="10dp"
     android:paddingHorizontal="20dp"
+    android:orientation="horizontal"
+    android:gravity="center"
     >
 
-    <TextView
-        android:id="@+id/homeMealScheduleHour"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="HOUR"
-        android:fontFamily="@font/poppins_medium"
-        android:textColor="@color/white"
-        android:textSize="24sp"/>
-    <TextView
-        android:id="@+id/homeMealScheduleDate"
         android:layout_weight="1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="date "
-        android:textColor="@color/white"
-        android:textSize="16sp"/>
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/homeMealScheduleHour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HOUR"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="@color/white"
+            android:textSize="24sp"/>
+
+        <TextView
+            android:id="@+id/homeMealScheduleDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Repeat Days"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+
+
+
+    </LinearLayout>
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/scheduleActiveSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+
 </LinearLayout>

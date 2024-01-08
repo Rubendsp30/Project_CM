@@ -1,8 +1,6 @@
 package com.example.project_cm.Fragments;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +20,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.project_cm.Activities.HomeActivity;
-import com.example.project_cm.Activities.LoginActivity;
 
 import com.example.project_cm.Device;
 import com.example.project_cm.Fragments.DeviceSetup.DevSetupInitial;
@@ -30,6 +27,7 @@ import com.example.project_cm.R;
 import com.example.project_cm.Adapters.HomeAdapter;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
+import com.example.project_cm.ViewModels.ScheduleViewModel;
 import com.example.project_cm.ViewModels.UserViewModel;
 
 import java.util.ArrayList;
@@ -74,10 +72,12 @@ public class HomeScreenFragment extends Fragment {
         String currentUserId = userViewModel.getCurrentUser().getValue().getUserID();
         DeviceViewModel deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
         PetProfileViewModel petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
+        ScheduleViewModel scheduleViewModel = new ViewModelProvider(requireActivity()).get(ScheduleViewModel.class);
 
         viewPagerHome = view.findViewById(R.id.viewPagerHome);
         viewPagerItemDeviceList = new ArrayList<>();
-        HomeAdapter homeAdapter = new HomeAdapter(currentUserId ,viewPagerItemDeviceList,  getChildFragmentManager(),deviceViewModel, petProfileViewModel,  getViewLifecycleOwner());
+        HomeAdapter homeAdapter = new HomeAdapter(currentUserId, viewPagerItemDeviceList, getChildFragmentManager(), deviceViewModel, petProfileViewModel, getViewLifecycleOwner(), scheduleViewModel);
+        homeAdapter.setFragmentChangeListener(this.FragmentChangeListener);
         viewPagerHome.setAdapter(homeAdapter);
         viewPagerHome.setOffscreenPageLimit(2);
         viewPagerHome.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
@@ -88,7 +88,6 @@ public class HomeScreenFragment extends Fragment {
             homeAdapter.notifyDataSetChanged();
 
         });
-
 
 
     }
