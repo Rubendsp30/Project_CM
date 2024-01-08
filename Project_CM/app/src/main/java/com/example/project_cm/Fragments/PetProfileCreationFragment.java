@@ -111,16 +111,6 @@ public class PetProfileCreationFragment extends Fragment {
                         isEditMode = false;
                     }
                 });
-            } else {
-                // If no petProfileId was passed get the first pet profile for this user, if it exists
-                petProfileViewModel.getPetProfilesByUserId(currentUser.getUserID()).observe(getViewLifecycleOwner(), petProfiles -> {
-                    if (!petProfiles.isEmpty()) {
-                        currentPetProfile = petProfiles.get(0);
-                        petProfileId = currentPetProfile.id;
-                        fillInProfileDetails(currentPetProfile);
-                        isEditMode = true;
-                    }
-                });
             }
         }
         saveButton.setOnClickListener(v -> createPetProfile());

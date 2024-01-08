@@ -12,6 +12,8 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.project_cm.Activities.HomeActivity;
 import com.example.project_cm.Activities.LoginActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -25,10 +27,7 @@ public class MenuFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //todo change listener aqui
-        if (getActivity() instanceof com.example.project_cm.FragmentChangeListener) {
-            fragmentChangeListener = (com.example.project_cm.FragmentChangeListener) getActivity();
-        }
+        this.fragmentChangeListener = (HomeActivity)inflater.getContext();
         return inflater.inflate(R.layout.menu, container, false);
     }
 
