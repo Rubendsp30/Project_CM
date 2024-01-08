@@ -44,57 +44,76 @@ public class HistoryViewModel extends AndroidViewModel {
         }
     }
 
-    public LiveData<ArrayList<History>> getHistoryMeals(String currentDeviceId) {
+    public LiveData<ArrayList<History>> getHistoryMeals(String currentUserID, int currentPetProfile) {
         MutableLiveData<ArrayList<History>> historyLiveData = new MutableLiveData<>();
         Date sevenDaysAgo = getSevenDaysAgoDate();
         Timestamp sevenDaysAgoTimestamp = new Timestamp(sevenDaysAgo);
 
+        Log.d("HistoryViewModel", "currentUserID: " + currentUserID + " / currentPetProfile: " + currentPetProfile);
+
         networkExecutor.execute(() -> {
             firestore.collection(DEVICES_COLLECTION)
-                    .document(currentDeviceId)
-                    .collection(HISTORY_COLLECTION)
-                    .whereGreaterThanOrEqualTo("meal_time", sevenDaysAgoTimestamp)
+                    .whereEqualTo("user_id", currentUserID)
+                    .whereEqualTo("pet_id", currentPetProfile)
                     .get()
-                    .addOnSuccessListener(queryDocumentSnapshots -> {
-                        ArrayList<History> history = new ArrayList<>();
-                        for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
-                            Timestamp mealTimeTimestamp = snapshot.getTimestamp("meal_time");
-                            Long quantityServedLong = snapshot.getLong("quantity_served");
-                            int quantityServed = quantityServedLong != null ? quantityServedLong.intValue() : 0;
+                    .addOnSuccessListener(deviceQueryDocumentSnapshots -> {
+                        ArrayList<History> allHistory = new ArrayList<>();
 
-                            // Converte o Timestamp para Date
-                            Date mealTimeDate = mealTimeTimestamp != null ? mealTimeTimestamp.toDate() : null;
+                        for (DocumentSnapshot deviceDoc : deviceQueryDocumentSnapshots.getDocuments()) {
+                            deviceDoc.getReference().collection(HISTORY_COLLECTION)
+                                    .whereGreaterThanOrEqualTo("meal_time", sevenDaysAgoTimestamp)
+                                    .get()
+                                    .addOnSuccessListener(historyQueryDocumentSnapshots -> {
+                                        for (DocumentSnapshot historySnapshot : historyQueryDocumentSnapshots.getDocuments()) {
+                                            Timestamp mealTimeTimestamp = historySnapshot.getTimestamp("meal_time");
+                                            Long quantityServedLong = historySnapshot.getLong("quantity_served");
+                                            int quantityServed = quantityServedLong != null ? quantityServedLong.intValue() : 0;
 
-                            // Cria um novo objeto History
-                            History history_meal = new History(mealTimeDate, quantityServed);
+                                            // Converte o Timestamp para Date
+                                            Date mealTimeDate = mealTimeTimestamp != null ? mealTimeTimestamp.toDate() : null;
 
-                            history.add(history_meal);
+                                            // Cria um novo objeto History
+                                            History history_meal = new History(mealTimeDate, quantityServed);
+
+                                            allHistory.add(history_meal);
+                                        }
+                                        uiHandler.post(() -> historyLiveData.setValue(allHistory));
+                                    })
+                                    .addOnFailureListener(e -> Log.e("getHistoryMeals", "Error getting history for device: " + e.getMessage()));
                         }
-                        uiHandler.post(() -> historyLiveData.setValue(history));
                     })
-                    .addOnFailureListener(e -> Log.e("getHistoryMealsByPetProfileId", "Error getting meals_history for pet: " + e.getMessage()));
+                    .addOnFailureListener(e -> Log.e("getHistoryMeals", "Error finding device: " + e.getMessage()));
         });
 
         return historyLiveData;
     }
 
-    public void deleteOldMealHistories (String currentDeviceId) {
+    public void deleteOldMealHistories (String currentUserID, int currentPetProfile) {
         Date sevenDaysAgo = getSevenDaysAgoDate();
 
         networkExecutor.execute(() -> {
             firestore.collection(DEVICES_COLLECTION)
-                    .document(currentDeviceId)
-                    .collection(HISTORY_COLLECTION)
-                    .whereLessThan("meal_time", sevenDaysAgo)
+                    .whereEqualTo("user_id", currentUserID)
+                    .whereEqualTo("pet_id", currentPetProfile)
                     .get()
-                    .addOnSuccessListener(queryDocumentSnapshots -> {
-                        for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
-                            snapshot.getReference().delete()
-                                    .addOnSuccessListener(aVoid -> Log.d("deleteOldMealHistories", "Old meal history successfully deleted"))
-                                    .addOnFailureListener(e -> Log.e("deleteOldMealHistories", "Error deleting old meal history: " + e.getMessage()));
+                    .addOnSuccessListener(deviceQueryDocumentSnapshots -> {
+                        for (DocumentSnapshot deviceDoc : deviceQueryDocumentSnapshots.getDocuments()) {
+                            String deviceId = deviceDoc.getId();
+
+                            deviceDoc.getReference().collection(HISTORY_COLLECTION)
+                                    .whereLessThan("meal_time", sevenDaysAgo)
+                                    .get()
+                                    .addOnSuccessListener(historyQueryDocumentSnapshots -> {
+                                        for (DocumentSnapshot historySnapshot : historyQueryDocumentSnapshots.getDocuments()) {
+                                            historySnapshot.getReference().delete()
+                                                    .addOnSuccessListener(aVoid -> Log.d("deleteOldMealHistories", "Old meal history successfully deleted for device: " + deviceId))
+                                                    .addOnFailureListener(e -> Log.e("deleteOldMealHistories", "Error deleting old meal history for device: " + deviceId + ": " + e.getMessage()));
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> Log.e("deleteOldMealHistories", "Error getting old meals_history for device: " + deviceId + ": " + e.getMessage()));
                         }
                     })
-                    .addOnFailureListener(e -> Log.e("deleteOldMealHistories", "Error getting old meals_history for pet: " + e.getMessage()));
+                    .addOnFailureListener(e -> Log.e("deleteOldMealHistories", "Error finding devices for user: " + currentPetProfile + ": " + e.getMessage()));
         });
     }
 

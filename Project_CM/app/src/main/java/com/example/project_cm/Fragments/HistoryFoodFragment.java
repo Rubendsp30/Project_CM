@@ -22,6 +22,7 @@ import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.HistoryViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
+import com.example.project_cm.ViewModels.UserViewModel;
 
 public class HistoryFoodFragment extends Fragment {
     private TextView tvEmptyMessage;
@@ -29,7 +30,7 @@ public class HistoryFoodFragment extends Fragment {
     private PetProfileViewModel petProfileViewModel;
     private HistoryViewModel historyViewModel;
     private HistoryAdapter historyAdapter;
-    private DeviceViewModel deviceViewModel;
+    private UserViewModel userViewModel;
     @Nullable
     private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
 
@@ -52,7 +53,7 @@ public class HistoryFoodFragment extends Fragment {
             Log.e("HistoryFoodFragment", "Error creating HistoryFoodFragment: " + e.getMessage());
         }
         try {
-            deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
+            userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         } catch (Exception e) {
             Log.e("HistoryFoodFragment", "Error creating HistoryFoodFragment: " + e.getMessage());
         }
@@ -78,8 +79,8 @@ public class HistoryFoodFragment extends Fragment {
 
         loadPetProfile();
 
-        String currentDevice;
-        currentDevice = deviceViewModel.getCurrentDeviceId();
+        String currentUser;
+        currentUser = userViewModel.getCurrentUser().getValue().getUserID();
 
         // frase que indica que a lista está vazia
         tvEmptyMessage = view.findViewById(R.id.tvEmptyHistoryMessage);
@@ -87,10 +88,10 @@ public class HistoryFoodFragment extends Fragment {
         // Logic to get the data for history
         if (currentPetProfile != -1) {
             // apaga as historys meal que já passaram dos 7 dias (fora de prazo de validade hehehe)
-            historyViewModel.deleteOldMealHistories(currentDevice);
+            historyViewModel.deleteOldMealHistories(currentUser, currentPetProfile);
 
             // retorna a lista do historico de refeições
-            historyViewModel.getHistoryMeals(currentDevice)
+            historyViewModel.getHistoryMeals(currentUser, currentPetProfile)
                     .observe(getViewLifecycleOwner(), history -> {
                         if (history == null || history.isEmpty()) {
                             tvEmptyMessage.setVisibility(View.VISIBLE);
