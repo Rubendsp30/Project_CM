@@ -32,9 +32,9 @@ public interface VaccineDao {
     */
 
     @Update
-    void updateUserEntity (VaccineEntity vaccineEntity);
+    void updateVaccineEntity (VaccineEntity vaccineEntity);
 
     @Delete
-    void deleteUserEntity (VaccineEntity vaccineEntity);
+    void deleteVaccineEntity (VaccineEntity vaccineEntity);
 
 }

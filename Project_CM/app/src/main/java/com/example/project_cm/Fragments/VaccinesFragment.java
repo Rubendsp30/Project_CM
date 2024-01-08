@@ -5,15 +5,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
@@ -22,24 +18,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project_cm.Activities.HomeActivity;
-import com.example.project_cm.Adapters.HomeAdapter;
 import com.example.project_cm.DataBase.Tables.PetProfileEntity;
-import com.example.project_cm.Device;
+import com.example.project_cm.DataBase.Tables.VaccineEntity;
 import com.example.project_cm.R;
 import com.example.project_cm.User;
-import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
 import com.example.project_cm.ViewModels.UserViewModel;
 import com.example.project_cm.ViewModels.VaccinesViewModel;
-import com.example.project_cm.Fragments.VaccineAdapter;
+import com.example.project_cm.Adapters.VaccineAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class VaccinesFragment extends Fragment {
-
-    private UserViewModel userViewModel;
-    private PetProfileEntity currentPetProfile;
+    private TextView tvEmptyMessage;
+    private int currentPetProfile = -1;
     private PetProfileViewModel petProfileViewModel;
 
     private VaccinesViewModel vaccinesViewModel;
@@ -56,19 +50,14 @@ public class VaccinesFragment extends Fragment {
 
         // Initialize ViewModel instances
         try {
-            userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
-        } catch (Exception e) {
-            Log.e("PetProfileFragment", "Error creating UserViewModel: " + e.getMessage());
-        }
-        try {
             vaccinesViewModel = new ViewModelProvider(requireActivity()).get(VaccinesViewModel.class);
         } catch (Exception e) {
-            Log.e("ListVaccinesFragment", "Error creating VaccinesViewModel: " + e.getMessage());
+            Log.e("VaccinesFragment", "Error creating VaccinesViewModel: " + e.getMessage());
         }
         try {
             petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
         } catch (Exception e) {
-            Log.e("PetProfileFragment", "Error creating PetProfileViewModel: " + e.getMessage());
+            Log.e("VaccinesFragment", "Error creating PetProfileViewModel: " + e.getMessage());
         }
 
         return view;
@@ -85,45 +74,42 @@ public class VaccinesFragment extends Fragment {
             if (FragmentChangeListener != null) {
                 FragmentChangeListener.replaceFragment(new PetProfileFragment());
             } else {
-                // Handle the case where FragmentChangeListener is null
-                Log.e("RegisterFragment", "FragmentChangeListener is null. Unable to replace the fragment.");
+                Log.e("VaccineFragment", "FragmentChangeListener is null. Unable to replace the fragment.");
             }
         });
-
         loadPetProfile();
 
+        // frase que indica que a lista está vazia
+        tvEmptyMessage = view.findViewById(R.id.tvEmptyMessage);
+
         // Logic to get the data for vaccines
-        MutableLiveData<User> loggedInUser = userViewModel.getCurrentUser();
-        loggedInUser.observe(getViewLifecycleOwner(), user -> {
-            if (user != null) {
-                if (currentPetProfile != null) {
-                    int currentPetProfileId = currentPetProfile.id;
-                    vaccinesViewModel.getVaccinesByPetProfileId(currentPetProfileId)
-                            .observe(getViewLifecycleOwner(), vaccines -> {
-                                vaccineAdapter = new VaccineAdapter(vaccines);
-                                setupRecyclerView(view);
-                            });
-                }
-                else {
-                    Log.e("VaccineFragment", "currentPetProfile is null.");
-                }
-            }
-        });
+        if (currentPetProfile != -1) {
+            vaccinesViewModel.getVaccinesByPetProfileId(currentPetProfile)
+                    .observe(getViewLifecycleOwner(), vaccines -> {
+                        if (vaccines == null || vaccines.isEmpty()) {
+                            tvEmptyMessage.setVisibility(View.VISIBLE);
+                        } else {
+                            tvEmptyMessage.setVisibility(View.GONE);
+                            vaccineAdapter = new VaccineAdapter(vaccines);
+                            setupRecyclerView(view, vaccines);
+                        }
+                    });
+        } else {
+            Log.e("VaccineFragment", "currentPetProfile is null.");
+        }
 
         FloatingActionButton fabAddVaccine = view.findViewById(R.id.fabAddVaccine);
         fabAddVaccine.setOnClickListener(v -> {
             if (FragmentChangeListener != null) {
-                // Aqui você pode chamar a função para abrir o popup de criação de vacina
-                VaccineCreationPopUp vaccineCreationPopUp = new VaccineCreationPopUp(vaccinesViewModel);
-                vaccineCreationPopUp.show(getChildFragmentManager(), "vaccineCreationPopUp");
+                VaccinePopUp vaccinePopUp = new VaccinePopUp(vaccinesViewModel);
+                vaccinePopUp.show(getChildFragmentManager(), "vaccinePopUp");
             } else {
-                // Handle the case where FragmentChangeListener is null
                 Log.e("VaccineFragment", "FragmentChangeListener is null. Unable to open the vaccine creation popup.");
             }
         });
     }
 
-    public void setupRecyclerView(@NonNull View view){
+    public void setupRecyclerView(@NonNull View view, List<VaccineEntity> vaccines){
         // RecyclerView Layout Manager
         LinearLayoutManager vaccinesLayoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false);
@@ -132,12 +118,19 @@ public class VaccinesFragment extends Fragment {
         RecyclerView vaccinesListRecycler = view.findViewById(R.id.recyclerViewVaccines);
         vaccinesListRecycler.setLayoutManager(vaccinesLayoutManager);
         vaccinesListRecycler.setAdapter(vaccineAdapter);
+
+        vaccineAdapter = new VaccineAdapter(vaccines);
+        vaccineAdapter.setOnItemClickListener(vaccine -> openVaccineDetailsPopup(vaccine));
+        vaccinesListRecycler.setAdapter(vaccineAdapter);
     }
 
-    private void loadPetProfile() {
-        User currentUser = userViewModel.getCurrentUser().getValue();
-        String userId = currentUser != null ? currentUser.getUserID() : "-1";
+    private void openVaccineDetailsPopup(VaccineEntity vaccine) {
+        VaccinePopUp vaccinePopUp = new VaccinePopUp(vaccinesViewModel, vaccine);
+        vaccinePopUp.show(getChildFragmentManager(), "vaccinePopUp");
+    }
 
-        currentPetProfile = petProfileViewModel.getCurrentPet().getValue();
+    //é mais facil de ler o código assim (desde que as funções façam realmente o que está no nome)
+    private void loadPetProfile() {
+        currentPetProfile = petProfileViewModel.getCurrentPet().getValue().id;
     }
 }

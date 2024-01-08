@@ -1,10 +1,8 @@
-package com.example.project_cm.Fragments;
+package com.example.project_cm.Adapters;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,6 +17,11 @@ import java.util.List;
 public class VaccineAdapter extends RecyclerView.Adapter<VaccineAdapter.VaccineViewHolder> {
 
     private final List<VaccineEntity> vaccineList;
+    private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(VaccineEntity vaccine);
+    }
 
     public VaccineAdapter(List<VaccineEntity> vaccineList) {
         this.vaccineList = vaccineList;
@@ -56,6 +59,13 @@ public class VaccineAdapter extends RecyclerView.Adapter<VaccineAdapter.VaccineV
         String daysLeftText = daysLeft + " days left";
 
         holder.textViewDaysLeft.setText(daysLeftText);
+
+        holder.itemView.setOnLongClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(vaccine);
+            }
+            return true;
+        });
     }
 
     @Override
@@ -74,5 +84,9 @@ public class VaccineAdapter extends RecyclerView.Adapter<VaccineAdapter.VaccineV
             this.textViewVaccineDate = itemView.findViewById(R.id.textViewVaccineDate);
             this.textViewDaysLeft = itemView.findViewById(R.id.textViewDaysLeft);
         }
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 }
