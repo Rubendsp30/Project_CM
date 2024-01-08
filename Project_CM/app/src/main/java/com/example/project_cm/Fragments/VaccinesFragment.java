@@ -83,9 +83,6 @@ public class VaccinesFragment extends Fragment {
         tvEmptyMessage = view.findViewById(R.id.tvEmptyMessage);
 
         // Logic to get the data for vaccines
-        // eu sei que o observer aqui não é preciso, mas se tirar, vai dar muitos problemas por causa de se tratar de um livedata
-        //todo na vdd até faz por outro motivo pq queremos ver os updates em realtime visto q é tudo feito em popup, parece bem
-        //o outro comentário estaria certo e n és obrigado a usar o liveData usando essa implementação q seria mais simples mas tendo em conta o pop-up esta faz mais sentido
         if (currentPetProfile != -1) {
             vaccinesViewModel.getVaccinesByPetProfileId(currentPetProfile)
                     .observe(getViewLifecycleOwner(), vaccines -> {
@@ -132,7 +129,7 @@ public class VaccinesFragment extends Fragment {
         vaccinePopUp.show(getChildFragmentManager(), "vaccinePopUp");
     }
 
-    //todo meter isto diretamente no código em vez de ter esta função só para uma linha maybe
+    //é mais facil de ler o código assim (desde que as funções façam realmente o que está no nome)
     private void loadPetProfile() {
         currentPetProfile = petProfileViewModel.getCurrentPet().getValue().id;
     }

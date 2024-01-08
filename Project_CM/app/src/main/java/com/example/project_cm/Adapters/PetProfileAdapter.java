@@ -1,5 +1,6 @@
 package com.example.project_cm.Adapters;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project_cm.DataBase.Tables.PetProfileEntity;
 import com.example.project_cm.Fragments.HistoryFoodFragment;
+import com.example.project_cm.Fragments.PetProfileCreationFragment;
 import com.example.project_cm.Fragments.VaccinesFragment;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
@@ -48,7 +50,48 @@ public class PetProfileAdapter extends RecyclerView.Adapter<PetProfileAdapter.Pe
         PetProfileEntity petProfile = petProfiles.get(position);
         petProfileViewModel.getPetProfileById(petProfile.id).observe(lifecycleOwner, petProfileEntity -> {
             if (petProfileEntity != null) {
-                holder.bind(petProfile, petProfileViewModel);
+                holder.petNameTextView.setText(petProfile.name);
+                holder.petAgeTextView.setText(String.format(Locale.getDefault(), "%d years", petProfile.age));
+                holder.petWeightTextView.setText(String.format(Locale.getDefault(), "%.1f kg", petProfile.weight));
+                holder.petSexTextView.setText(petProfile.gender == 0 ? "Male" : "Female");
+                holder.petMicrochipTextView.setText(petProfile.microchipNumber);
+            }
+        });
+
+        holder.editButton.setOnClickListener(v -> {
+            if (holder.FragmentChangeListener != null) {
+                petProfileViewModel.setCurrentPet(petProfile);
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("current_pet", petProfile.id);
+                Log.d("PetProfileFragment", "currentPet: " + petProfile.name);
+
+                PetProfileCreationFragment fragment = new PetProfileCreationFragment();
+                fragment.setArguments(bundle);
+
+                holder.FragmentChangeListener.replaceFragment(fragment);
+            } else {
+                Log.e("PetProfileAdapter", "FragmentChangeListener is null. Unable to replace the fragment.");
+            }
+        });
+
+        // Botão Vacinas
+        holder.vaccinesButton.setOnClickListener(v -> {
+            if (holder.FragmentChangeListener != null) {
+                petProfileViewModel.setCurrentPet(petProfile);
+                holder.FragmentChangeListener.replaceFragment(new VaccinesFragment());
+            } else {
+                Log.e("PetProfileAdapter", "FragmentChangeListener is null. Unable to replace the fragment.");
+            }
+        });
+
+        // Botão Histórico
+        holder.historyButton.setOnClickListener(v -> {
+            if (holder.FragmentChangeListener != null) {
+                petProfileViewModel.setCurrentPet(petProfile);
+                holder.FragmentChangeListener.replaceFragment(new HistoryFoodFragment());
+            } else {
+                Log.e("PetProfileAdapter", "FragmentChangeListener is null. Unable to replace the fragment.");
             }
         });
     }
@@ -71,6 +114,7 @@ public class PetProfileAdapter extends RecyclerView.Adapter<PetProfileAdapter.Pe
         TextView petWeightTextView;
         TextView petSexTextView;
         TextView petMicrochipTextView;
+        Button editButton;
         Button vaccinesButton;
         Button historyButton;
         @Nullable
@@ -84,44 +128,11 @@ public class PetProfileAdapter extends RecyclerView.Adapter<PetProfileAdapter.Pe
             petSexTextView = itemView.findViewById(R.id.petSexTextView);
             petMicrochipTextView = itemView.findViewById(R.id.petMicrochipTextView);
 
+            editButton = itemView.findViewById(R.id.editButton);
             vaccinesButton = itemView.findViewById(R.id.petVaccinesTextView);
             historyButton = itemView.findViewById(R.id.petHistoryTextView);
 
             this.FragmentChangeListener = fragmentChangeListener;
         }
-
-        //todo n estou a dizer q está bem ou mal mas isto pode estar no onBindViewHolder pq n sei se é pesado passar viewmodels por parametro e assim
-        // como tip, para isso só tens q meter o "holder." antes das cenas q tens aqui
-        // tenta rever o homeadapter e o uso dos viewPagerItem q parecem ser os petProfiles q estás a usar
-        public void bind(PetProfileEntity petProfile, PetProfileViewModel petProfileViewModel) {
-            petNameTextView.setText(petProfile.name);
-            petAgeTextView.setText(String.format(Locale.getDefault(), "%d years", petProfile.age));
-            petWeightTextView.setText(String.format(Locale.getDefault(), "%.1f kg", petProfile.weight));
-            petSexTextView.setText(petProfile.gender == 0 ? "Male" : "Female");
-            petMicrochipTextView.setText(petProfile.microchipNumber);
-
-            // Botão Vacinas
-            vaccinesButton.setOnClickListener(v -> {
-                if (FragmentChangeListener != null) {
-                    petProfileViewModel.setCurrentPet(petProfile);
-                    FragmentChangeListener.replaceFragment(new VaccinesFragment());
-                } else {
-                    Log.e("PetProfileAdapter", "FragmentChangeListener is null. Unable to replace the fragment.");
-                }
-            });
-
-
-            // Botão Histórico
-            historyButton.setOnClickListener(v -> {
-                if (FragmentChangeListener != null) {
-                    petProfileViewModel.setCurrentPet(petProfile);
-                    FragmentChangeListener.replaceFragment(new HistoryFoodFragment());
-                } else {
-                    Log.e("PetProfileAdapter", "FragmentChangeListener is null. Unable to replace the fragment.");
-                }
-            });
-        }
-
-
     }
 }

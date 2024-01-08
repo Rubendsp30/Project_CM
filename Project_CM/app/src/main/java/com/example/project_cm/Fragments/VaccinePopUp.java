@@ -28,7 +28,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-//todo pelo q entendi estás a usar isto tanto para a criação como para editar, teria sido melhor separar talvez pq torna-se confuso mas agora fica assim
+
 public class VaccinePopUp extends DialogFragment {
     private TextView title;
     private EditText editName;
@@ -38,11 +38,12 @@ public class VaccinePopUp extends DialogFragment {
     private VaccinesViewModel vaccinesViewModel;
     final Calendar calendar = Calendar.getInstance();
 
-    //todo adicionar uns comentários a identificar q métodos são para criar a vacina e quais são os de editar
+    // construtor para criar uma nova vacina
     public VaccinePopUp(VaccinesViewModel vaccinesViewModel) {
         this.vaccinesViewModel = vaccinesViewModel;
     }
 
+    // construtor para editar a vacina
     public VaccinePopUp (VaccinesViewModel vaccinesViewModel, VaccineEntity vaccine) {
         this.vaccinesViewModel = vaccinesViewModel;
         this.vaccine = vaccine;
@@ -86,6 +87,7 @@ public class VaccinePopUp extends DialogFragment {
             datePickerDialog.show();
         });
 
+        // caso seja para editar a vacina, preeche os campos de input
         if (vaccine != null) {
             title.setText("Vaccine");
 
@@ -99,13 +101,15 @@ public class VaccinePopUp extends DialogFragment {
             });
         }
 
+        // botão de cancelar
         erasePopUpButton.setOnClickListener((v) -> dismiss());
 
+        // botão save
         savePopUpButton.setOnClickListener(v -> {
             if (validateAllInput()) {
                 if (vaccine == null){
-                    saveNewVaccine();
-                } else saveVaccine();
+                    saveNewVaccine();  // cria nova vacina
+                } else saveVaccine();  // dá update na nova vacina
             }
         });
 
@@ -115,11 +119,9 @@ public class VaccinePopUp extends DialogFragment {
 
     private void saveNewVaccine() {
         String newNameVaccine = editName.getText().toString();
-        String newNextDose = editNextDose.getText().toString();
+        Date vaccineDate = calendar.getTime();
 
         try {
-            Date vaccineDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(newNextDose);
-
             VaccineEntity newVaccine = new VaccineEntity();
             newVaccine.vaccineName = newNameVaccine;
             newVaccine.vaccineDate = vaccineDate.getTime();
@@ -133,9 +135,6 @@ public class VaccinePopUp extends DialogFragment {
                     Toast.makeText(getContext(), "Vaccine added successfully", Toast.LENGTH_SHORT).show();
                 }
             });
-
-        } catch (ParseException e) {
-            Toast.makeText(getContext(), "Invalid date format", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Toast.makeText(getContext(), "Error adding vaccine", Toast.LENGTH_SHORT).show();
         }
@@ -145,11 +144,11 @@ public class VaccinePopUp extends DialogFragment {
 
     public void saveVaccine() {
         String vacineNameString = editName.getText().toString();
-        String vacineDateString = editNextDose.getText().toString();
+        Date vaccineDate = calendar.getTime();
 
-        if (validateNameVaccine(vacineNameString) && validateDateVaccine(vacineDateString)){
+        if (validateNameVaccine(vacineNameString) && validateDateVaccine(vaccineDate)){
             vaccine.vaccineName = vacineNameString;
-            vaccine.vaccineDate = converteStringParaData(vacineDateString);
+            vaccine.vaccineDate = vaccineDate.getTime();
             vaccinesViewModel.updateVaccine(vaccine, new VaccinesViewModel.UpdateCallback() {
                 @Override
                 public void onUpdateCompleted(long vaccineId) {
@@ -162,43 +161,22 @@ public class VaccinePopUp extends DialogFragment {
     }
 
     private boolean validateNameVaccine(String input) {
-        if (input == null || input.trim().isEmpty()) { // o trim verifica se o nome tem espaços em branco (o input == null é necessário)
-            //todo a vacina pode ter 2 nomes separados por espaço ex:Hepatite Viral, melhor só usar o empty sem o trim
+        if (input == null) {
             editName.setError("This field is required");
             return false;
         } else return true;
     }
 
-    private boolean validateDateVaccine(String dataString) {
-        long dateMillis = converteStringParaData(dataString);
-        if (dateMillis == -1) {
-            return false;
-        }
-        else if (dateMillis < System.currentTimeMillis()) {
-            //todo o texto do erro pode ser mais a avisar que n se aceitam datas passadas, pode n ter sido dada
-            editNextDose.setError("This vaccine has already been administered");
+    private boolean validateDateVaccine(Date dataString) {
+        if (dataString.getTime() < System.currentTimeMillis()) {
+            editNextDose.setError("Earlier dates are not accepted!");
             return false;
         } else return true;
     }
 
-    //todo visto q estamos a usar o calendar n sei se isto vai ser necessário e tudo o q envolve isto de string.
-    //N sei mesmo como funciona o calendar mas onde está a ser usado ele parece estar a retornar um date mas dps estás tu a mudar para string para voltar a mudar para data
-    //revê essa lógica, posso estar enganado mas dá double check nisso
-    private long converteStringParaData(String dataString) {
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            dateFormat.setLenient(false);
-            Date data = dateFormat.parse(dataString);
-            return data.getTime();
-        } catch (ParseException e) {
-            editNextDose.setError("Invalid date format.");
-            return -1;
-        }
-    }
-
     private boolean validateAllInput() {
         boolean nameIsValid = validateNameVaccine(editName.getText().toString());
-        boolean dateIsValid = validateDateVaccine(editNextDose.getText().toString());
+        boolean dateIsValid = validateDateVaccine(calendar.getTime());
 
         return nameIsValid && dateIsValid;
     }

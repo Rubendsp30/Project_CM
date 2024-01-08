@@ -36,8 +36,8 @@ import java.util.Locale;
 public class PetProfileFragment extends Fragment {
     @Nullable
     private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
+    private String currentUserId;
     private UserViewModel userViewModel;
-    private PetProfileEntity currentPetProfile;
     private PetProfileViewModel petProfileViewModel;
     ViewPager2 viewPagerPetProfile;
     PetProfileAdapter petProfileAdapter;
@@ -72,8 +72,6 @@ public class PetProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //todo adicionar na toolbar o botão para editar. a natalia é q está a fazer a parte de editar mas podes já criar o botão para n esquecer
-        //ao carregares no botão fazes set do currentpetId e muda para o fragmento do create pet
         Toolbar toolbar = view.findViewById(R.id.toolbarPet);
         toolbar.setTitle(" ");
         AppCompatActivity activity = (AppCompatActivity) requireActivity();
@@ -91,37 +89,27 @@ public class PetProfileFragment extends Fragment {
             }
         });
 
-        loadPetProfile();
+        getCurrentUser();
 
         viewPagerPetProfile = view.findViewById(R.id.viewPagerPetProfile);
         petProfileAdapter = new PetProfileAdapter(petProfilesList, petProfileViewModel, getChildFragmentManager(), getViewLifecycleOwner(), FragmentChangeListener);
         viewPagerPetProfile.setAdapter(petProfileAdapter);
-        //todo adicionei estas 2 linhas, a primeira é para fazer logo load de 2 páginas, a segunda é para tirar aquele efeito de esticar quando arrastas no primeiro ou último ecrã
+
+        // a primeira é para fazer logo load de 2 páginas, a segunda é para tirar aquele efeito de esticar quando arrastas no primeiro ou último ecrã
         viewPagerPetProfile.setOffscreenPageLimit(2);
         viewPagerPetProfile.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
 
-        String userId = userViewModel.getCurrentUser().getValue().getUserID();
-
-        petProfileViewModel.getPetProfilesByUserId(userId).observe(getViewLifecycleOwner(), this::updatePetProfiles);
+        petProfileViewModel.getPetProfilesByUserId(currentUserId).observe(getViewLifecycleOwner(), this::updatePetProfiles);
     }
 
-    private void loadPetProfile() {
-        //todo estás a declarar o current user aqui e na função acima pode ser só variável global, tenta dar uma review ao código se pode estar a acontecer parecido noutra zona
+    private void getCurrentUser() {
         User currentUser = userViewModel.getCurrentUser().getValue();
 
         if (currentUser == null) {
             Log.e("PetProfileFragment", "Erro: currentUser é null");
             return;
         }
-        String userId = currentUser.getUserID();
-
-        //todo n parece necessário, n tem utilidade aqui e n parece q vá ter nos outros pq o set do current pet deve ser antes feito no viewpager ao clicar num botão ou assim
-        petProfileViewModel.getPetProfilesByUserId(userId).observe(getViewLifecycleOwner(), petProfiles -> {
-            if (petProfiles != null && !petProfiles.isEmpty()) {
-                currentPetProfile = petProfiles.get(0);
-                petProfileViewModel.setCurrentPet(currentPetProfile);
-            }
-        });
+        currentUserId = currentUser.getUserID();
     }
 
     private void updatePetProfiles(List<PetProfileEntity> petProfiles) {
