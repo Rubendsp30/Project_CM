@@ -30,11 +30,9 @@ public class ScheduleViewModel extends ViewModel {
     private FirebaseFirestore firestore;
     private ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
     private Handler uiHandler = new Handler(Looper.getMainLooper());
-
     public ScheduleViewModel() {
         firestore = FirebaseFirestore.getInstance();
     }
-
     public void addMealSchedule(String deviceId, MealSchedule schedule, MealScheduleCallback callback) {
 
         networkExecutor.execute(() -> {

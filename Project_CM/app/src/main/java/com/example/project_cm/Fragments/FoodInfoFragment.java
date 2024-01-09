@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.appcompat.widget.Toolbar;
 import android.widget.ProgressBar;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -100,6 +99,7 @@ public class FoodInfoFragment extends Fragment {
     // Recalculate meals and days
     private void recalculateMealsAndDays() {
         if (foodInfoViewModel.getFoodSupply().getValue() != null && mealScheduleList != null) {
+
             foodInfoViewModel.calculateMealsAndDaysLeft(mealScheduleList);
 
             foodInfoViewModel.getmealsLeft().observe(getViewLifecycleOwner(), mealsLeft ->

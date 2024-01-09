@@ -3,21 +3,18 @@ package com.example.project_cm.ViewModels;
 import android.app.Application;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.example.project_cm.MealSchedule;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.List;
-import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.Device;
 import android.util.Log;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.annotation.NonNull;
 import android.os.Handler;
 import android.os.Looper;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
@@ -49,7 +46,6 @@ public class FoodInfoViewModel extends AndroidViewModel {
     //Listen to updates in Firestore
     public void listenToDeviceUpdates(String deviceId) {
         DocumentReference docRef = firestore.collection("DEVICES").document(deviceId);
-
         docRef.addSnapshotListener((snapshot, e) -> {
             if (snapshot != null && snapshot.exists()) {
                 executorService.execute(() -> {
@@ -59,12 +55,9 @@ public class FoodInfoViewModel extends AndroidViewModel {
                             temperature.postValue(device.getSensor_temperature());
                             humidity.postValue(device.getSensor_humidity());
                             foodSupply.postValue(device.getFoodSuply());
-                            //calculateMealsAndDaysLeft();
                         });
                     }
                 });
-            } else {
-                Log.d("FoodInfoVM", "Current data: null");
             }
         });
     }
@@ -72,16 +65,11 @@ public class FoodInfoViewModel extends AndroidViewModel {
     // Calculate remaining meals and days based on food supply and schedules
     public void calculateMealsAndDaysLeft(List<MealSchedule> mealSchedules) {
         executorService.execute(() -> {
-            Integer foodSupplyValue = foodSupply.getValue();
-            if (foodSupplyValue == null) {
-                return;
-            }
-            //Keep track of remaining food supply, total meals and days
 
+            //Keep track of remaining food supply, total meals and days
             int totalFoodSupplyGrams = (foodSupply.getValue() * 1230) / 100;
             int remainingFoodSupply = totalFoodSupplyGrams;
             int totalMeals = 0;
-
 
             Set<String> uniqueDays = new HashSet<>();
             String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
@@ -106,19 +94,21 @@ public class FoodInfoViewModel extends AndroidViewModel {
             }
             // Calculate the number of days with meals
             int daysWithMeals = uniqueDays.size();
-            Log.d("FoodInfoVM", "Days with meals: " + daysWithMeals + ", Total meals: " + totalMeals);
 
             final int finalTotalMeals = totalMeals;
             final int finalDaysWithMeals = daysWithMeals;
+
             // Update LiveData with the calculated values
             mainThreadHandler.post(() -> {
+
                 this.daysLeft.setValue(finalDaysWithMeals);
                 this.mealsLeft.setValue(finalTotalMeals);
             });
         });
     }
 
-    //I really hope it works, it seems to be working, need to do more tests
+    //I really hope it works, it seems to be working with the logs, but I need to test with real values
+    //of the devices
 
     // Getters
     public LiveData<Integer> getFoodSupply() {
