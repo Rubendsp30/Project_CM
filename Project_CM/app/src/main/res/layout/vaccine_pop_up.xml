@@ -6,8 +6,17 @@
     android:layout_height="match_parent"
     android:paddingVertical="15dp"
     android:paddingHorizontal="20dp"
-    android:background="@drawable/rounded_corner"
-    >
+    android:background="@drawable/rounded_corner">
+
+    <ImageView
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_restore_from_trash_24"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
@@ -30,9 +39,10 @@
         android:id="@+id/editNextDose"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="false"
+        android:hint="Next Dose"
         app:layout_constraintTop_toBottomOf="@+id/editName"
-        tools:layout_editor_absoluteX="10dp"
-        android:hint="Next Dose" />
+        tools:layout_editor_absoluteX="10dp" />
 
     <Button
         android:id="@+id/eraseButton"

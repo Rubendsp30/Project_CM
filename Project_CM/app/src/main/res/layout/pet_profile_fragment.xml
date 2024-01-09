@@ -7,26 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/white_background">
 
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/white_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/arrowleft2">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Pet Profile"
-            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
-    </androidx.appcompat.widget.Toolbar>
-
-
     <ImageView
         android:id="@+id/petProfileImageView"
         android:layout_width="0dp"
@@ -35,9 +15,17 @@
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/box" />
 
+    <Button
+        android:id="@+id/editButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="10dp"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/box"
@@ -54,7 +42,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Princesa"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -88,7 +76,7 @@
                     android:id="@+id/petAgeTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="15 years"
+                    android:text=""
                     android:gravity="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
@@ -115,7 +103,7 @@
                     android:id="@+id/petWeightTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="4.5 kg"
+                    android:text=""
                     android:gravity="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
@@ -141,7 +129,7 @@
                     android:id="@+id/petSexTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Female"
+                    android:text=""
                     android:gravity="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 

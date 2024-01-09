@@ -1,6 +1,8 @@
 package com.example.project_cm.ViewModels;
 
 import android.app.Application;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -26,9 +28,14 @@ public class VaccinesViewModel extends AndroidViewModel {
     private VaccineDao vaccineDao;
     private final ExecutorService executorService;
     private MutableLiveData<List<VaccineEntity>> vaccines;
+    private final Handler uiHandler = new Handler(Looper.getMainLooper());
 
     public interface InsertCallback {
         void onInsertCompleted(long vaccineId);
+    }
+
+    public interface UpdateCallback {
+        void onUpdateCompleted(long vaccineId);
     }
 
     public VaccinesViewModel(@NonNull Application application) {
@@ -45,6 +52,7 @@ public class VaccinesViewModel extends AndroidViewModel {
         return vaccines;
     }
 
+    // Retorna diretamente o LiveData do Room (não é necessário executor)
     public LiveData<List<VaccineEntity>> getVaccinesByPetProfileId(int petProfileId) {
         return vaccineDao.getVaccinesForPet(petProfileId);
     }
@@ -52,8 +60,27 @@ public class VaccinesViewModel extends AndroidViewModel {
     public void insertVaccine(VaccineEntity vaccine, InsertCallback callback) {
         executorService.execute(() -> {
             long rowId = vaccineDao.insertVaccineEntity(vaccine);
-            callback.onInsertCompleted(rowId);
+            uiHandler.post(() -> {
+                if (callback != null) {
+                    callback.onInsertCompleted(rowId);
+                }
+            });
         });
+    }
+
+    public void updateVaccine(VaccineEntity vaccine, UpdateCallback callback) {
+        executorService.execute(() -> {
+            vaccineDao.updateVaccineEntity(vaccine);
+            uiHandler.post(() -> {
+                if (callback != null) {
+                    callback.onUpdateCompleted(vaccine.id);
+                }
+            });
+        });
+    }
+
+    public void deleteVaccine(VaccineEntity vaccine) {
+        executorService.execute(() -> vaccineDao.deleteVaccineEntity(vaccine));
     }
 
     public void setVaccines(List<VaccineEntity> vaccineList) {
