@@ -18,7 +18,7 @@ import java.util.Locale;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
 
-    private final List<History> historyList;
+    private List<History> historyList;
 
     public HistoryAdapter(List<History> historyList) {
         this.historyList = historyList;
@@ -50,6 +50,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     @Override
     public int getItemCount() {
         return historyList.size();
+    }
+
+    public void updateData(List<History> newList) {
+        this.historyList = newList;
     }
 
     public static class HistoryViewHolder extends RecyclerView.ViewHolder {

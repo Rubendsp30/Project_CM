@@ -18,11 +18,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project_cm.Activities.HomeActivity;
 import com.example.project_cm.Adapters.HistoryAdapter;
+import com.example.project_cm.History;
+import com.example.project_cm.MealSchedule;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.HistoryViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
 import com.example.project_cm.ViewModels.UserViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HistoryFoodFragment extends Fragment {
     private TextView tvEmptyMessage;
@@ -85,6 +90,10 @@ public class HistoryFoodFragment extends Fragment {
         // frase que indica que a lista está vazia
         tvEmptyMessage = view.findViewById(R.id.tvEmptyHistoryMessage);
 
+        List<History> history_meal = new ArrayList<>();
+        historyAdapter = new HistoryAdapter(history_meal);
+        setupRecyclerView(view);
+
         // Logic to get the data for history
         if (currentPetProfile != -1) {
             // apaga as historys meal que já passaram dos 7 dias (fora de prazo de validade hehehe)
@@ -97,8 +106,9 @@ public class HistoryFoodFragment extends Fragment {
                             tvEmptyMessage.setVisibility(View.VISIBLE);
                         } else {
                             tvEmptyMessage.setVisibility(View.GONE);
-                            historyAdapter = new HistoryAdapter(history);
-                            setupRecyclerView(view);
+                            history_meal.clear();
+                            history_meal.addAll(history);
+                            historyAdapter.notifyDataSetChanged();
                         }
                     });
         } else {
