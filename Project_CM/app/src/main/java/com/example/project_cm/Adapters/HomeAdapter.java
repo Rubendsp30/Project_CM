@@ -27,6 +27,7 @@ import com.example.project_cm.ViewModels.PetProfileViewModel;
 import com.example.project_cm.FragmentChangeListener;
 import com.example.project_cm.Fragments.ScheduleFragment;
 import com.example.project_cm.ViewModels.ScheduleViewModel;
+import com.example.project_cm.Fragments.FoodInfoFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -73,8 +74,16 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
         Device viewPagerItem = viewPagerIDeviceArrayList.get(position);
         String itemDeviceId = viewPagerItem.getDeviceID();
+
         deviceViewModel.setCurrentDeviceId(itemDeviceId);
         long petProfileId = viewPagerItem.getPet_id();
+        holder.supplyInfoButton.setOnClickListener(v -> {
+            if (FragmentChangeListener != null) {
+                FragmentChangeListener.replaceFragment(new FoodInfoFragment());
+            }
+        });
+
+
         petProfileViewModel.getPetProfileById(petProfileId).observe(lifecycleOwner, petProfileEntity -> {
             if (petProfileEntity != null) {
                 holder.petNameText.setText(petProfileEntity.name);
@@ -92,6 +101,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             mealScheduleAdapter.notifyDataSetChanged();
             updateNextMealHourText(meals, holder.nextMealHourText);
         });
+
+
 
 
         int foodSuply = viewPagerItem.getFoodSuply();
@@ -230,6 +241,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         TextView supplyText;
         TextView nextMealHourText;
         ProgressBar supplyProgressBar;
+        ImageButton supplyInfoButton;
 
         public HomeViewHolder(@NonNull View homeView) {
             super(homeView);
@@ -241,7 +253,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             supplyText = homeView.findViewById(R.id.supplyText);
             supplyProgressBar = itemView.findViewById(R.id.supplyProgressBar);
             nextMealHourText = itemView.findViewById(R.id.nextMealHourText);
-
+            supplyInfoButton = homeView.findViewById(R.id.supplyInfoButton);
 
         }
     }

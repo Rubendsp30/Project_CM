@@ -7,12 +7,16 @@ import androidx.lifecycle.ViewModel;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.example.project_cm.MealSchedule;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 import java.util.List;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.Device;
 import android.util.Log;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.annotation.NonNull;
+import android.os.Handler;
+import android.os.Looper;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +24,8 @@ import java.util.HashSet;
 
 
 public class FoodInfoViewModel extends AndroidViewModel {
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
     //LiveData
     private MutableLiveData<Double> temperature = new MutableLiveData<>();
     private MutableLiveData<Double> humidity = new MutableLiveData<>();
@@ -37,28 +43,35 @@ public class FoodInfoViewModel extends AndroidViewModel {
     //Set deviceId and listen to updates
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
-        listenToDeviceUpdates();
+        listenToDeviceUpdates(deviceId);
     }
 
     //Listen to updates in Firestore
-    private void listenToDeviceUpdates() {
-        if (deviceId == null || deviceId.trim().isEmpty()) {
-            Log.e("FoodInfoVM", "Device ID is null or empty");
-            return;
-        }
+    public void listenToDeviceUpdates(String deviceId) {
         DocumentReference docRef = firestore.collection("DEVICES").document(deviceId);
+
         docRef.addSnapshotListener((snapshot, e) -> {
             if (e != null) {
                 Log.w("FoodInfoVM", "Listen failed.", e);
                 return;
             }
+
+            if (deviceId == null || deviceId.isEmpty()) {
+                Log.e("FoodInfoVM", "Device ID is null or empty");
+                return;
+            }
             if (snapshot != null && snapshot.exists()) {
-                Device device = snapshot.toObject(Device.class);
-                if (device != null) {
-                    temperature.postValue(device.getSensor_temperature());
-                    humidity.postValue(device.getSensor_humidity());
-                    foodSupply.postValue(device.getFoodSuply());
-                }
+                executorService.execute(() -> {
+                    Device device = snapshot.toObject(Device.class);
+                    if (device != null) {
+                        mainThreadHandler.post(() -> {
+                            temperature.postValue(device.getSensor_temperature());
+                            humidity.postValue(device.getSensor_humidity());
+                            foodSupply.postValue(device.getFoodSuply());
+                            //calculateMealsAndDaysLeft();
+                        });
+                    }
+                });
             } else {
                 Log.d("FoodInfoVM", "Current data: null");
             }
@@ -66,47 +79,75 @@ public class FoodInfoViewModel extends AndroidViewModel {
     }
 
     // Calculate remaining meals and days based on food supply and schedules
-    public void calculateMealsAndDaysLeft(int totalFoodSupplyGrams, List<MealSchedule> mealSchedules) {
+    public void calculateMealsAndDaysLeft(List<MealSchedule> mealSchedules) {
+        executorService.execute(() -> {
+            Integer foodSupplyValue = foodSupply.getValue();
+            if (foodSupplyValue == null) {
+                return;
+            }
+            //Keep track of remaining food supply, total meals and days
 
-        //Keep track of remaining food supply, total meals and days
-        int remainingFoodSupply = totalFoodSupplyGrams;
-        int totalMeals = 0;
-        Set<String> uniqueDays = new HashSet<>();
-        String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+            int totalFoodSupplyGrams = (foodSupply.getValue() * 1230) / 100;
+            int remainingFoodSupply = totalFoodSupplyGrams;
+            int totalMeals = 0;
 
-        //Each day of the week
-        for (String day : daysOfWeek) {
-            //Each meal schedule
-            for (MealSchedule schedule : mealSchedules) {
-                // Iterate through the days of the week specified in the meal schedule
-                for (Map.Entry<String, Boolean> entry : schedule.getRepeatDays().entrySet()) {
-                    // Check if the meal is scheduled for the current day and there's enough food supply
-                    if (entry.getValue() && remainingFoodSupply >= schedule.getPortionSize()) {
-                        // Deduct the portion size from the remaining food supply
-                        remainingFoodSupply -= schedule.getPortionSize();
-                        // Increment the total meals count
-                        totalMeals++;
-                        // Add the current day to the set of unique days
-                        uniqueDays.add(entry.getKey());
+
+            Set<String> uniqueDays = new HashSet<>();
+            String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+
+            //Each day of the week
+            for (String day : daysOfWeek) {
+                //Each meal schedule
+                for (MealSchedule schedule : mealSchedules) {
+                    // Iterate through the days of the week specified in the meal schedule
+                    for (Map.Entry<String, Boolean> entry : schedule.getRepeatDays().entrySet()) {
+                        // Check if the meal is scheduled for the current day and there's enough food supply
+                        if (entry.getValue() && remainingFoodSupply >= schedule.getPortionSize()) {
+                            // Deduct the portion size from the remaining food supply
+                            remainingFoodSupply -= schedule.getPortionSize();
+                            // Increment the total meals count
+                            totalMeals++;
+                            // Add the current day to the set of unique days
+                            uniqueDays.add(entry.getKey());
+                        }
                     }
                 }
             }
-        }
-        // Calculate the number of days with meals
-        int daysWithMeals = uniqueDays.size();
-        Log.d("FoodInfoVM", "Days with meals: " + daysWithMeals + ", Total meals: " + totalMeals);
+            // Calculate the number of days with meals
+            int daysWithMeals = uniqueDays.size();
+            Log.d("FoodInfoVM", "Days with meals: " + daysWithMeals + ", Total meals: " + totalMeals);
 
-        // Update LiveData with the calculated values
-        this.daysLeft.postValue(daysWithMeals);
-        this.mealsLeft.postValue(totalMeals);
+            final int finalTotalMeals = totalMeals;
+            final int finalDaysWithMeals = daysWithMeals;
+            // Update LiveData with the calculated values
+            mainThreadHandler.post(() -> {
+                this.daysLeft.setValue(finalDaysWithMeals);
+                this.mealsLeft.setValue(finalTotalMeals);
+            });
+        });
     }
 
     //I really hope it works, it seems to be working, need to do more tests
 
     // Getters
-    public LiveData<Integer> getFoodSupply() { return foodSupply; }
-    public LiveData<Double> getTemperature() { return temperature; }
-    public LiveData<Double> getHumidity() { return humidity; }
-    public LiveData<Integer> getmealsLeft() { return mealsLeft; }
-    public LiveData<Integer> getdaysLeft() { return daysLeft; }
+    public LiveData<Integer> getFoodSupply() {
+        return foodSupply;
+    }
+
+    public LiveData<Double> getTemperature() {
+        return temperature;
+    }
+
+    public LiveData<Double> getHumidity() {
+        return humidity;
+    }
+
+    public LiveData<Integer> getmealsLeft() {
+        return mealsLeft;
+    }
+
+    public LiveData<Integer> getdaysLeft() {
+        return daysLeft;
+    }
+
 }

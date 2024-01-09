@@ -42,13 +42,13 @@ public class FoodInfoFragment extends Fragment {
         // ViewModels
         foodInfoViewModel = new ViewModelProvider(requireActivity()).get(FoodInfoViewModel.class);
         scheduleViewModel = new ViewModelProvider(requireActivity()).get(ScheduleViewModel.class);
+        deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
 
         this.fragmentChangeListener = (HomeActivity)inflater.getContext();
 
-        // DeviceID
-        deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
+        String deviceId = deviceViewModel.getCurrentDeviceId();
 
-        foodInfoViewModel.setDeviceId(deviceViewModel.getCurrentDeviceId());
+        foodInfoViewModel.listenToDeviceUpdates(deviceId);
         return inflater.inflate(R.layout.food_info_fragment, container, false);
     }
 
@@ -83,7 +83,7 @@ public class FoodInfoFragment extends Fragment {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> {
             if (fragmentChangeListener != null) {
-                fragmentChangeListener.replaceFragment(new MenuFragment());
+                fragmentChangeListener.replaceFragment(new HomeScreenFragment());
             }
         });
         foodInfoViewModel.getTemperature().observe(getViewLifecycleOwner(), temperature -> {
@@ -100,8 +100,10 @@ public class FoodInfoFragment extends Fragment {
     // Recalculate meals and days
     private void recalculateMealsAndDays() {
         if (foodInfoViewModel.getFoodSupply().getValue() != null && mealScheduleList != null) {
+            foodInfoViewModel.calculateMealsAndDaysLeft(mealScheduleList);
             int totalFoodSupplyGrams = (foodInfoViewModel.getFoodSupply().getValue() * 1230) / 100;
-            foodInfoViewModel.calculateMealsAndDaysLeft(totalFoodSupplyGrams, mealScheduleList);     foodInfoViewModel.getmealsLeft().observe(getViewLifecycleOwner(), mealsLeft ->
+
+            foodInfoViewModel.getmealsLeft().observe(getViewLifecycleOwner(), mealsLeft ->
                     textViewMealsLeft.setText("" + mealsLeft));
 
             foodInfoViewModel.getdaysLeft().observe(getViewLifecycleOwner(), daysLeft ->
