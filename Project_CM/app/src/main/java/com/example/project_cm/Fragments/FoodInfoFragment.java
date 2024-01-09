@@ -101,7 +101,6 @@ public class FoodInfoFragment extends Fragment {
     private void recalculateMealsAndDays() {
         if (foodInfoViewModel.getFoodSupply().getValue() != null && mealScheduleList != null) {
             foodInfoViewModel.calculateMealsAndDaysLeft(mealScheduleList);
-            int totalFoodSupplyGrams = (foodInfoViewModel.getFoodSupply().getValue() * 1230) / 100;
 
             foodInfoViewModel.getmealsLeft().observe(getViewLifecycleOwner(), mealsLeft ->
                     textViewMealsLeft.setText("" + mealsLeft));

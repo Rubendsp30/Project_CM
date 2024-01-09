@@ -51,15 +51,6 @@ public class FoodInfoViewModel extends AndroidViewModel {
         DocumentReference docRef = firestore.collection("DEVICES").document(deviceId);
 
         docRef.addSnapshotListener((snapshot, e) -> {
-            if (e != null) {
-                Log.w("FoodInfoVM", "Listen failed.", e);
-                return;
-            }
-
-            if (deviceId == null || deviceId.isEmpty()) {
-                Log.e("FoodInfoVM", "Device ID is null or empty");
-                return;
-            }
             if (snapshot != null && snapshot.exists()) {
                 executorService.execute(() -> {
                     Device device = snapshot.toObject(Device.class);
