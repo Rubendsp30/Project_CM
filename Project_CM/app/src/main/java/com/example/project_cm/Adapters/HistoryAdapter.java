@@ -18,7 +18,7 @@ import java.util.Locale;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
 
-    private final List<History> historyList;
+    private List<History> historyList;
 
     public HistoryAdapter(List<History> historyList) {
         this.historyList = historyList;
@@ -35,17 +35,25 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     @Override
     public void onBindViewHolder(@NonNull HistoryAdapter.HistoryViewHolder holder, int position) {
         History history = historyList.get(position);
-        holder.textViewQuantityFood.setText(history.getPortionSize());
+        holder.textViewQuantityFood.setText(String.valueOf(history.getQuantityServed() + "g"));
 
-        Date date = history.getDate();
-        SimpleDateFormat formatter = new SimpleDateFormat("EEEE, dd 'de' MMMM 'de' yyyy 'às' HH'h'mm", Locale.getDefault());
-        String formattedDate = formatter.format(date);
-        holder.textViewDateFood.setText(formattedDate);
+        Date date = history.getMealTime();
+        if (date != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE, d MMMM '('HH'h'mm)", Locale.getDefault());
+            String formattedDate = formatter.format(date);
+            holder.textViewDateFood.setText(formattedDate);
+        } else {
+            holder.textViewDateFood.setText("Date not available");
+        }
     }
 
     @Override
     public int getItemCount() {
         return historyList.size();
+    }
+
+    public void updateData(List<History> newList) {
+        this.historyList = newList;
     }
 
     public static class HistoryViewHolder extends RecyclerView.ViewHolder {

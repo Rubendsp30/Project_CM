@@ -5,35 +5,37 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project_cm.Activities.HomeActivity;
 import com.example.project_cm.Adapters.HistoryAdapter;
-import com.example.project_cm.DataBase.Tables.PetProfileEntity;
+import com.example.project_cm.History;
+import com.example.project_cm.MealSchedule;
 import com.example.project_cm.R;
-import com.example.project_cm.User;
+import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.HistoryViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
 import com.example.project_cm.ViewModels.UserViewModel;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HistoryFoodFragment extends Fragment {
-
-    private int currentPetProfile;
+    private TextView tvEmptyMessage;
+    private int currentPetProfile = -1;
     private PetProfileViewModel petProfileViewModel;
     private HistoryViewModel historyViewModel;
     private HistoryAdapter historyAdapter;
+    private UserViewModel userViewModel;
     @Nullable
     private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
 
@@ -48,15 +50,18 @@ public class HistoryFoodFragment extends Fragment {
         try {
             petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
         } catch (Exception e) {
-            Log.e("PetProfileFragment", "Error creating PetProfileViewModel: " + e.getMessage());
+            Log.e("HistoryFoodFragment", "Error creating HistoryFoodFragment: " + e.getMessage());
         }
-        /*
         try {
-            historyViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
+            historyViewModel = new ViewModelProvider(requireActivity()).get(HistoryViewModel.class);
         } catch (Exception e) {
-            Log.e("PetProfileFragment", "Error creating PetProfileViewModel: " + e.getMessage());
+            Log.e("HistoryFoodFragment", "Error creating HistoryFoodFragment: " + e.getMessage());
         }
-        */
+        try {
+            userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        } catch (Exception e) {
+            Log.e("HistoryFoodFragment", "Error creating HistoryFoodFragment: " + e.getMessage());
+        }
 
         return view;
     }
@@ -78,6 +83,37 @@ public class HistoryFoodFragment extends Fragment {
         });
 
         loadPetProfile();
+
+        String currentUser;
+        currentUser = userViewModel.getCurrentUser().getValue().getUserID();
+
+        // frase que indica que a lista está vazia
+        tvEmptyMessage = view.findViewById(R.id.tvEmptyHistoryMessage);
+
+        List<History> history_meal = new ArrayList<>();
+        historyAdapter = new HistoryAdapter(history_meal);
+        setupRecyclerView(view);
+
+        // Logic to get the data for history
+        if (currentPetProfile != -1) {
+            // apaga as historys meal que já passaram dos 7 dias (fora de prazo de validade hehehe)
+            historyViewModel.deleteOldMealHistories(currentUser, currentPetProfile);
+
+            // retorna a lista do historico de refeições
+            historyViewModel.getHistoryMeals(currentUser, currentPetProfile)
+                    .observe(getViewLifecycleOwner(), history -> {
+                        if (history == null || history.isEmpty()) {
+                            tvEmptyMessage.setVisibility(View.VISIBLE);
+                        } else {
+                            tvEmptyMessage.setVisibility(View.GONE);
+                            history_meal.clear();
+                            history_meal.addAll(history);
+                            historyAdapter.notifyDataSetChanged();
+                        }
+                    });
+        } else {
+            Log.e("HistoryFoodFragment", "currentPetProfile is null.");
+        }
     }
 
     public void setupRecyclerView(@NonNull View view){
