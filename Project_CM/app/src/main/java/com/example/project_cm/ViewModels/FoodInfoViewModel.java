@@ -17,7 +17,7 @@ import android.os.Handler;
 import android.os.Looper;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
+import java.util.HashMap;
 
 
 public class FoodInfoViewModel extends AndroidViewModel {
@@ -67,36 +67,44 @@ public class FoodInfoViewModel extends AndroidViewModel {
         executorService.execute(() -> {
 
             //Keep track of remaining food supply, total meals and days
-            int totalFoodSupplyGrams = (foodSupply.getValue());
+            int totalFoodSupplyGrams = (foodSupply.getValue() * 1230) / 100;
             int remainingFoodSupply = totalFoodSupplyGrams;
             int totalMeals = 0;
 
-            Set<String> uniqueDays = new HashSet<>();
+            Map<String, Integer> dayCount = new HashMap<>();
             String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+
+            for (String day : daysOfWeek) {
+                dayCount.put(day, 0);
+            }
 
             //Each day of the week
             for (String day : daysOfWeek) {
                 //Each meal schedule
                 for (MealSchedule schedule : mealSchedules) {
-                    // Iterate through the days of the week specified in the meal schedule
-                    for (Map.Entry<String, Boolean> entry : schedule.getRepeatDays().entrySet()) {
-                        // Check if the meal is scheduled for the current day and there's enough food supply
-                        if (entry.getValue() && remainingFoodSupply >= schedule.getPortionSize()) {
-                            // Deduct the portion size from the remaining food supply
-                            remainingFoodSupply -= schedule.getPortionSize();
-                            // Increment the total meals count
-                            totalMeals++;
-                            // Add the current day to the set of unique days
-                            uniqueDays.add(entry.getKey());
+                    if (schedule.isActive()) {
+                        // Iterate through the days of the week specified in the meal schedule
+                        for (Map.Entry<String, Boolean> entry : schedule.getRepeatDays().entrySet()) {
+                            // Check if the meal is scheduled for the current day and there's enough food supply
+                            if (entry.getValue() && remainingFoodSupply >= schedule.getPortionSize()) {
+                                // Deduct the portion size from the remaining food supply
+                                remainingFoodSupply -= schedule.getPortionSize();
+                                // Increment the total meals count
+                                totalMeals++;
+                                // Add the current day to the set of unique days
+                                dayCount.put(entry.getKey(), dayCount.get(entry.getKey()) + 1);
+                            }
                         }
                     }
                 }
             }
+            int totalDays = 0;
+            for (int count : dayCount.values()) {
+                totalDays += count;
+            }
             // Calculate the number of days with meals
-            int daysWithMeals = uniqueDays.size();
-
             final int finalTotalMeals = totalMeals;
-            final int finalDaysWithMeals = daysWithMeals;
+            final int finalDaysWithMeals = totalDays;
 
             // Update LiveData with the calculated values
             mainThreadHandler.post(() -> {
