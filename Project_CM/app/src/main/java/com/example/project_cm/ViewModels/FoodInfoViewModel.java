@@ -67,7 +67,7 @@ public class FoodInfoViewModel extends AndroidViewModel {
         executorService.execute(() -> {
 
             //Keep track of remaining food supply, total meals and days
-            int totalFoodSupplyGrams = (foodSupply.getValue() * 1230) / 100;
+            int totalFoodSupplyGrams = (foodSupply.getValue());
             int remainingFoodSupply = totalFoodSupplyGrams;
             int totalMeals = 0;
 
