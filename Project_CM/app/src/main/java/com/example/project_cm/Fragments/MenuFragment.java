@@ -50,7 +50,7 @@ public class MenuFragment extends Fragment {
         profileCreationButton.setOnClickListener(v -> {
             if (fragmentChangeListener != null) {
 
-                fragmentChangeListener.replaceFragment(new PetProfileCreationFragment());
+                fragmentChangeListener.replaceFragment(new PetProfileFragment());
 
             }
             //todo adicionar depois os outros botões quando estiverem feitos
@@ -64,13 +64,13 @@ public class MenuFragment extends Fragment {
         });
 
         // o PetProfile Vai ficar para ja assim improvisado
-        Button profileButton = view.findViewById(R.id.about);
+      /*  Button profileButton = view.findViewById(R.id.about);
         profileButton.setOnClickListener(v -> {
             if (fragmentChangeListener != null) {
                 fragmentChangeListener.replaceFragment(new PetProfileFragment());
             }
         });
-
+*/
         Button logoutButton = view.findViewById(R.id.action_logout);
         logoutButton.setOnClickListener(v -> {
             logoutUser();

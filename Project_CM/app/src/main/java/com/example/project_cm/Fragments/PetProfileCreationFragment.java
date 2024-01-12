@@ -23,6 +23,7 @@ import com.example.project_cm.MQTTHelper;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
+import com.example.project_cm.Fragments.PetProfileFragment;
 import com.example.project_cm.FragmentChangeListener;
 import com.example.project_cm.ViewModels.UserViewModel;
 import com.example.project_cm.User;
@@ -187,7 +188,7 @@ public class PetProfileCreationFragment extends Fragment {
                 // Atualiza o perfil existente
                 petProfileViewModel.updatePetProfile(currentPetProfile);
                 Toast.makeText(getContext(), "Pet Profile Updated", Toast.LENGTH_SHORT).show();
-                returnToHomepage();
+                returnToPetProfile();
             } else {
                 // Cria um novo perfil
                 petProfileViewModel.insertPetProfile(petProfile, new PetProfileViewModel.InsertCallback() {
@@ -216,8 +217,6 @@ public class PetProfileCreationFragment extends Fragment {
         if (FragmentChangeListener != null) {
             DevSetupFinal fragment = new DevSetupFinal();
             FragmentChangeListener.replaceFragment(fragment);
-        } else {
-            Toast.makeText(getContext(), "Activity must implement FragmentChangeListener", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -229,12 +228,10 @@ public class PetProfileCreationFragment extends Fragment {
             return 1;
         }
     }
-    private void returnToHomepage() {
+    private void returnToPetProfile() {
         if (FragmentChangeListener != null) {
-            HomeScreenFragment homeFragment = new HomeScreenFragment();
-            FragmentChangeListener.replaceFragment(homeFragment);
-        } else {
-            Toast.makeText(getContext(), "Activity must implement FragmentChangeListener", Toast.LENGTH_SHORT).show();
+            PetProfileFragment petProfileFragment = new PetProfileFragment();
+            FragmentChangeListener.replaceFragment(petProfileFragment);
         }
     }
 }

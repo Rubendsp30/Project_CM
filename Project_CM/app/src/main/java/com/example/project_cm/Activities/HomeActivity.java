@@ -156,7 +156,6 @@ public class HomeActivity extends AppCompatActivity implements FragmentChangeLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         // Disconnect MQTT
         if (mqttHelper != null) {
             mqttHelper.stop();
