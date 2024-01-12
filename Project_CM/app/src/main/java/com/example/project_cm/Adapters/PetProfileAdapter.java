@@ -63,7 +63,7 @@ public class PetProfileAdapter extends RecyclerView.Adapter<PetProfileAdapter.Pe
                 petProfileViewModel.setCurrentPet(petProfile);
 
                 Bundle bundle = new Bundle();
-                bundle.putInt("current_pet", petProfile.id);
+                bundle.putLong("petProfileId", petProfile.id);
                 Log.d("PetProfileFragment", "currentPet: " + petProfile.name);
 
                 PetProfileCreationFragment fragment = new PetProfileCreationFragment();
