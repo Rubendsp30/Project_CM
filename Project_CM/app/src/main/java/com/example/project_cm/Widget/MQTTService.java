@@ -4,15 +4,20 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+import androidx.lifecycle.LiveData;
 
+import com.example.project_cm.Device;
 import com.example.project_cm.MQTTHelper;
 import com.example.project_cm.R;
+import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.utils.ClientNameUtil;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -20,6 +25,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 
 public class MQTTService extends Service {
     MQTTHelper mqttHelper;
@@ -74,42 +80,59 @@ public class MQTTService extends Service {
     private void sendMQTTMessage() {
         Log.e("MQTT Widget", "Entered sendMqttMessage");
 
-        String clientName = ClientNameUtil.getClientName();
-        mqttHelper = MQTTHelper.getInstance(this, clientName);
+        String userId = getLoggedInUserId(); // You need to implement this method
+        if (userId == null) {
+            Log.e("MQTTService", "No logged-in user found");
+            stopService();
+            return;
+        }
+        DeviceViewModel deviceViewModel = new DeviceViewModel();
+        deviceViewModel.getDevicesForUserWidget(userId, new DeviceViewModel.DeviceIdLoadCallback()   {
+            @Override
+            public void onDeviceIdLoaded(String deviceId) {
+                    String topic = "/project/treat/" + deviceId;
+                    Log.e("Widget", topic);
+                    ClientNameUtil.generateClientName();
+                    String clientName = ClientNameUtil.getClientName();
+                    mqttHelper = MQTTHelper.getInstance(getBaseContext(), clientName);
 
+                    mqttHelper.setCallback(new MqttCallbackExtended() {
+                        @Override
+                        public void connectionLost(Throwable cause) {
+                            Log.e("MQTT Widget", "MQTT connection lost: " + cause.getMessage());
+                            stopService();
+                        }
 
-            // Connect and set a callback to publish when connected
-            mqttHelper.setCallback(new MqttCallbackExtended() {
-                @Override
-                public void connectionLost(Throwable cause) {
-                    Log.e("MQTT Widget", "MQTT connection lost: " + cause.getMessage());
-                    stopService();
+                        @Override
+                        public void messageArrived(String topic, MqttMessage message) throws Exception {
+
+                        }
+
+                        @Override
+                        public void deliveryComplete(IMqttDeliveryToken token) {
+                            stopService();
+                        }
+
+                        @Override
+                        public void connectComplete(boolean reconnect, String serverURI) {
+                            publishMessage(topic);
+                        }
+
+                    });
+                    mqttHelper.connect();
                 }
-
-                @Override
-                public void messageArrived(String topic, MqttMessage message) throws Exception {
-
-                }
-
-                @Override
-                public void deliveryComplete(IMqttDeliveryToken token) {
-                    stopService();
-                }
-
-                @Override
-                public void connectComplete(boolean reconnect, String serverURI) {
-                    publishMessage();
-                }
-
-                // Implement other callback methods if needed
-            });
-            mqttHelper.connect();
+            @Override
+            public void onError(Exception e) {
+                Log.e("MQTTService", "Error loading devices: " + e.getMessage());
+                stopService();
+            }
+        });
 
     }
 
-    private void publishMessage() {
-        String topic = "/project/treat/rcL9kl2gSYbLusKe4N";
-        String message = "30";
+    private void publishMessage(String topic) {
+        //String topic = "/project/treat/rcL9kl2gSYbLusKe4N";
+        String message = "15";
         Log.d("MQTT Widget", "Sending Message");
         try {
             mqttHelper.publishToTopic(topic, message, 2);
@@ -117,6 +140,11 @@ public class MQTTService extends Service {
         } catch (Exception e) {
             Log.e("MQTT Widget", "Error sending MQTT message: " + e.getMessage());
         }
+    }
+
+    private String getLoggedInUserId() {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("loggedInUserId", null);
     }
 
     @Override

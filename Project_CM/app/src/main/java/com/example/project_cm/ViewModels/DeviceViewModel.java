@@ -16,6 +16,7 @@ import com.example.project_cm.User;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -84,6 +85,36 @@ public class DeviceViewModel extends ViewModel {
         return devicesLiveData;
     }
 
+    public interface DeviceIdLoadCallback {
+        void onDeviceIdLoaded(String DeviceId);
+        void onError(Exception e);
+    }
+    
+    public void getDevicesForUserWidget(String userId, DeviceIdLoadCallback callback) {
+        firestore.collection(DEVICES_COLLECTION)
+                .whereEqualTo("user_id", userId)
+                .orderBy("pet_id", Query.Direction.ASCENDING)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        // Get the first document's device ID
+                        DocumentSnapshot snapshot = queryDocumentSnapshots.getDocuments().get(0);
+                        Device device = snapshot.toObject(Device.class);
+                        if (device != null) {
+                            callback.onDeviceIdLoaded(device.getDeviceID());
+                        } else {
+                            callback.onError(new Exception("Device data is null"));
+                        }
+                    } else {
+                        callback.onError(new Exception("No device found for user"));
+                    }
+                })
+                .addOnFailureListener(callback::onError);
+    }
+
+
+
     public LiveData<ArrayList<Device>> listenForDeviceUpdates(String userId) {
         MutableLiveData<ArrayList<Device>> devicesLiveData = new MutableLiveData<>();
 
@@ -103,16 +134,6 @@ public class DeviceViewModel extends ViewModel {
 
         return devicesLiveData;
     }
-/*
-    // Getter for currentDevice
-    public MutableLiveData<Device> getCurrentDevice() {
-        return currentDevice;
-    }
-
-    // Method to set the current device
-    public void setCurrentDevice(Device device) {
-        currentDevice.setValue(device);
-    }*/
 
     public String getCurrentDeviceId() {
         return currentDeviceId;
