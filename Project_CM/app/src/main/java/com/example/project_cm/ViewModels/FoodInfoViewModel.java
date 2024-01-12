@@ -31,16 +31,10 @@ public class FoodInfoViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> foodSupply = new MutableLiveData<>();
 
     private FirebaseFirestore firestore;
-    private String deviceId;
 
     public FoodInfoViewModel(@NonNull Application application) {
         super(application);
         firestore = FirebaseFirestore.getInstance();
-    }
-    //Set deviceId and listen to updates
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-        listenToDeviceUpdates(deviceId);
     }
 
     //Listen to updates in Firestore

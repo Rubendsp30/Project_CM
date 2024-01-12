@@ -78,6 +78,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         deviceViewModel.setCurrentDeviceId(itemDeviceId);
         long petProfileId = viewPagerItem.getPet_id();
         holder.supplyInfoButton.setOnClickListener(v -> {
+            deviceViewModel.setCurrentDeviceId(itemDeviceId);
             if (FragmentChangeListener != null) {
                 FragmentChangeListener.replaceFragment(new FoodInfoFragment());
             }
