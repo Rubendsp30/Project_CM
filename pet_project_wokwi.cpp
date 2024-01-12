@@ -21,18 +21,20 @@ String ID_MQTT;
 char * letters = "abcdefghijklmnopqrstuvwxyz0123456789";
 
 // Define MQTT Topics
-#define TOPIC_TREAT "/project/treat/Q3sZ0r8Frv7G2hd8SE"
-#define TOPIC_TREAT_ANSWER "/project/treatAnswer/Q3sZ0r8Frv7G2hd8SE"
-#define TOPIC_UPDATE_MEALS "/project/updateMeals/Q3sZ0r8Frv7G2hd8SE"
+#define TOPIC_TREAT "/project/treat/mDpgXGtgoKBU9g385F"
+#define TOPIC_TREAT_ANSWER "/project/treatAnswer/mDpgXGtgoKBU9g385F"
+#define TOPIC_UPDATE_MEALS "/project/updateMeals/mDpgXGtgoKBU9g385F"
+#define TOPIC_TEMPERATURE "/project/temperature/mDpgXGtgoKBU9g385F"
+#define TOPIC_HUMIDITY "/project/humidity/mDpgXGtgoKBU9g385F"
 
 // Define Firebase credentials
 #define FIREBASE_PROJECT_ID "cm-project-pet"
 #define API_KEY "AIzaSyAhLyvKS0Fte6829SHSe9hmva2524gJBto"
 
 // Define Firebase paths
-#define MEAL_HISTORY_PATH "DEVICES/Q3sZ0r8Frv7G2hd8SE/MEALS_HISTORY/"
-#define MEAL_SCHEDULES_PATH "DEVICES/Q3sZ0r8Frv7G2hd8SE/MEAL_SCHEDULES"
-#define DELETE_MEAL_PATH "DEVICES/Q3sZ0r8Frv7G2hd8SE/MEAL_SCHEDULES/"
+#define MEAL_HISTORY_PATH "DEVICES/mDpgXGtgoKBU9g385F/MEALS_HISTORY/"
+#define MEAL_SCHEDULES_PATH "DEVICES/mDpgXGtgoKBU9g385F/MEAL_SCHEDULES"
+#define DELETE_MEAL_PATH "DEVICES/mDpgXGtgoKBU9g385F/MEAL_SCHEDULES/"
 
 // Define MQTT Broker and PORT
 const char * BROKER_MQTT = "broker.hivemq.com";
@@ -44,6 +46,9 @@ PubSubClient MQTT(espClient);
 bool isWiFiConnected = false;
 unsigned long lastMealCheckMillis = 0;
 const long mealCheckInterval = 60000;
+float cal = 0;
+unsigned long lastSendTime = 0;
+const long threeHoursInMillis = 3 * 60 * 60 * 1000;
 
 //////////////////////////////////////////////////
 // End Include Wifi and communication libraries //
@@ -77,6 +82,8 @@ const int dirPin = 4;
 const int step = 2;
 const int stepsPerRevolution = 200;
 const int enable_motor = 15;
+
+
 
 //////////////////////////////////////////////
 //   End Equipment includes and defines     //
@@ -203,24 +210,69 @@ void processMealSchedules(const String & firestoreData) {
 
 //Update value on Firebase
 //todo, sem uso por enquanto mas é esta função q usamos para dar updates dos valores na firebase
-/*void updateValueInFirestore(int newValue) {
+void updateValueInFirestore(int percentage) {
   // Define the document path
-  String documentPath = "DEVICES/Q3sZ0r8Frv7G2hd8SE";
+  String documentPath = "DEVICES/mDpgXGtgoKBU9g385F";
 
   // Prepare the data to update
   FirebaseJson json;
 
   // Set the new value for the foodSuply field
-  json.set("fields/foodSuply/integerValue", newValue);
+  json.set("fields/foodSuply/integerValue", percentage);
+  //json.set("fields/sensor_temperature/doubleValue", temperature);
+  //json.set("fields/sensor_humidity/doubleValue", humidity);
+  
 
   // Update the document
   if (Firebase.Firestore.patchDocument( & firebaseData, FIREBASE_PROJECT_ID, "", documentPath, json.raw(), "foodSuply")) {
+   // Serial.println(json.raw());
     Serial.println("Updated value successfully");
   } else {
     Serial.println("Failed to update value");
+    //Serial.println(json.raw());
     Serial.println(firebaseData.errorReason());
   }
-}*/
+}
+
+//Temperature and humidity
+void updateTemperatureInFirestore(float temperature) {
+  // Define the document path
+  String documentPath = "DEVICES/mDpgXGtgoKBU9g385F";
+
+  // Prepare the data to update
+  FirebaseJson json;
+
+  // Set the new values for the temperature and humidity fields
+  json.set("fields/sensor_temperature/doubleValue", temperature);
+  
+
+  // Update the temperature and humidity in the document
+  if (Firebase.Firestore.patchDocument(&firebaseData, FIREBASE_PROJECT_ID, "", documentPath, json.raw(), "sensor_temperature")) {
+    Serial.println("Updated temperature successfully");
+  } else {
+    Serial.println("Failed to update temperature");
+    Serial.println(firebaseData.errorReason());
+  }
+}
+
+void updateHumidityInFirestore(float humidity) {
+  // Define the document path
+  String documentPath = "DEVICES/mDpgXGtgoKBU9g385F";
+
+  // Prepare the data to update
+  FirebaseJson json;
+
+  // Set the new values for the temperature and humidity fields
+  json.set("fields/sensor_humidity/doubleValue", humidity);
+
+  // Update the temperature and humidity in the document
+  if (Firebase.Firestore.patchDocument(&firebaseData, FIREBASE_PROJECT_ID, "", documentPath, json.raw(), "sensor_humidity")) {
+    Serial.println("Updated humidity successfully");
+  } else {
+    Serial.println("Failed to update temperature");
+    Serial.println(firebaseData.errorReason());
+  }
+}
 
 //Creates a new doc that stores the meal in the fistory after giving the meal
 void writeMealHistoryToFirestore(int newValue) {
@@ -313,14 +365,30 @@ void stepper(float Screw_turns, int motorpin, bool direction) {
 }
 
 //void feed(float cal,int amount) { 
-void feed(int amount) {
-  // float turns = 50 / cal;  //  to get how many turns to get 50g
-  float turns = 50 / 103; // todo, visto q disseste q 1 turn = 103g mudei a conta para calcular automaticamente
+void feed(float cal,int amount) {
+  float turns = 50 / cal;  //  to get how many turns to get 50g
+  //float turns = 50 / 103; // todo, visto q disseste q 1 turn = 103g mudei a conta para calcular automaticamente
   for (int i = 0; i <= amount; i = i + 50) {
     stepper(turns, step, HIGH); //1 turn = 4000 steps = 103g
     stepper(0.2, step, LOW); //spins backwards chug control  
   }
-  digitalWrite(enable_motor, HIGH);
+    float h = dht.readHumidity();
+    float t = dht.readTemperature();
+    digitalWrite(enable_motor, HIGH);
+
+    int simulatedWeightReduction = amount; // Quantidade de comida dispensada
+    int currentWeight = scale.get_units(); // Peso atual
+    int newSimulatedWeight = currentWeight - simulatedWeightReduction;
+
+    int totalCapacity = 1230; // Capacidade total do dispensador em gramas
+    int percentageRemaining = (newSimulatedWeight * 100) / totalCapacity;
+    Serial.print("Valor sendo enviado para a Firebase: ");
+    Serial.println(percentageRemaining);
+    Serial.println(t);
+    Serial.println(h);
+    updateValueInFirestore(percentageRemaining);
+    updateTemperatureInFirestore(t);
+    updateHumidityInFirestore(h);
 }
 //////////////////////////////////////////////
 //                   End Motor              //
@@ -371,9 +439,10 @@ void callbackMQTT(char * topic, byte * payload, unsigned int length) {
   if (String(topic) == TOPIC_TREAT) {
     int treatSize = msg.toInt();
     MQTT.publish(TOPIC_TREAT_ANSWER, "true");
-    feed(treatSize);    
+    feed(cal, treatSize);    
   } else if (String(topic) == TOPIC_UPDATE_MEALS) {
     readMealSchedulesFromFirestore();
+    
   }
 }
 
@@ -405,6 +474,8 @@ void reconnectMQTT(void) {
       Serial.println(ID_MQTT);
       MQTT.subscribe(TOPIC_TREAT);
       MQTT.subscribe(TOPIC_UPDATE_MEALS);
+      MQTT.subscribe(TOPIC_HUMIDITY);
+      MQTT.subscribe(TOPIC_TEMPERATURE);
     } else {
       Serial.println("* Failed to connected to broker. Trying again in 2 seconds.");
       delay(2000);
@@ -429,8 +500,10 @@ void checkWiFIAndMQTT(void) {
 
 void triggerMeal(int portionSize, const String& scheduleId) {
     Serial.println("Triggering meal: " + scheduleId + " Portion Size: " + portionSize);
-    writeMealHistoryToFirestore(portionSize);
     readMealSchedulesFromFirestore();
+    Serial.println("Feeding");
+    feed(cal, portionSize);
+    writeMealHistoryToFirestore(portionSize);    
 }
 
 void checkAndTriggerMeals() {
@@ -484,16 +557,15 @@ void setup() {
   Serial.begin(115200);
   randomSeed(analogRead(0));
   //Mqtt and wifi start
-  initMQTT();
   startWifi();
-
+  initMQTT();
   //Feeder stuff
   dht.begin();
   // Setup Serial connection
   Wire.begin(SDA_PIN, SCL_PIN);
   URTCLIB_WIRE.begin();
-
-  //rtc.set(0, 13, 13, 3, 19, 12, 23);
+  
+  //rtc.set(0, 55, 22, 1, 19, 12, 24);
   //RTCLib::set(byte second, byte minute, byte hour, byte dayOfWeek, byte dayOfMonth, byte month, byte year)
 
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
@@ -516,28 +588,24 @@ void setup() {
 //////////////////////////////////////////////
 
 void loop() {
-
   checkWiFIAndMQTT();
-  MQTT.loop();
+  
   //delay(200);
 
   scale.set_scale(calibration_factor); //Adjust to this calibration factor
   //Change the g to kg and re-adjust the calibration factor if you follow SI units like a sane person
-  //Serial.println("Reading: " + String(scale.get_units(), 1) + " g");
+  Serial.println("Reading: " + String(scale.get_units(), 1) + " g");
 
   float h = dht.readHumidity();
   float t = dht.readTemperature();
 
-  float hic = dht.computeHeatIndex(t, h, false);
+  //float hic = dht.computeHeatIndex(t, h, false);
   //Serial.println("Humidity: " + String(h) + "%  Temperature: " + String(t) + "°C");
 
-  // TODO isso aqui foi pra testar quantos steps o motor dá e ele soltava aproximadamente 30g a cada volta
-  // TODO criar a função que vai ser chamada no android, a cada volta ele dá 30g, então dependendo da quantidade
-  // inserida vai dar mais ou menos voltas
-  // stepper(1,step,HIGH);
+  //stepper(1,step,HIGH);
 
   rtc.refresh();
-
+  
    unsigned long currentMillis = millis();
     if (currentMillis - lastMealCheckMillis >= mealCheckInterval) {
         // Call only when 1 minute passes
@@ -545,11 +613,22 @@ void loop() {
         lastMealCheckMillis = currentMillis;
     }
 
-  //Serial.println("RTC DateTime: " + String(rtc.year()) + '/' + String(rtc.month()) + '/' + String(rtc.day()) + ' ' + String(rtc.hour()) + ':' + String(rtc.minute()) + ':' + String(rtc.second()) + " DOW: " + String(rtc.dayOfWeek()));
+    if (currentMillis - lastSendTime >= threeHoursInMillis) {
+      updateTemperatureInFirestore(t);
+      updateHumidityInFirestore(h);
+      lastSendTime = currentMillis; 
+    }
+    
+    
+  
+    
+
+  Serial.println("RTC DateTime: " + String(rtc.year()) + '/' + String(rtc.month()) + '/' + String(rtc.day()) + ' ' + String(rtc.hour()) + ':' + String(rtc.minute()) + ':' + String(rtc.second()) + " DOW: " + String(rtc.dayOfWeek()));
 
   delay(1000);
-
+  MQTT.loop();
 }
+
 //////////////////////////////////////////////
 //                 End Loop                 //
 //////////////////////////////////////////////

@@ -76,6 +76,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentChangeLis
         String clientName = ClientNameUtil.getClientName();
         mqttHelper = MQTTHelper.getInstance(this,clientName);
         mqttHelper.setCallback(new MqttCallbackExtended() {
+
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
                 Log.e("MQTT", "CONNECTED: " + serverURI);

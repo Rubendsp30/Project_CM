@@ -1,26 +1,136 @@
 package com.example.project_cm.ViewModels;
 
+import android.app.Application;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.example.project_cm.MealSchedule;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.List;
+import com.example.project_cm.Device;
+import android.util.Log;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.annotation.NonNull;
+import android.os.Handler;
+import android.os.Looper;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashMap;
 
-public class FoodInfoViewModel extends ViewModel {
 
+public class FoodInfoViewModel extends AndroidViewModel {
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+    //LiveData
     private MutableLiveData<Double> temperature = new MutableLiveData<>();
     private MutableLiveData<Double> humidity = new MutableLiveData<>();
     private MutableLiveData<Integer> mealsLeft = new MutableLiveData<>();
     private MutableLiveData<Integer> daysLeft = new MutableLiveData<>();
+    private MutableLiveData<Integer> foodSupply = new MutableLiveData<>();
 
-    // Getters for LiveData objects
-    public LiveData<Double> getTemperature() { return temperature; }
-    public LiveData<Double> getHumidity() { return humidity; }
-    public LiveData<Integer> getMealsLeft() { return mealsLeft; }
-    public LiveData<Integer> getDaysLeft() { return daysLeft; }
+    private FirebaseFirestore firestore;
 
-    // Update LiveData objects
-    public void setTemperature(double value) { temperature.setValue(value); }
-    public void setHumidity(double value) { humidity.setValue(value); }
-    public void setMealsLeft(int value) { mealsLeft.setValue(value); }
-    public void setDaysLeft(int value) { daysLeft.setValue(value); }
+    public FoodInfoViewModel(@NonNull Application application) {
+        super(application);
+        firestore = FirebaseFirestore.getInstance();
+    }
+
+    //Listen to updates in Firestore
+    public void listenToDeviceUpdates(String deviceId) {
+        DocumentReference docRef = firestore.collection("DEVICES").document(deviceId);
+        docRef.addSnapshotListener((snapshot, e) -> {
+            if (snapshot != null && snapshot.exists()) {
+                executorService.execute(() -> {
+                    Device device = snapshot.toObject(Device.class);
+                    if (device != null) {
+                        mainThreadHandler.post(() -> {
+                            temperature.postValue(device.getSensor_temperature());
+                            humidity.postValue(device.getSensor_humidity());
+                            foodSupply.postValue(device.getFoodSuply());
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    // Calculate remaining meals and days based on food supply and schedules
+    public void calculateMealsAndDaysLeft(List<MealSchedule> mealSchedules) {
+        executorService.execute(() -> {
+
+            //Keep track of remaining food supply, total meals and days
+            int totalFoodSupplyGrams = (foodSupply.getValue() * 1230) / 100;
+            int remainingFoodSupply = totalFoodSupplyGrams;
+            int totalMeals = 0;
+
+            Map<String, Integer> dayCount = new HashMap<>();
+            String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+
+            for (String day : daysOfWeek) {
+                dayCount.put(day, 0);
+            }
+
+            //Each day of the week
+            for (String day : daysOfWeek) {
+                //Each meal schedule
+                for (MealSchedule schedule : mealSchedules) {
+                    if (schedule.isActive()) {
+                        // Iterate through the days of the week specified in the meal schedule
+                        for (Map.Entry<String, Boolean> entry : schedule.getRepeatDays().entrySet()) {
+                            // Check if the meal is scheduled for the current day and there's enough food supply
+                            if (entry.getValue() && remainingFoodSupply >= schedule.getPortionSize()) {
+                                // Deduct the portion size from the remaining food supply
+                                remainingFoodSupply -= schedule.getPortionSize();
+                                // Increment the total meals count
+                                totalMeals++;
+                                // Add the current day to the set of unique days
+                                dayCount.put(entry.getKey(), dayCount.get(entry.getKey()) + 1);
+                            }
+                        }
+                    }
+                }
+            }
+            int totalDays = 0;
+            for (int count : dayCount.values()) {
+                totalDays += count;
+            }
+            // Calculate the number of days with meals
+            final int finalTotalMeals = totalMeals;
+            final int finalDaysWithMeals = totalDays;
+
+            // Update LiveData with the calculated values
+            mainThreadHandler.post(() -> {
+
+                this.daysLeft.setValue(finalDaysWithMeals);
+                this.mealsLeft.setValue(finalTotalMeals);
+            });
+        });
+    }
+
+    //I really hope it works, it seems to be working with the logs, but I need to test with real values
+    //of the devices
+
+    // Getters
+    public LiveData<Integer> getFoodSupply() {
+        return foodSupply;
+    }
+
+    public LiveData<Double> getTemperature() {
+        return temperature;
+    }
+
+    public LiveData<Double> getHumidity() {
+        return humidity;
+    }
+
+    public LiveData<Integer> getmealsLeft() {
+        return mealsLeft;
+    }
+
+    public LiveData<Integer> getdaysLeft() {
+        return daysLeft;
+    }
 
 }
