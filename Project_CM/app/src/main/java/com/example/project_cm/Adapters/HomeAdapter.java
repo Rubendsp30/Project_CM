@@ -104,6 +104,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         });
 
 
+
+
         int foodSuply = viewPagerItem.getFoodSuply();
         String foodSuplyText = foodSuply + "% Food Supply";
         holder.supplyText.setText(foodSuplyText);
