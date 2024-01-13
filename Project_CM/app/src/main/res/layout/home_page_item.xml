@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Pet Name"
+        android:text="@string/pet_name"
         android:textColor="@color/green_400"
         android:textSize="16sp" />
 
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Next meal at"
+        android:text="@string/next_meal_at"
         android:textColor="@color/green_400"
         android:textSize="16sp" />
 
@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="10:30"
+        android:text="@string/_10_30"
         android:textColor="@color/green_400"
         android:textSize="24sp" />
 
@@ -100,7 +100,7 @@
             android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:textAlignment="center"
-            android:text="90% Food Suply"
+            android:text="@string/_90_food_suply"
             android:textColor="@color/green_400"
             android:textSize="16sp"
             />

@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="New Meal"
+            android:text="@string/new_meal"
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
     </androidx.appcompat.widget.Toolbar>
     <NumberPicker
@@ -61,7 +61,7 @@
             android:id="@+id/repeatLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Repeat"
+            android:text="@string/repeat"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <!-- Day of the Week Buttons -->
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/orange_300"
                 android:padding="0dp"
-                android:text="Mon"
+                android:text="@string/mon"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:textColor="@color/white" />
@@ -90,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/orange_300"
                 android:padding="0dp"
-                android:text="Tue"
+                android:text="@string/tue"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:textColor="@color/white" />
@@ -100,7 +100,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/orange_300"
                 android:padding="0dp"
-                android:text="Wed"
+                android:text="@string/wed"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:textColor="@color/white" />
@@ -110,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/orange_300"
                 android:padding="0dp"
-                android:text="Thu"
+                android:text="@string/thu"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:textColor="@color/white" />
@@ -120,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/orange_300"
                 android:padding="0dp"
-                android:text="Fri"
+                android:text="@string/fri"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:textColor="@color/white" />
@@ -130,7 +130,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/orange_300"
                 android:padding="0dp"
-                android:text="Sat"
+                android:text="@string/sat"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:textColor="@color/white" />
@@ -140,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/orange_300"
                 android:padding="0dp"
-                android:text="Sun"
+                android:text="@string/sun"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:textColor="@color/white" />
@@ -151,7 +151,7 @@
             android:id="@+id/portionLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Portion"
+            android:text="@string/portion"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:layout_marginTop="16dp"/>
 
@@ -173,7 +173,7 @@
             android:id="@+id/notificationLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Notification"
+            android:text="@string/notification"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:layout_marginTop="16dp"/>
 
@@ -190,7 +190,7 @@
         android:id="@+id/cancelButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Cancel"
+        android:text="@string/cancel"
         android:backgroundTint="@color/green_200"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -202,7 +202,7 @@
         android:id="@+id/saveButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Save"
+        android:text="@string/save"
         android:backgroundTint="@color/orange_300"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/cancelButton"

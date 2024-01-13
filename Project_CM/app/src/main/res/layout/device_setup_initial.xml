@@ -43,7 +43,7 @@
             android:backgroundTint="@color/orange_300"
             android:elevation="8dp"
             android:stateListAnimator="@null"
-            android:text="Skip Device Steps"
+            android:text="@string/skip_device_steps"
             android:textColor="@color/white"
             android:textSize="21sp"
             app:layout_constraintEnd_toEndOf="parent"

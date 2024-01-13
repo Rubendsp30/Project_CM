@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Settings"
+            android:text="@string/settings"
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
     </androidx.appcompat.widget.Toolbar>
 
@@ -30,7 +30,7 @@
         style="@style/CustomSwitch"
         android:layout_width="0dp"
         android:layout_height="67dp"
-        android:text="Notifications"
+        android:text="@string/notifications"
         android:textColor="@color/white"
         android:background="@drawable/vaccine_rounded_corner"
         android:paddingHorizontal="20dp"
@@ -46,7 +46,7 @@
         style="@style/CustomSwitch"
         android:layout_width="0dp"
         android:layout_height="67dp"
-        android:text="Animated notifications"
+        android:text="@string/animated_notifications"
         android:textColor="@color/white"
         android:background="@drawable/vaccine_rounded_corner"
         android:paddingHorizontal="20dp"
@@ -73,7 +73,7 @@
             android:id="@+id/tvVolumeLabel"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Volume"
+            android:text="@string/volume"
             android:gravity="center"
             android:textColor="@color/white"
              />
@@ -92,7 +92,7 @@
         android:id="@+id/buttonDateAndTime"
         android:layout_width="0dp"
         android:layout_height="67dp"
-        android:text="Date and time"
+        android:text="@string/date_and_time"
         android:layout_marginTop="6dp"
         android:layout_marginHorizontal="20dp"
         app:cornerRadius="9dp"
@@ -104,7 +104,7 @@
         android:id="@+id/buttonLanguage"
         android:layout_width="0dp"
         android:layout_height="67dp"
-        android:text="Language"
+        android:text="@string/language"
         android:layout_marginTop="2dp"
         android:layout_marginHorizontal="20dp"
         app:cornerRadius="9dp"

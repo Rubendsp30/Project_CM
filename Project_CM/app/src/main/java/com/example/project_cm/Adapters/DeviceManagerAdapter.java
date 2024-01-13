@@ -63,13 +63,11 @@ public class DeviceManagerAdapter extends RecyclerView.Adapter<DeviceManagerAdap
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView petNameView;
-        public ImageButton switchStatusButton;
         public ImageButton deleteButton;
 
         public ViewHolder(View v) {
             super(v);
             petNameView = v.findViewById(R.id.PetName);
-            switchStatusButton = v.findViewById(R.id.switchDeviceStatus);
             deleteButton = v.findViewById(R.id.btnDeleteDevice);
         }
     }

@@ -21,7 +21,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Vaccine 1"
+            android:text="@string/vaccine_1"
             android:textSize="18sp"
             android:textColor="@android:color/white" />
 
@@ -30,7 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="01/01/2023"
+            android:text="@string/_01_01_2023"
             android:textSize="14sp"
             android:textColor="@android:color/white" />
 
@@ -47,7 +47,7 @@
                 android:id="@+id/textViewDaysLeft"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="60 days left"
+                android:text="@string/_60_days_left"
                 android:textSize="14sp"
                 android:paddingTop="2dp"
                 android:textColor="@color/green_400"

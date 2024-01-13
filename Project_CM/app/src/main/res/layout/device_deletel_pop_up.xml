@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Are you sure you want to delete this device?"
+        android:text="@string/are_you_sure_you_want_to_delete_this_device"
         android:textColor="@color/green_400"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,7 @@
         android:id="@+id/deleteNolButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="No"
+        android:text="@string/no"
         android:backgroundTint="@color/green_200"
         app:layout_constraintTop_toBottomOf="@+id/deleteDeviceConfirmationText"
         app:layout_constraintStart_toStartOf="parent" />
@@ -31,7 +31,7 @@
         android:id="@+id/deleteYesButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Yes"
+        android:text="@string/yes"
         android:backgroundTint="@color/orange_300"
         app:layout_constraintTop_toBottomOf="@+id/deleteDeviceConfirmationText"
         app:layout_constraintEnd_toEndOf="parent" />

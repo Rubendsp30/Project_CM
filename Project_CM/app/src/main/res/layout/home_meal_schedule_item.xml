@@ -23,7 +23,7 @@
             android:id="@+id/homeMealScheduleHour"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="HOUR"
+            android:text="@string/hour"
             android:fontFamily="@font/poppins_medium"
             android:textColor="@color/white"
             android:textSize="24sp"/>
@@ -32,7 +32,7 @@
             android:id="@+id/homeMealScheduleDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Repeat Days"
+            android:text="@string/repeat_days"
             android:textColor="@color/white"
             android:textSize="16sp"/>
 

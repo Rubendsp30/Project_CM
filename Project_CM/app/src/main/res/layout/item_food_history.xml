@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Friday, 07 April, 2023"
+            android:text="@string/friday_07_april_2023"
             android:textSize="16sp"
             android:gravity="start"
             android:textColor="@color/green_400" />
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="1.5Kg"
+            android:text="@string/_1_5kg"
             android:textSize="18sp"
             android:gravity="end"
             android:textColor="@color/green_400" />

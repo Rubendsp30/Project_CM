@@ -21,7 +21,7 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Vaccine"
+        android:text="@string/new_vaccine"
         app:layout_constraintTop_toTopOf="parent"
         android:textStyle="bold"
         android:textSize="20sp"
@@ -33,14 +33,14 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/title"
         tools:layout_editor_absoluteX="10dp"
-        android:hint="Name" />
+        android:hint="@string/name" />
 
     <EditText
         android:id="@+id/editNextDose"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="false"
-        android:hint="Next Dose"
+        android:hint="@string/next_dose"
         app:layout_constraintTop_toBottomOf="@+id/editName"
         tools:layout_editor_absoluteX="10dp" />
 
@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="10dp"
         android:layout_gravity="center"
-        android:text="Cancel"
+        android:text="@string/cancel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editNextDose" />
 
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="10dp"
         android:layout_gravity="end"
-        android:text="Save"
+        android:text="@string/save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editNextDose" />
 

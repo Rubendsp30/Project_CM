@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Pet Profile"
+            android:text="@string/pet_profile"
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
     </androidx.appcompat.widget.Toolbar>
 

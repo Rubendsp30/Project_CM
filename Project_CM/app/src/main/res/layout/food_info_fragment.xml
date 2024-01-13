@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Food Information"
+            android:text="@string/food_information"
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
     </androidx.appcompat.widget.Toolbar>
     <TextView
@@ -32,7 +32,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:textColor="@color/green_400"
-        android:text="Food Storage"
+        android:text="@string/food_storage"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
@@ -56,7 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="90% Food supply"
+        android:text="@string/_90_food_supply"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintStart_toStartOf="@+id/foodStorageProgress"
         app:layout_constraintTop_toBottomOf="@+id/foodStorageProgress" />
@@ -101,7 +101,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Humidity"
+                android:text="@string/humidity"
                 android:layout_marginBottom="12dp"
                 android:textColor="@color/white"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
@@ -110,7 +110,7 @@
                 android:id="@+id/textViewHumidity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="11%"
+                android:text="@string/_11"
                 android:layout_marginBottom="18dp"
                 android:textColor="@color/white"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
@@ -142,7 +142,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Temperature"
+                    android:text="@string/temperature"
                     android:layout_marginBottom="12dp"
                     android:textColor="@color/white"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
@@ -151,7 +151,7 @@
                     android:id="@+id/textViewTemperature"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="25º C"
+                    android:text="@string/_25_c"
                     android:layout_marginBottom="18dp"
                     android:textColor="@color/white"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large" />
@@ -181,7 +181,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Meals Left"
+                    android:text="@string/meals_left"
                     android:layout_marginBottom="12dp"
                     android:textColor="@color/white"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
@@ -190,7 +190,7 @@
                     android:id="@+id/textViewMealsLeft"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="20"
+                    android:text="@string/_20"
                     android:layout_marginBottom="18dp"
                     android:textColor="@color/white"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large" />
@@ -221,7 +221,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Days Left"
+                    android:text="@string/days_left"
                     android:layout_marginBottom="12dp"
                     android:textColor="@color/white"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
@@ -230,7 +230,7 @@
                     android:id="@+id/textViewDaysLeft"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5"
+                    android:text="@string/_5"
                     android:layout_marginBottom="18dp"
                     android:textColor="@color/white"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large" />
