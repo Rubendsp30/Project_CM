@@ -18,8 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project_cm.Activities.HomeActivity;
+import com.example.project_cm.Adapters.HistoryAdapter;
 import com.example.project_cm.DataBase.Tables.PetProfileEntity;
 import com.example.project_cm.DataBase.Tables.VaccineEntity;
+import com.example.project_cm.History;
 import com.example.project_cm.R;
 import com.example.project_cm.User;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
@@ -28,6 +30,7 @@ import com.example.project_cm.ViewModels.VaccinesViewModel;
 import com.example.project_cm.Adapters.VaccineAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -81,19 +84,25 @@ public class VaccinesFragment extends Fragment {
 
         // frase que indica que a lista está vazia
         tvEmptyMessage = view.findViewById(R.id.tvEmptyMessage);
+        List<VaccineEntity> list_vaccines = new ArrayList<>();
+        vaccineAdapter = new VaccineAdapter(list_vaccines);
+        setupRecyclerView(view,list_vaccines);
 
         // Logic to get the data for vaccines
         if (currentPetProfile != -1) {
+
             vaccinesViewModel.getVaccinesByPetProfileId(currentPetProfile)
                     .observe(getViewLifecycleOwner(), vaccines -> {
                         if (vaccines == null || vaccines.isEmpty()) {
                             tvEmptyMessage.setVisibility(View.VISIBLE);
                         } else {
                             tvEmptyMessage.setVisibility(View.GONE);
-                            vaccineAdapter = new VaccineAdapter(vaccines);
-                            setupRecyclerView(view, vaccines);
+                            list_vaccines.clear();
+                            list_vaccines.addAll(vaccines);
+                            vaccineAdapter.notifyDataSetChanged();
                         }
                     });
+
         } else {
             Log.e("VaccineFragment", "currentPetProfile is null.");
         }
@@ -129,7 +138,6 @@ public class VaccinesFragment extends Fragment {
         vaccinePopUp.show(getChildFragmentManager(), "vaccinePopUp");
     }
 
-    //é mais facil de ler o código assim (desde que as funções façam realmente o que está no nome)
     private void loadPetProfile() {
         currentPetProfile = petProfileViewModel.getCurrentPet().getValue().id;
     }

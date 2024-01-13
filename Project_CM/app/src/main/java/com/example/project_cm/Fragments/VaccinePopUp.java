@@ -22,6 +22,7 @@ import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
 import com.example.project_cm.ViewModels.VaccinesViewModel;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -90,7 +91,14 @@ public class VaccinePopUp extends DialogFragment {
             title.setText("Vaccine");
 
             editName.setText(vaccine.getVaccineName());
-            editNextDose.setText(vaccine.getVaccineDate());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            try {
+                Date vaccineDate = dateFormat.parse(vaccine.getVaccineDate());
+                calendar.setTime(vaccineDate);
+                editNextDose.setText(dateFormat.format(vaccineDate));
+            } catch (ParseException e) {
+                Log.e("VaccinePopUp", "Error parsing vaccine date: " + e.getMessage());
+            }
 
             deleteButton.setVisibility(View.VISIBLE);
             deleteButton.setOnClickListener(v -> {
