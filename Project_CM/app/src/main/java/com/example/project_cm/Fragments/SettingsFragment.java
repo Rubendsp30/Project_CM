@@ -1,6 +1,9 @@
 package com.example.project_cm.Fragments;
 
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.widget.Toolbar;
@@ -19,6 +23,8 @@ import com.example.project_cm.Activities.HomeActivity;
 import com.example.project_cm.R;
 
 import android.util.Log;
+
+import java.util.Locale;
 
 public class SettingsFragment extends Fragment {
 
@@ -56,6 +62,7 @@ public class SettingsFragment extends Fragment {
         buttonLanguage = view.findViewById(R.id.buttonLanguage);
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setTitle(" ");
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> {
             if (FragmentChangeListener != null) {
@@ -96,8 +103,28 @@ public class SettingsFragment extends Fragment {
         });
 
         buttonLanguage.setOnClickListener(v -> {
-            // todo - aparece um popup com os idiomas
+            showLanguageSelectionPopup();
         });
+    }
+    private void showLanguageSelectionPopup() {
+        final String[] languages = {"pt", "en"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.CustomDialog);
+        builder.setTitle("Escolha o Idioma");
+        builder.setItems(languages, (dialog, which) -> {
+            String selectedLanguage = languages[which];
+            Toast.makeText(getContext(), "Idioma selecionado: " + selectedLanguage, Toast.LENGTH_SHORT).show();
+
+            Locale local = new Locale(selectedLanguage);
+            Resources resources = getResources();
+            DisplayMetrics dm = resources.getDisplayMetrics();
+            Configuration config = resources.getConfiguration();
+            config.locale = local;
+            resources.updateConfiguration(config, dm);
+
+            // faz reload da página
+            getActivity().recreate();
+        });
+        builder.show();
     }
 }
 
