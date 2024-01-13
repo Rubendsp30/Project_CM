@@ -104,8 +104,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         });
 
 
-
-
         int foodSuply = viewPagerItem.getFoodSuply();
         String foodSuplyText = foodSuply + "% Food Supply";
         holder.supplyText.setText(foodSuplyText);
@@ -122,7 +120,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             deviceViewModel.setCurrentDeviceId(itemDeviceId);
             if (FragmentChangeListener != null) {
                 ScheduleFragment scheduleFragment = new ScheduleFragment();
-                //scheduleFragment.setDeviceId(selectedDevice.getDeviceID());
                 scheduleFragment.setFragmentChangeListener(FragmentChangeListener);
                 FragmentChangeListener.replaceFragment(scheduleFragment);
             }

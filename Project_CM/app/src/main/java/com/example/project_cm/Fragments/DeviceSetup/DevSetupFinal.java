@@ -1,6 +1,5 @@
 package com.example.project_cm.Fragments.DeviceSetup;
 
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;

@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,7 +36,8 @@ public class RegisterFragment extends Fragment {
     private EditText emailRegister;
     private EditText passwordRegister;
     private EditText confirmPasswordRegister;
-    @Nullable private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
+    @Nullable
+    private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
     private UserViewModel userViewModel;
 
     @Override
@@ -61,7 +61,6 @@ public class RegisterFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Initialize UI elements
-        //ImageButton backButton = view.findViewById(R.id.backButton);
         TextView backButton = view.findViewById(R.id.backButton);
         this.usernameRegisterLayout = view.findViewById(R.id.usernameRegisterLayout);
         this.usernameRegister = view.findViewById(R.id.usernameRegister);
@@ -167,7 +166,7 @@ public class RegisterFragment extends Fragment {
             return true;
         } else {
             emailRegisterLayout.setError("Email format invalid");
-            return true;
+            return false;
         }
     }
 

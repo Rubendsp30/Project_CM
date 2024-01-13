@@ -4,10 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,18 +16,16 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.project_cm.Activities.HomeActivity;
 import com.example.project_cm.Adapters.PetProfileAdapter;
 import com.example.project_cm.DataBase.Tables.PetProfileEntity;
-import com.example.project_cm.Device;
 import com.example.project_cm.R;
-import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
 
 import com.example.project_cm.ViewModels.UserViewModel;
 import com.example.project_cm.User;
+
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class PetProfileFragment extends Fragment {
     @Nullable
@@ -41,8 +35,7 @@ public class PetProfileFragment extends Fragment {
     private PetProfileViewModel petProfileViewModel;
     ViewPager2 viewPagerPetProfile;
     PetProfileAdapter petProfileAdapter;
-    ArrayList<PetProfileEntity> viewPagerItemDeviceList;
-    private List<PetProfileEntity> petProfilesList = new ArrayList<>();
+    private final List<PetProfileEntity> petProfilesList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -92,10 +85,9 @@ public class PetProfileFragment extends Fragment {
         getCurrentUser();
 
         viewPagerPetProfile = view.findViewById(R.id.viewPagerPetProfile);
-        petProfileAdapter = new PetProfileAdapter(petProfilesList, petProfileViewModel, getChildFragmentManager(), getViewLifecycleOwner(), FragmentChangeListener);
+        petProfileAdapter = new PetProfileAdapter(petProfilesList, petProfileViewModel, getViewLifecycleOwner(), FragmentChangeListener);
         viewPagerPetProfile.setAdapter(petProfileAdapter);
 
-        // a primeira é para fazer logo load de 2 páginas, a segunda é para tirar aquele efeito de esticar quando arrastas no primeiro ou último ecrã
         viewPagerPetProfile.setOffscreenPageLimit(2);
         viewPagerPetProfile.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
 

@@ -27,12 +27,14 @@ import com.google.firebase.firestore.EventListener;
 
 
 public class ScheduleViewModel extends ViewModel {
-    private FirebaseFirestore firestore;
-    private ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
-    private Handler uiHandler = new Handler(Looper.getMainLooper());
+    private final FirebaseFirestore firestore;
+    private final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
+    private final Handler uiHandler = new Handler(Looper.getMainLooper());
+
     public ScheduleViewModel() {
         firestore = FirebaseFirestore.getInstance();
     }
+
     public void addMealSchedule(String deviceId, MealSchedule schedule, MealScheduleCallback callback) {
 
         networkExecutor.execute(() -> {

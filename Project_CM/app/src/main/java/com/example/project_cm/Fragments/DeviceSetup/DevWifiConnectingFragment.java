@@ -44,19 +44,17 @@ public class DevWifiConnectingFragment extends Fragment {
     }
 
     private void listenToBluetoothResponses() {
-        bluetoothViewModel.setMessageListener(message -> {
-            getActivity().runOnUiThread(() -> {
-                if ("CONNECTED".equals(message.trim())) {
-                    // Transition to PetProfileCreation
-                    if (FragmentChangeListener != null) {
-                        PetProfileCreationFragment fragment = new PetProfileCreationFragment();
-                        FragmentChangeListener.replaceFragment(fragment);
-                    }
-                } else if ("FAILED".equals(message.trim())) {
-                    handleFailedConnection();
+        bluetoothViewModel.setMessageListener(message -> getActivity().runOnUiThread(() -> {
+            if ("CONNECTED".equals(message.trim())) {
+                // Transition to PetProfileCreation
+                if (FragmentChangeListener != null) {
+                    PetProfileCreationFragment fragment = new PetProfileCreationFragment();
+                    FragmentChangeListener.replaceFragment(fragment);
                 }
-            });
-        });
+            } else if ("FAILED".equals(message.trim())) {
+                handleFailedConnection();
+            }
+        }));
 
         bluetoothViewModel.startListeningForMessages();
     }

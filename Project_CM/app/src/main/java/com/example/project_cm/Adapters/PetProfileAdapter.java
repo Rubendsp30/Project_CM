@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,18 +28,14 @@ public class PetProfileAdapter extends RecyclerView.Adapter<PetProfileAdapter.Pe
     private final List<PetProfileEntity> petProfiles;
     private final PetProfileViewModel petProfileViewModel;
     @Nullable
-    private final FragmentManager fragmentManager;
-    @Nullable
     private final com.example.project_cm.FragmentChangeListener fragmentChangeListener;
     private final LifecycleOwner lifecycleOwner;
 
     //todo
-    public PetProfileAdapter(List<PetProfileEntity> petProfiles, PetProfileViewModel petProfileViewModel,
-                             @Nullable FragmentManager fragmentManager, LifecycleOwner lifecycleOwner,
+    public PetProfileAdapter(List<PetProfileEntity> petProfiles, PetProfileViewModel petProfileViewModel, LifecycleOwner lifecycleOwner,
                              @Nullable com.example.project_cm.FragmentChangeListener fragmentChangeListener) {
         this.petProfiles = petProfiles;
         this.petProfileViewModel = petProfileViewModel;
-        this.fragmentManager = fragmentManager;
         this.lifecycleOwner = lifecycleOwner;
         this.fragmentChangeListener = fragmentChangeListener;
     }
@@ -118,7 +113,7 @@ public class PetProfileAdapter extends RecyclerView.Adapter<PetProfileAdapter.Pe
         Button vaccinesButton;
         Button historyButton;
         @Nullable
-        private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
+        private final com.example.project_cm.FragmentChangeListener FragmentChangeListener;
 
         public PetProfileViewHolder(@NonNull View itemView, @Nullable com.example.project_cm.FragmentChangeListener fragmentChangeListener) {
             super(itemView);

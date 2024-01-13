@@ -39,24 +39,24 @@ public class MQTTWidgetProvider extends AppWidgetProvider {
         }
     }
 
-   @Override
-   public void onReceive(Context context, Intent intent) {
-       super.onReceive(context, intent);
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
 
-       // Check if the action is to send MQTT message
-       if (ACTION_SEND_MQTT_MESSAGE.equals(intent.getAction())) {
-           if (isUserLoggedIn(context)) {
-               // Start the MQTTService if user is logged in
-               Intent serviceIntent = new Intent(context, MQTTService.class);
-               ContextCompat.startForegroundService(context, serviceIntent);
-           } else {
-               // Open the login activity if no user is logged in
-               Intent loginIntent = new Intent(context, LoginActivity.class);
-               loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-               context.startActivity(loginIntent);
-           }
-       }
-   }
+        // Check if the action is to send MQTT message
+        if (ACTION_SEND_MQTT_MESSAGE.equals(intent.getAction())) {
+            if (isUserLoggedIn(context)) {
+                // Start the MQTTService if user is logged in
+                Intent serviceIntent = new Intent(context, MQTTService.class);
+                ContextCompat.startForegroundService(context, serviceIntent);
+            } else {
+                // Open the login activity if no user is logged in
+                Intent loginIntent = new Intent(context, LoginActivity.class);
+                loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(loginIntent);
+            }
+        }
+    }
 
     private boolean isUserLoggedIn(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);

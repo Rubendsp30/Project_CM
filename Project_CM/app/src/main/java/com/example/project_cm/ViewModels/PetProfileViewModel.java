@@ -1,7 +1,6 @@
 package com.example.project_cm.ViewModels;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -10,14 +9,13 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.project_cm.DataBase.AppDatabase;
 import com.example.project_cm.DataBase.Tables.PetProfileEntity;
 import com.example.project_cm.DataBase.PetProfileDao;
-import com.example.project_cm.User;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class PetProfileViewModel extends AndroidViewModel {
-    private PetProfileDao petProfileDao;
+    private final PetProfileDao petProfileDao;
     private final MutableLiveData<PetProfileEntity> currentPet = new MutableLiveData<>();
     private final ExecutorService executorService;
 

@@ -5,35 +5,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.example.project_cm.Activities.HomeActivity;
-import com.example.project_cm.DataBase.Tables.PetProfileEntity;
-import com.example.project_cm.Device;
 import com.example.project_cm.R;
-import com.example.project_cm.ViewModels.DeviceViewModel;
-import com.example.project_cm.ViewModels.PetProfileViewModel;
-//import com.example.project_cm.ViewModels.ViewModelFactory;
-import com.example.project_cm.FragmentChangeListener;
-import com.example.project_cm.DataBase.PetProfileDao;
-import com.example.project_cm.DataBase.AppDatabase;
-import com.example.project_cm.ViewModels.UserViewModel;
-import com.example.project_cm.User;
-import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Locale;
+import android.util.Log;
 
 public class SettingsFragment extends Fragment {
 

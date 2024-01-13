@@ -89,7 +89,6 @@ public class DevSetupTurnBle extends Fragment {
         } else {
             // Bluetooth is already enabled
             transitionToScanFragment();
-            // Toast.makeText(getActivity(), "Bluetooth already ON", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -107,7 +106,6 @@ public class DevSetupTurnBle extends Fragment {
                     // Permissions are granted, attempt to enable Bluetooth
                     enableBluetooth();
                 } else {
-                    // Handle the case where permissions are not granted
                     Toast.makeText(getActivity(), "Bluetooth permissions required", Toast.LENGTH_SHORT).show();
                 }
             }

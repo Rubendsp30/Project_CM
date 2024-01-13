@@ -12,9 +12,10 @@ import com.example.project_cm.DataBase.Tables.VaccineEntity;
 @Database(entities = {VaccineEntity.class, PetProfileEntity.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
 
-    //public abstract UserDao userDao();
     public abstract PetProfileDao petProfileDao();
+
     public abstract VaccineDao vaccineDao();
+
     public static AppDatabase INSTANCE;
 
     public static AppDatabase getDBinstance(Context context) {

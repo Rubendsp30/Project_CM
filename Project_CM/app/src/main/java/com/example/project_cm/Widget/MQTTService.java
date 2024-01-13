@@ -12,9 +12,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
-import androidx.lifecycle.LiveData;
 
-import com.example.project_cm.Device;
 import com.example.project_cm.MQTTHelper;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
@@ -23,9 +21,6 @@ import com.example.project_cm.utils.ClientNameUtil;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-
-import java.security.SecureRandom;
-import java.util.ArrayList;
 
 public class MQTTService extends Service {
     MQTTHelper mqttHelper;
@@ -41,7 +36,7 @@ public class MQTTService extends Service {
             Log.d("MQTTService", "Sending MQTT message");
             sendMQTTMessage();
         } catch (Exception e) {
-            Log.e("MQTTService", "Error in service: " + e.toString());
+            Log.e("MQTTService", "Error in service: " + e);
             e.printStackTrace();
         }
 
@@ -57,7 +52,7 @@ public class MQTTService extends Service {
     private Notification createNotification() {
         // Create a notification channel for Android O and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel channel = new NotificationChannel(
+            NotificationChannel channel = new NotificationChannel(
                     "Widget Notification",
                     "MQTT Service Channel",
                     NotificationManager.IMPORTANCE_DEFAULT
@@ -76,7 +71,6 @@ public class MQTTService extends Service {
     }
 
 
-
     private void sendMQTTMessage() {
         Log.e("MQTT Widget", "Entered sendMqttMessage");
 
@@ -87,40 +81,41 @@ public class MQTTService extends Service {
             return;
         }
         DeviceViewModel deviceViewModel = new DeviceViewModel();
-        deviceViewModel.getDevicesForUserWidget(userId, new DeviceViewModel.DeviceIdLoadCallback()   {
+        deviceViewModel.getDevicesForUserWidget(userId, new DeviceViewModel.DeviceIdLoadCallback() {
             @Override
             public void onDeviceIdLoaded(String deviceId) {
-                    String topic = "/project/treat/" + deviceId;
-                    Log.e("Widget", topic);
-                    ClientNameUtil.generateClientName();
-                    String clientName = ClientNameUtil.getClientName();
-                    mqttHelper = MQTTHelper.getInstance(getBaseContext(), clientName);
+                String topic = "/project/treat/" + deviceId;
+                Log.e("Widget", topic);
+                ClientNameUtil.generateClientName();
+                String clientName = ClientNameUtil.getClientName();
+                mqttHelper = MQTTHelper.getInstance(getBaseContext(), clientName);
 
-                    mqttHelper.setCallback(new MqttCallbackExtended() {
-                        @Override
-                        public void connectionLost(Throwable cause) {
-                            Log.e("MQTT Widget", "MQTT connection lost: " + cause.getMessage());
-                            stopService();
-                        }
+                mqttHelper.setCallback(new MqttCallbackExtended() {
+                    @Override
+                    public void connectionLost(Throwable cause) {
+                        Log.e("MQTT Widget", "MQTT connection lost: " + cause.getMessage());
+                        stopService();
+                    }
 
-                        @Override
-                        public void messageArrived(String topic, MqttMessage message) throws Exception {
+                    @Override
+                    public void messageArrived(String topic, MqttMessage message) {
 
-                        }
+                    }
 
-                        @Override
-                        public void deliveryComplete(IMqttDeliveryToken token) {
-                            stopService();
-                        }
+                    @Override
+                    public void deliveryComplete(IMqttDeliveryToken token) {
+                        stopService();
+                    }
 
-                        @Override
-                        public void connectComplete(boolean reconnect, String serverURI) {
-                            publishMessage(topic);
-                        }
+                    @Override
+                    public void connectComplete(boolean reconnect, String serverURI) {
+                        publishMessage(topic);
+                    }
 
-                    });
-                    mqttHelper.connect();
-                }
+                });
+                mqttHelper.connect();
+            }
+
             @Override
             public void onError(Exception e) {
                 Log.e("MQTTService", "Error loading devices: " + e.getMessage());
@@ -131,7 +126,6 @@ public class MQTTService extends Service {
     }
 
     private void publishMessage(String topic) {
-        //String topic = "/project/treat/rcL9kl2gSYbLusKe4N";
         String message = "15";
         Log.d("MQTT Widget", "Sending Message");
         try {

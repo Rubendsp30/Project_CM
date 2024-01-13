@@ -14,27 +14,16 @@ import java.util.List;
 @Dao
 public interface VaccineDao {
 
-    @Query("Select * from vaccines")
-    List<VaccineEntity> getAllVaccinesList();
-
     @Insert
-    long insertVaccineEntity (VaccineEntity vaccine);
+    long insertVaccineEntity(VaccineEntity vaccine);
 
     @Query("SELECT * FROM vaccines WHERE pet_id = :petId")
     LiveData<List<VaccineEntity>> getVaccinesForPet(int petId);
 
-    /*
-    @Query("SELECT COUNT(*) FROM users WHERE username = :username")
-    int countUsersByUsername(String username);
-
-    @Query("SELECT * FROM users WHERE username = :username AND password = :password")
-    UserEntity getUserByUsernameAndPassword(String username, String password);
-    */
-
     @Update
-    void updateVaccineEntity (VaccineEntity vaccineEntity);
+    void updateVaccineEntity(VaccineEntity vaccineEntity);
 
     @Delete
-    void deleteVaccineEntity (VaccineEntity vaccineEntity);
+    void deleteVaccineEntity(VaccineEntity vaccineEntity);
 
 }

@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.project_cm.Activities.HomeActivity;
 import com.example.project_cm.Activities.LoginActivity;
+
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
@@ -27,7 +28,7 @@ public class MenuFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        this.fragmentChangeListener = (HomeActivity)inflater.getContext();
+        this.fragmentChangeListener = (HomeActivity) inflater.getContext();
         return inflater.inflate(R.layout.menu, container, false);
     }
 
@@ -76,6 +77,7 @@ public class MenuFragment extends Fragment {
             logoutUser();
         });
     }
+
     private void logoutUser() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

@@ -19,9 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.project_cm.Activities.HomeActivity;
 import com.example.project_cm.Adapters.HistoryAdapter;
 import com.example.project_cm.History;
-import com.example.project_cm.MealSchedule;
 import com.example.project_cm.R;
-import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.HistoryViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
 import com.example.project_cm.ViewModels.UserViewModel;
@@ -96,7 +94,7 @@ public class HistoryFoodFragment extends Fragment {
 
         // Logic to get the data for history
         if (currentPetProfile != -1) {
-            // apaga as historys meal que já passaram dos 7 dias (fora de prazo de validade hehehe)
+            // apaga as historys meal que já passaram dos 7 dias
             historyViewModel.deleteOldMealHistories(currentUser, currentPetProfile);
 
             // retorna a lista do historico de refeições
@@ -116,7 +114,7 @@ public class HistoryFoodFragment extends Fragment {
         }
     }
 
-    public void setupRecyclerView(@NonNull View view){
+    public void setupRecyclerView(@NonNull View view) {
         // RecyclerView Layout Manager
         LinearLayoutManager historyLayoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false);

@@ -3,7 +3,7 @@ package com.example.project_cm;
 import java.io.Serializable;
 
 public class Device implements Serializable {
-    private String user_id,deviceID;
+    private String user_id, deviceID;
     private int status, foodSuply;
     private double sensor_temperature, sensor_humidity;
     private long pet_id;

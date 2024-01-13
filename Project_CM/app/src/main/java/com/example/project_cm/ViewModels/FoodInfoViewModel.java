@@ -10,19 +10,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.List;
 import com.example.project_cm.Device;
-import android.util.Log;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.annotation.NonNull;
 import android.os.Handler;
 import android.os.Looper;
 import java.util.Map;
-import java.util.Set;
 import java.util.HashMap;
 
 
 public class FoodInfoViewModel extends AndroidViewModel {
-    private ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
     //LiveData
     private MutableLiveData<Double> temperature = new MutableLiveData<>();
     private MutableLiveData<Double> humidity = new MutableLiveData<>();
@@ -30,7 +28,7 @@ public class FoodInfoViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> daysLeft = new MutableLiveData<>();
     private MutableLiveData<Integer> foodSupply = new MutableLiveData<>();
 
-    private FirebaseFirestore firestore;
+    private final FirebaseFirestore firestore;
 
     public FoodInfoViewModel(@NonNull Application application) {
         super(application);
@@ -61,8 +59,7 @@ public class FoodInfoViewModel extends AndroidViewModel {
         executorService.execute(() -> {
 
             //Keep track of remaining food supply, total meals and days
-            int totalFoodSupplyGrams = (foodSupply.getValue() * 1230) / 100;
-            int remainingFoodSupply = totalFoodSupplyGrams;
+            int remainingFoodSupply = (foodSupply.getValue() * 1230) / 100;
             int totalMeals = 0;
 
             Map<String, Integer> dayCount = new HashMap<>();
