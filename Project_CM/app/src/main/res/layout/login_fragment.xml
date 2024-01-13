@@ -14,10 +14,10 @@
             android:id="@+id/login_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/poppins_regular"
             android:text="@string/welcome"
             android:textColor="@color/green_400"
-            android:textSize="60sp"
+            android:textSize="@dimen/large_48"
             app:layout_constraintBottom_toTopOf="@+id/login_subheader"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -26,10 +26,10 @@
             android:id="@+id/login_subheader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="107dp"
+            android:layout_marginBottom="40dp"
             android:text="@string/sign_in_to_your_account"
             android:textColor="@color/green_400"
-            android:textSize="21sp"
+            android:textSize="@dimen/small_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/box" />
@@ -68,8 +68,8 @@
                     android:id="@+id/usernameLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="@color/green_400"/>
+                    android:textColor="@color/green_400"
+                    android:textSize="@dimen/xsmall_10" />
 
             </com.google.android.material.textfield.TextInputLayout>
             <!--Username top-->
@@ -101,7 +101,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/xsmall_10"
                     android:textColor="@color/green_400"
                     />
 
@@ -121,7 +121,9 @@
             android:stateListAnimator="@null"
             android:text="@string/login"
             android:textColor="@color/white"
-            android:textSize="21sp"
+            android:textSize="@dimen/small_16"
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/box" />
@@ -130,17 +132,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/loginButton">
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/first_time"
                 android:textColor="@color/green_400"
-                android:textSize="13sp"
+                android:textSize="@dimen/xsmall_10"
                 android:layout_marginEnd="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -150,7 +152,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/create_account"
-                android:textSize="13sp"
+                android:textSize="@dimen/xsmall_10"
                 android:textColor="@color/orange_300"
                 android:layout_marginEnd="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
