@@ -8,7 +8,20 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarDevIni"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/arrowleft2">
+
+        </androidx.appcompat.widget.Toolbar>
+
 
         <TextView
             android:id="@+id/welcomeText"
@@ -18,7 +31,7 @@
             android:fontFamily="@font/poppins_medium"
             android:text="@string/device_welcome_header"
             android:textColor="@color/green_400"
-            android:textSize="60sp"
+            android:textSize="@dimen/medium_24"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -28,12 +41,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="32dp"
             android:text="@string/device_welcome_text"
             android:textColor="@color/green_400"
-            android:textSize="16sp"
+            android:textSize="@dimen/small_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/welcomeText" />
+
+        <ImageView
+            android:id="@+id/examplePictureDev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/debugCreateDeviceButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/setupText"
+            app:srcCompat="@drawable/example_picture" />
 
         <Button
             android:id="@+id/debugCreateDeviceButton"
@@ -45,7 +69,9 @@
             android:stateListAnimator="@null"
             android:text="@string/skip_device_steps"
             android:textColor="@color/white"
-            android:textSize="21sp"
+            android:textSize="@dimen/small_16"
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/deviceLightConfirmation" />
@@ -55,16 +81,20 @@
             android:id="@+id/deviceLightConfirmation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="42dp"
+            android:layout_marginBottom="40dp"
             android:backgroundTint="@color/orange_300"
             android:elevation="8dp"
             android:stateListAnimator="@null"
             android:text="@string/device_welcome_btn"
             android:textColor="@color/white"
-            android:textSize="21sp"
+            android:textSize="@dimen/small_16"
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
+
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

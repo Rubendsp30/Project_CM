@@ -1,5 +1,8 @@
 package com.example.project_cm.Fragments.DeviceSetup;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,10 +12,14 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.project_cm.Activities.HomeActivity;
+import com.example.project_cm.Activities.LoginActivity;
+import com.example.project_cm.Fragments.HomeScreenFragment;
 import com.example.project_cm.Fragments.PetProfileCreationFragment;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
@@ -38,6 +45,21 @@ public class DevSetupInitial extends Fragment {
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Toolbar toolbar = view.findViewById(R.id.toolbarDevIni);
+        toolbar.setTitle(" ");
+
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(v -> {
+            SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("isLoggedIn", false);
+            editor.remove("loggedInUserId");
+            editor.apply();
+
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            startActivity(intent);
+            getActivity().finish();
+        });
 
         Button deviceLightConfirmation = view.findViewById(R.id.deviceLightConfirmation);
 
