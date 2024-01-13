@@ -34,11 +34,6 @@ public class HistoryViewModel extends AndroidViewModel {
 
         try {
             firestore = FirebaseFirestore.getInstance();
-            // Disable Firestore cache
-            /*FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                    .setLocalCacheSettings(MemoryCacheSettings.newBuilder().build())
-                    .build();
-            firestore.setFirestoreSettings(settings);*/
         } catch (Exception e) {
             Log.e("HistoryViewModel", "Error initializing HistoryViewModel: " + e.getMessage());
         }

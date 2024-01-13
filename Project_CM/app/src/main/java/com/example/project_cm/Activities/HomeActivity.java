@@ -59,8 +59,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentChangeLis
                         checkUserHasDevice(firestore, userId, this);
                     })
                     .addOnFailureListener(e -> Log.e("HomeActivity", "Error fetching user details: " + e.getMessage()));
-        }
-        else{
+        } else {
             redirectToLogin();
         }
 
@@ -74,7 +73,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentChangeLis
     private MQTTHelper setupMqtt() {
         ClientNameUtil.generateClientName();
         String clientName = ClientNameUtil.getClientName();
-        mqttHelper = MQTTHelper.getInstance(this,clientName);
+        mqttHelper = MQTTHelper.getInstance(this, clientName);
         mqttHelper.setCallback(new MqttCallbackExtended() {
 
             @Override
@@ -110,7 +109,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentChangeLis
                 if (task.isSuccessful() && !task.getResult().isEmpty()) {
                     List<String> deviceIds = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        deviceIds.add(document.getId()); // Assuming the document ID is the device ID
+                        deviceIds.add(document.getId());
                     }
                     mqttHelper.setDeviceIds(deviceIds);
                     // User has a device, load HomeScreenFragment
@@ -122,7 +121,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentChangeLis
             }
         }).addOnFailureListener(e -> {
             if (isActivityActive(activity)) {
-                //loadFragment(new DevSetupInitial(), "device_setup_initial");
+                Log.e("checkUserHasDevice", "Failure Listener");
             }
         });
     }

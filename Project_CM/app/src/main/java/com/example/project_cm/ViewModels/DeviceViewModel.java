@@ -8,11 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.project_cm.Callbacks.AuthCallback;
-import com.example.project_cm.Callbacks.EmailCheckCallback;
-import com.example.project_cm.Callbacks.UsernameCheckCallback;
 import com.example.project_cm.Device;
-import com.example.project_cm.User;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -25,30 +21,22 @@ import java.util.concurrent.Executors;
 public class DeviceViewModel extends ViewModel {
 
     private FirebaseFirestore firestore;
-    //private final MutableLiveData<Device> currentDevice = new MutableLiveData<>();
-    private  String currentDeviceId;
+    private String currentDeviceId;
     private static final String DEVICES_COLLECTION = "DEVICES";
     private final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
     private final Handler uiHandler = new Handler(Looper.getMainLooper());
     private final MutableLiveData<String> newDeviceId = new MutableLiveData<>();
 
 
-
-
     public DeviceViewModel() {
         try {
             firestore = FirebaseFirestore.getInstance();
-            // Disable Firestore cache
-            /*FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                    .setLocalCacheSettings(MemoryCacheSettings.newBuilder().build())
-                    .build();
-            firestore.setFirestoreSettings(settings);*/
         } catch (Exception e) {
             Log.e("DeviceViewModel", "Error initializing DeviceViewModel: " + e.getMessage());
         }
     }
 
-    public void registerDevice(Device device){
+    public void registerDevice(Device device) {
 
         networkExecutor.execute(() -> {
             DocumentReference documentReference;
@@ -70,6 +58,7 @@ public class DeviceViewModel extends ViewModel {
         networkExecutor.execute(() -> {
             firestore.collection(DEVICES_COLLECTION)
                     .whereEqualTo("user_id", userId)
+                    .orderBy("pet_id", Query.Direction.ASCENDING)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         ArrayList<Device> devices = new ArrayList<>();
@@ -87,9 +76,10 @@ public class DeviceViewModel extends ViewModel {
 
     public interface DeviceIdLoadCallback {
         void onDeviceIdLoaded(String DeviceId);
+
         void onError(Exception e);
     }
-    
+
     public void getDevicesForUserWidget(String userId, DeviceIdLoadCallback callback) {
         firestore.collection(DEVICES_COLLECTION)
                 .whereEqualTo("user_id", userId)
@@ -114,12 +104,12 @@ public class DeviceViewModel extends ViewModel {
     }
 
 
-
     public LiveData<ArrayList<Device>> listenForDeviceUpdates(String userId) {
         MutableLiveData<ArrayList<Device>> devicesLiveData = new MutableLiveData<>();
 
         firestore.collection(DEVICES_COLLECTION)
                 .whereEqualTo("user_id", userId)
+                .orderBy("pet_id", Query.Direction.ASCENDING)
                 .addSnapshotListener((snapshots, e) -> {
                     if (e != null) {
                         Log.e("listenForDeviceUpdates", "Listen failed", e);

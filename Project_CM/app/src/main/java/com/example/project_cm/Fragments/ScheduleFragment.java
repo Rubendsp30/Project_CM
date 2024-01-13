@@ -18,8 +18,6 @@ import com.example.project_cm.MQTTHelper;
 import com.example.project_cm.MealSchedule;
 
 import androidx.fragment.app.Fragment;
-
-import com.example.project_cm.Device;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.ScheduleViewModel;
 import com.example.project_cm.FragmentChangeListener;
@@ -40,7 +38,7 @@ public class ScheduleFragment extends Fragment {
     private NumberPicker numberPickerHour, numberPickerMinute;
     private SeekBar portionSeekBar;
     private Switch notificationSwitch;
-    private Button[] dayButtons = new Button[7];
+    private final Button[] dayButtons = new Button[7];
     private Button saveButton, cancelButton;
     private ScheduleViewModel mealScheduleViewModel;
     private MealSchedule existingMealSchedule;

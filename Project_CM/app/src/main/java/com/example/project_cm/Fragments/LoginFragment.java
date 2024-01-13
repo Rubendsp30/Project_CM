@@ -30,7 +30,8 @@ public class LoginFragment extends Fragment {
     private TextInputLayout passwordLoginLayout;
     private EditText usernameLogin;
     private EditText passwordLogin;
-    @Nullable private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
+    @Nullable
+    private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
     private UserViewModel userViewModel;
 
     @Override
@@ -88,29 +89,23 @@ public class LoginFragment extends Fragment {
         if (username.isEmpty()) {
             usernameLoginLayout.setError("Please enter a username");
             return; // Stop the method execution if validation fails
-        }
-        else{
+        } else {
             usernameLoginLayout.setError(null);
         }
 
         if (password.isEmpty()) {
             passwordLoginLayout.setError("Please enter a password");
-            return; // Stop the method execution if validation fails
-        }
-        else{
+            return;
+        } else {
             passwordLoginLayout.setError(null);
         }
 
         userViewModel.authenticateUser(username, SecurityUtils.hashPassword(password), (isAuthenticated, userId) -> {
             if (isAuthenticated) {
                 passwordLoginLayout.setError(null);
-                //String userId =;
                 saveLoggedInUser(getActivity(), userId);
-                // User authenticated, navigate to the next screen or show success message
                 goToHomeScreen();
-                // Navigate to next fragment or activity
             } else {
-                // Authentication failed, show error message
                 //TODO sETERROR on the field that is wrong
                 passwordLoginLayout.setError("Invalid username or password");
             }

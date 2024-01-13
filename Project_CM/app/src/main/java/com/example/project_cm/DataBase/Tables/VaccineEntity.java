@@ -10,8 +10,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import java.util.Date;
-
 
 @Entity(tableName = "vaccines",
         foreignKeys = @ForeignKey(entity = PetProfileEntity.class,

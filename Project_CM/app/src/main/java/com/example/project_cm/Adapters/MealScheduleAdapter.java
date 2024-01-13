@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,13 +29,13 @@ public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapte
     List<MealSchedule> mealScheduleList;
     @Nullable
     private final FragmentManager fragmentManager;
-    private String deviceId;
-    private ScheduleViewModel scheduleViewModel;
-    private DeviceViewModel deviceViewModel;
+    private final String deviceId;
+    private final ScheduleViewModel scheduleViewModel;
+    private final DeviceViewModel deviceViewModel;
     @Nullable
-    private com.example.project_cm.FragmentChangeListener fragmentChangeListener;
+    private final com.example.project_cm.FragmentChangeListener fragmentChangeListener;
 
-    public MealScheduleAdapter(@Nullable FragmentManager fragmentManager, List<MealSchedule> mealScheduleList, String deviceId, ScheduleViewModel scheduleViewModel, FragmentChangeListener fragmentChangeListener, DeviceViewModel deviceViewModel) {
+    public MealScheduleAdapter(@Nullable FragmentManager fragmentManager, List<MealSchedule> mealScheduleList, String deviceId, ScheduleViewModel scheduleViewModel, @Nullable FragmentChangeListener fragmentChangeListener, DeviceViewModel deviceViewModel) {
         this.mealScheduleList = mealScheduleList;
         this.fragmentManager = fragmentManager;
         this.deviceId = deviceId;

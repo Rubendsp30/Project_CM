@@ -1,81 +1,46 @@
 package com.example.project_cm.ViewModels;
 
 import android.app.Application;
-import android.os.Handler;
-import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.example.project_cm.DataBase.AppDatabase;
-import com.example.project_cm.DataBase.PetProfileDao;
-import com.example.project_cm.DataBase.Tables.PetProfileEntity;
 import com.example.project_cm.DataBase.Tables.VaccineEntity;
 import com.example.project_cm.DataBase.VaccineDao;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class VaccinesViewModel extends AndroidViewModel {
 
-    private VaccineDao vaccineDao;
+    private final VaccineDao vaccineDao;
     private final ExecutorService executorService;
-    private MutableLiveData<List<VaccineEntity>> vaccines;
-    private final Handler uiHandler = new Handler(Looper.getMainLooper());
-
-    public interface InsertCallback {
-        void onInsertCompleted(long vaccineId);
-    }
-
-    public interface UpdateCallback {
-        void onUpdateCompleted(long vaccineId);
-    }
 
     public VaccinesViewModel(@NonNull Application application) {
         super(application);
-
-        vaccines = new MutableLiveData<>();
 
         AppDatabase database = AppDatabase.getDBinstance(application.getApplicationContext());
         vaccineDao = database.vaccineDao();
         executorService = Executors.newSingleThreadExecutor();
     }
 
-    public LiveData<List<VaccineEntity>> getVaccines() {
-        return vaccines;
-    }
-
     // Retorna diretamente o LiveData do Room (não é necessário executor)
+    //todo adicionar executor
     public LiveData<List<VaccineEntity>> getVaccinesByPetProfileId(int petProfileId) {
         return vaccineDao.getVaccinesForPet(petProfileId);
     }
 
-    public void insertVaccine(VaccineEntity vaccine, InsertCallback callback) {
-        executorService.execute(() -> {
-            long rowId = vaccineDao.insertVaccineEntity(vaccine);
-            uiHandler.post(() -> {
-                if (callback != null) {
-                    callback.onInsertCompleted(rowId);
-                }
-            });
-        });
-    }
-
-    public void updateVaccine(VaccineEntity vaccine, UpdateCallback callback) {
+   public void insertVaccine(VaccineEntity vaccine) {
+       executorService.execute(() -> {
+           vaccineDao.insertVaccineEntity(vaccine);
+       });
+   }
+    public void updateVaccine(VaccineEntity vaccine) {
         executorService.execute(() -> {
             vaccineDao.updateVaccineEntity(vaccine);
-            uiHandler.post(() -> {
-                if (callback != null) {
-                    callback.onUpdateCompleted(vaccine.id);
-                }
-            });
         });
     }
 
@@ -83,7 +48,4 @@ public class VaccinesViewModel extends AndroidViewModel {
         executorService.execute(() -> vaccineDao.deleteVaccineEntity(vaccine));
     }
 
-    public void setVaccines(List<VaccineEntity> vaccineList) {
-        vaccines.setValue(vaccineList);
-    }
 }

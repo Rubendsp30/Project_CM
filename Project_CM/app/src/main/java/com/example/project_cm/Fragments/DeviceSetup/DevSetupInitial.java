@@ -42,7 +42,7 @@ public class DevSetupInitial extends Fragment {
         Button deviceLightConfirmation = view.findViewById(R.id.deviceLightConfirmation);
 
         deviceLightConfirmation.setOnClickListener(v -> transitionToTurnBleFragment());
-        //****************************************DEBUG ONLY***********************************************************************************************
+
         Button debugCreateDeviceButton = view.findViewById(R.id.debugCreateDeviceButton);
         String CHAR_LOWER = "abcdefghijklmnopqrstuvwxyz";
         String CHAR_UPPER = CHAR_LOWER.toUpperCase();
@@ -66,7 +66,7 @@ public class DevSetupInitial extends Fragment {
                 FragmentChangeListener.replaceFragment(fragment);
             }
         });
-        //****************************************DEBUG ONLY***********************************************************************************************
+
     }
 
 

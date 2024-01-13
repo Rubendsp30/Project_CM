@@ -17,11 +17,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.project_cm.Activities.HomeActivity;
 import com.example.project_cm.R;
-import com.example.project_cm.ViewModels.BluetoothViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +29,6 @@ public class DevWiFiScanFragment extends Fragment {
     private WifiManager wifiManager;
     private List<ScanResult> wifiList;
     private ArrayAdapter<String> adapter;
-    private ListView wifiListView;
 
     @Nullable
     private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
@@ -40,7 +37,6 @@ public class DevWiFiScanFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        BluetoothViewModel bluetoothViewModel = new ViewModelProvider(requireActivity()).get(BluetoothViewModel.class);
         wifiManager = (WifiManager) requireActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
     }
 
@@ -53,7 +49,7 @@ public class DevWiFiScanFragment extends Fragment {
         this.FragmentChangeListener = (HomeActivity) inflater.getContext();
 
         // Setup ListView
-        wifiListView = view.findViewById(R.id.listViewWifiNetworks);
+        ListView wifiListView = view.findViewById(R.id.listViewWifiNetworks);
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
         wifiListView.setAdapter(adapter);
 
@@ -66,7 +62,9 @@ public class DevWiFiScanFragment extends Fragment {
 
             WifiPasswordFragment fragment = new WifiPasswordFragment();
             fragment.setArguments(bundle);
-            FragmentChangeListener.replaceFragment(fragment);
+            if (FragmentChangeListener != null) {
+                FragmentChangeListener.replaceFragment(fragment);
+            }
         });
 
         // Start Wi-Fi Scan
@@ -90,7 +88,7 @@ public class DevWiFiScanFragment extends Fragment {
                 } else {
                     // handle failure in wifi scan
                 }
-                requireActivity().unregisterReceiver(this); // Don't forget to unregister this receiver
+                requireActivity().unregisterReceiver(this);
             }
         };
 

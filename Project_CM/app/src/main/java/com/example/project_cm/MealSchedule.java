@@ -1,13 +1,8 @@
 package com.example.project_cm;
 
-import com.google.type.DateTime;
 
 import java.io.Serializable;
-import com.google.firebase.firestore.PropertyName;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 
 public class MealSchedule implements Serializable {
@@ -18,8 +13,8 @@ public class MealSchedule implements Serializable {
     private boolean notification;
     private int portionSize;
 
-    public MealSchedule(String mealScheduleId, Date mealTime, Map<String, Boolean> repeatDays, boolean isActive, boolean notification, int portionSize) {
-        this.mealScheduleId = mealScheduleId;
+
+    public MealSchedule(Date mealTime, Map<String, Boolean> repeatDays, boolean isActive, boolean notification, int portionSize) {
         this.mealTime = mealTime;
         this.repeatDays = repeatDays;
         this.isActive = isActive;
@@ -27,15 +22,7 @@ public class MealSchedule implements Serializable {
         this.portionSize = portionSize;
     }
 
-    public MealSchedule( Date mealTime, Map<String, Boolean> repeatDays, boolean isActive, boolean notification, int portionSize) {
-        this.mealTime = mealTime;
-        this.repeatDays = repeatDays;
-        this.isActive = isActive;
-        this.notification = notification;
-        this.portionSize = portionSize;
-    }
-
-    public MealSchedule(){
+    public MealSchedule() {
 
     }
 

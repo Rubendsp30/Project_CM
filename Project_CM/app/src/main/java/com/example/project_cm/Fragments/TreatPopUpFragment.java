@@ -60,18 +60,15 @@ public class TreatPopUpFragment extends DialogFragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
                 treatSize = seekBar.getProgress();
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
             }
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // TODO Auto-generated method stub
 
                 portionTreatValue.setText(progress + "g");
 
@@ -90,7 +87,7 @@ public class TreatPopUpFragment extends DialogFragment {
             }
 
             @Override
-            public void messageArrived(String topic, MqttMessage message) throws Exception {
+            public void messageArrived(String topic, MqttMessage message) {
                 if (topic.equals("/project/treatAnswer/" + deviceViewModel.getCurrentDeviceId())) {
                     responseReceived = true;
                     Log.d("MQTT", "Response received: " + new String(message.getPayload()));
@@ -115,7 +112,7 @@ public class TreatPopUpFragment extends DialogFragment {
                             handler.postDelayed(() -> {
                                 dismiss();
                                 enableComponentsAndAllowDismiss();
-                            }, 3000); // 2000 milliseconds = 2 seconds
+                            }, 3000); // 3000 milliseconds = 3 seconds
 
                         } catch (Exception e) {
                             Log.e("MQTT", "Error updating UI: " + e.getMessage());
@@ -143,12 +140,11 @@ public class TreatPopUpFragment extends DialogFragment {
             }
 
             String topic = "/project/treat/" + deviceViewModel.getCurrentDeviceId();
-            String message = String.valueOf(treatSize); // Convert treatSize to string
+            String message = String.valueOf(treatSize);
             mqttHelper.publishToTopic(topic, message, 2);
 
             Log.e("Treat", "Treat size: " + treatSize + "g to " + deviceViewModel.getCurrentDeviceId());
 
-            // Reset the flag
             responseReceived = false;
 
             // Setup a delayed action to check the response

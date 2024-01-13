@@ -23,7 +23,6 @@ import com.example.project_cm.MQTTHelper;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
-import com.example.project_cm.FragmentChangeListener;
 import com.example.project_cm.ViewModels.UserViewModel;
 import com.example.project_cm.User;
 import com.example.project_cm.utils.ClientNameUtil;
@@ -41,7 +40,6 @@ public class PetProfileCreationFragment extends Fragment {
 
     // UI stuff
     private EditText inputName, inputAge, inputWeight, inputGender, inputMicrochip;
-    private Button saveButton;
     private ImageView profileImage;
     private User currentUser;
 
@@ -49,7 +47,6 @@ public class PetProfileCreationFragment extends Fragment {
     private boolean isEditMode = false;
     private long petProfileId = -1;
     private PetProfileEntity currentPetProfile;
-    private long newPetProfileId = 0;
 
     // Initialize fragment and check if it's opened in edit mode
     @Override
@@ -77,7 +74,7 @@ public class PetProfileCreationFragment extends Fragment {
         deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
         petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
         String clientName = ClientNameUtil.getClientName();
-        mqttHelper = MQTTHelper.getInstance(requireContext(),clientName);
+        mqttHelper = MQTTHelper.getInstance(requireContext(), clientName);
 
         return view;
     }
@@ -94,7 +91,7 @@ public class PetProfileCreationFragment extends Fragment {
         inputWeight = view.findViewById(R.id.inputWeight);
         inputGender = view.findViewById(R.id.inputGender);
         inputMicrochip = view.findViewById(R.id.inputMicrochip);
-        saveButton = view.findViewById(R.id.saveButton);
+        Button saveButton = view.findViewById(R.id.saveButton);
         profileImage = view.findViewById(R.id.profile_image);
 
         // Determine if editing an existing profile or creating a new one
@@ -164,7 +161,7 @@ public class PetProfileCreationFragment extends Fragment {
             float weight = Float.parseFloat(weightInput);
 
             if (currentUser == null) {
-                Toast.makeText(getContext(), "User must be logged in to create or edit a pet profile", Toast.LENGTH_SHORT).show();
+                Log.e("createPetProfile", "Null user");
                 return;
             }
 
@@ -217,7 +214,7 @@ public class PetProfileCreationFragment extends Fragment {
             DevSetupFinal fragment = new DevSetupFinal();
             FragmentChangeListener.replaceFragment(fragment);
         } else {
-            Toast.makeText(getContext(), "Activity must implement FragmentChangeListener", Toast.LENGTH_SHORT).show();
+            Log.e("transitionToDevSetFinal", "Activity must implement FragmentChangeListener");
         }
     }
 
@@ -229,12 +226,13 @@ public class PetProfileCreationFragment extends Fragment {
             return 1;
         }
     }
+
     private void returnToHomepage() {
         if (FragmentChangeListener != null) {
             HomeScreenFragment homeFragment = new HomeScreenFragment();
             FragmentChangeListener.replaceFragment(homeFragment);
         } else {
-            Toast.makeText(getContext(), "Activity must implement FragmentChangeListener", Toast.LENGTH_SHORT).show();
+            Log.e("returnToHomepage", "Activity must implement FragmentChangeListener");
         }
     }
 }

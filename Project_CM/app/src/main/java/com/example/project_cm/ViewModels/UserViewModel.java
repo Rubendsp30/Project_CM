@@ -28,17 +28,13 @@ public class UserViewModel extends ViewModel {
     public UserViewModel() {
         try {
             firestore = FirebaseFirestore.getInstance();
-            // Disable Firestore cache
-            /*FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                    .setLocalCacheSettings(MemoryCacheSettings.newBuilder().build())
-                    .build();
-            firestore.setFirestoreSettings(settings);*/
+
         } catch (Exception e) {
             Log.e("UserViewModel", "Error initializing UserViewModel: " + e.getMessage());
         }
     }
 
-    public void registerUser(User user){
+    public void registerUser(User user) {
 
         networkExecutor.execute(() -> {
             DocumentReference documentReference;
@@ -67,7 +63,6 @@ public class UserViewModel extends ViewModel {
                     })
                     .addOnFailureListener(e -> {
                         Log.e("checkUsernameExists", "Error checking if username exists: " + e.getMessage());
-                        //Check this after
                         uiHandler.post(() -> callback.onUsernameChecked(false));
                     });
         });
@@ -85,7 +80,6 @@ public class UserViewModel extends ViewModel {
                     })
                     .addOnFailureListener(e -> {
                         Log.e("checkEmailExists", "Error checking if email exists: " + e.getMessage());
-                        //Check this after
                         uiHandler.post(() -> callback.onEmailChecked(false));
                     });
         });
@@ -102,7 +96,6 @@ public class UserViewModel extends ViewModel {
                         boolean isAuthenticated = !queryDocumentSnapshots.isEmpty();
                         String userId;
                         if (isAuthenticated) {
-                            // Assuming the user ID is a field in the document
                             userId = queryDocumentSnapshots.getDocuments().get(0).getId();
                         } else {
                             userId = null;

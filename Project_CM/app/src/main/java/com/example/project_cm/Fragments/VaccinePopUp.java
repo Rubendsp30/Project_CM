@@ -22,7 +22,6 @@ import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
 import com.example.project_cm.ViewModels.VaccinesViewModel;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,12 +29,11 @@ import java.util.Locale;
 
 
 public class VaccinePopUp extends DialogFragment {
-    private TextView title;
     private EditText editName;
     private EditText editNextDose;
     private VaccineEntity vaccine;
     private PetProfileViewModel petProfileViewModel;
-    private VaccinesViewModel vaccinesViewModel;
+    private final VaccinesViewModel vaccinesViewModel;
     final Calendar calendar = Calendar.getInstance();
 
     // construtor para criar uma nova vacina
@@ -62,7 +60,7 @@ public class VaccinePopUp extends DialogFragment {
             Log.e("VaccinePopUp", "Error creating PetProfileViewModel: " + e.getMessage());
         }
 
-        title = dialogView.findViewById(R.id.title);
+        TextView title = dialogView.findViewById(R.id.title);
         editName = dialogView.findViewById(R.id.editName);
         editNextDose = dialogView.findViewById(R.id.editNextDose);
         ImageView deleteButton = dialogView.findViewById(R.id.deleteButton);
@@ -129,12 +127,7 @@ public class VaccinePopUp extends DialogFragment {
             newVaccine.petId = petProfileViewModel.getCurrentPet().getValue().id;
 
             Log.d("VaccinePopUp", "Creating new vaccine: " + newVaccine.petId);
-            vaccinesViewModel.insertVaccine(newVaccine, new VaccinesViewModel.InsertCallback() {
-                @Override
-                public void onInsertCompleted(long vaccineId) {
-                    Toast.makeText(getContext(), "Vaccine added successfully", Toast.LENGTH_SHORT).show();
-                }
-            });
+            vaccinesViewModel.insertVaccine(newVaccine);
         } catch (Exception e) {
             Toast.makeText(getContext(), "Error adding vaccine", Toast.LENGTH_SHORT).show();
         }
@@ -149,19 +142,13 @@ public class VaccinePopUp extends DialogFragment {
         if (validateNameVaccine(vacineNameString) && validateDateVaccine(vaccineDate)){
             vaccine.vaccineName = vacineNameString;
             vaccine.vaccineDate = vaccineDate.getTime();
-            vaccinesViewModel.updateVaccine(vaccine, new VaccinesViewModel.UpdateCallback() {
-                @Override
-                public void onUpdateCompleted(long vaccineId) {
-                    Toast.makeText(getContext(), "Vaccine updated successfully", Toast.LENGTH_SHORT).show();
-                }
-            });
-
+            vaccinesViewModel.updateVaccine(vaccine);
             dismiss();
         }
     }
 
     private boolean validateNameVaccine(String input) {
-        if (input == null) {
+        if (input.isEmpty()) {
             editName.setError("This field is required");
             return false;
         } else return true;

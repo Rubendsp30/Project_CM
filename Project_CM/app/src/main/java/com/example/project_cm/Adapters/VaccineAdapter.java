@@ -45,7 +45,7 @@ public class VaccineAdapter extends RecyclerView.Adapter<VaccineAdapter.VaccineV
         int daysLeft = vaccine.getDaysLeft();
 
         if (daysLeft <= 5) {
-            // Menos de 5 dias: vrmelho
+            // Menos de 5 dias: vermelho
             holder.textViewDaysLeft.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.red_300));
         } else if (daysLeft <= 10) {
             // Entre 6 e 10 dias: laranja

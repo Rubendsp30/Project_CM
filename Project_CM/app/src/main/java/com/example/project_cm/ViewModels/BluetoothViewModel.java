@@ -1,6 +1,9 @@
 package com.example.project_cm.ViewModels;
+
 import androidx.lifecycle.ViewModel;
+
 import android.bluetooth.BluetoothSocket;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -59,7 +62,6 @@ public class BluetoothViewModel extends ViewModel {
                     }
                 }
             } catch (IOException e) {
-                // Handle the exception
             }
         }).start();
     }

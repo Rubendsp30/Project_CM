@@ -1,17 +1,19 @@
 package com.example.project_cm.Fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.appcompat.widget.Toolbar;
+
 import android.widget.ProgressBar;
+
 import java.util.List;
 
 
@@ -33,7 +35,6 @@ public class FoodInfoFragment extends Fragment {
     private TextView textViewHumidity;
     private TextView textViewMealsLeft;
     private TextView textViewDaysLeft;
-    private TextView textViewFoodSupply;
 
     @Nullable
     @Override
@@ -43,7 +44,7 @@ public class FoodInfoFragment extends Fragment {
         scheduleViewModel = new ViewModelProvider(requireActivity()).get(ScheduleViewModel.class);
         deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
 
-        this.fragmentChangeListener = (HomeActivity)inflater.getContext();
+        this.fragmentChangeListener = (HomeActivity) inflater.getContext();
 
         String deviceId = deviceViewModel.getCurrentDeviceId();
 
@@ -56,7 +57,6 @@ public class FoodInfoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         //Textviews
-        textViewFoodSupply = view.findViewById(R.id.foodSupplyPercentage);
         textViewTemperature = view.findViewById(R.id.textViewTemperature);
         textViewHumidity = view.findViewById(R.id.textViewHumidity);
         textViewMealsLeft = view.findViewById(R.id.textViewMealsLeft);
@@ -90,12 +90,12 @@ public class FoodInfoFragment extends Fragment {
         });
 
         foodInfoViewModel.getHumidity().observe(getViewLifecycleOwner(), humidity -> {
-            textViewHumidity.setText( humidity + " " + "%");
+            textViewHumidity.setText(humidity + " " + "%");
         });
 
 
-
     }
+
     // Recalculate meals and days
     private void recalculateMealsAndDays() {
         if (foodInfoViewModel.getFoodSupply().getValue() != null && mealScheduleList != null) {
@@ -109,6 +109,7 @@ public class FoodInfoFragment extends Fragment {
                     textViewDaysLeft.setText("" + daysLeft));
         }
     }
+
     // Update the UI with food supply information
     private void updateFoodSupplyUI(View view, Integer foodSupply) {
         TextView textViewFoodSupply = view.findViewById(R.id.foodSupplyPercentage);

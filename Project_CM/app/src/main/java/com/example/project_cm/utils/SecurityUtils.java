@@ -5,7 +5,6 @@ import java.security.NoSuchAlgorithmException;
 
 public class SecurityUtils {
 
-    //TODO Add Salt to more complex encryption
     public static String hashPassword(String passwordToHash) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
