@@ -90,12 +90,10 @@ public class MQTTHelper {
 
     public void stop() {
         Log.e("MQTT", "Stoping MQTT");
-        //mqttAndroidClient.disconnect();
+        instance=null;
         mqttAndroidClient.unregisterResources();
         mqttAndroidClient.disconnect();
-        //mqttAndroidClient.close();
         Log.e("MQTT", "Stopped MQTT");
-        //mqttAndroidClient.disconnect();
 
     }
 

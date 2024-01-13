@@ -102,15 +102,7 @@ public class HomeScreenFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle menu item selections
-        //****************************************DEBUG ONLY***********************************************************************************************
-        if (item.getItemId() == R.id.action_logout) {
-            if (FragmentChangeListener != null) {
-                DevSetupInitial fragment = new DevSetupInitial();
-                FragmentChangeListener.replaceFragment(fragment);
-            }
-        }
-        //****************************************DEBUG ONLY***********************************************************************************************
-        else if (item.getItemId() == R.id.action_menu) {
+        if (item.getItemId() == R.id.action_menu) {
             if (FragmentChangeListener != null) {
                 MenuFragment menuFragment = new MenuFragment();
                 FragmentChangeListener.replaceFragment(menuFragment);
