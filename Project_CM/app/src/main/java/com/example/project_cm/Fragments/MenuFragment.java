@@ -64,14 +64,14 @@ public class MenuFragment extends Fragment {
             }
         });
 
-        // o PetProfile Vai ficar para ja assim improvisado
-      /*  Button profileButton = view.findViewById(R.id.about);
-        profileButton.setOnClickListener(v -> {
+        // Device Management
+        Button DeviceManagement = view.findViewById(R.id.devicemanagement);
+        DeviceManagement.setOnClickListener(v -> {
             if (fragmentChangeListener != null) {
-                fragmentChangeListener.replaceFragment(new PetProfileFragment());
+                fragmentChangeListener.replaceFragment(new DeviceManagementFragment());
             }
         });
-*/
+
         Button logoutButton = view.findViewById(R.id.action_logout);
         logoutButton.setOnClickListener(v -> {
             logoutUser();
