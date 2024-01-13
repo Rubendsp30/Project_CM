@@ -21,20 +21,22 @@ String ID_MQTT;
 char * letters = "abcdefghijklmnopqrstuvwxyz0123456789";
 
 // Define MQTT Topics
-#define TOPIC_TREAT "/project/treat/mDpgXGtgoKBU9g385F"
-#define TOPIC_TREAT_ANSWER "/project/treatAnswer/mDpgXGtgoKBU9g385F"
-#define TOPIC_UPDATE_MEALS "/project/updateMeals/mDpgXGtgoKBU9g385F"
-#define TOPIC_TEMPERATURE "/project/temperature/mDpgXGtgoKBU9g385F"
-#define TOPIC_HUMIDITY "/project/humidity/mDpgXGtgoKBU9g385F"
+#define TOPIC_TREAT "/project/treat/7fHkT29BzXpLqV4JsNwE"
+#define TOPIC_TREAT_ANSWER "/project/treatAnswer/7fHkT29BzXpLqV4JsNwE"
+#define TOPIC_UPDATE_MEALS "/project/updateMeals/7fHkT29BzXpLqV4JsNwE"
+#define TOPIC_TEMPERATURE "/project/temperature/7fHkT29BzXpLqV4JsNwE"
+#define TOPIC_HUMIDITY "/project/humidity/7fHkT29BzXpLqV4JsNwE"
+
 
 // Define Firebase credentials
 #define FIREBASE_PROJECT_ID "cm-project-pet"
 #define API_KEY "AIzaSyAhLyvKS0Fte6829SHSe9hmva2524gJBto"
 
 // Define Firebase paths
-#define MEAL_HISTORY_PATH "DEVICES/mDpgXGtgoKBU9g385F/MEALS_HISTORY/"
-#define MEAL_SCHEDULES_PATH "DEVICES/mDpgXGtgoKBU9g385F/MEAL_SCHEDULES"
-#define DELETE_MEAL_PATH "DEVICES/mDpgXGtgoKBU9g385F/MEAL_SCHEDULES/"
+#define MEAL_HISTORY_PATH "DEVICES/7fHkT29BzXpLqV4JsNwE/MEALS_HISTORY/"
+#define MEAL_SCHEDULES_PATH "DEVICES/7fHkT29BzXpLqV4JsNwE/MEAL_SCHEDULES"
+#define DELETE_MEAL_PATH "DEVICES/7fHkT29BzXpLqV4JsNwE/MEAL_SCHEDULES/"
+#define DEVICE_PATH "DEVICES/7fHkT29BzXpLqV4JsNwE"
 
 // Define MQTT Broker and PORT
 const char * BROKER_MQTT = "broker.hivemq.com";
@@ -212,7 +214,7 @@ void processMealSchedules(const String & firestoreData) {
 //todo, sem uso por enquanto mas é esta função q usamos para dar updates dos valores na firebase
 void updateValueInFirestore(int percentage) {
   // Define the document path
-  String documentPath = "DEVICES/mDpgXGtgoKBU9g385F";
+  String documentPath = DEVICE_PATH;
 
   // Prepare the data to update
   FirebaseJson json;
@@ -237,7 +239,7 @@ void updateValueInFirestore(int percentage) {
 //Temperature and humidity
 void updateTemperatureInFirestore(float temperature) {
   // Define the document path
-  String documentPath = "DEVICES/mDpgXGtgoKBU9g385F";
+  String documentPath = DEVICE_PATH;
 
   // Prepare the data to update
   FirebaseJson json;
@@ -257,7 +259,7 @@ void updateTemperatureInFirestore(float temperature) {
 
 void updateHumidityInFirestore(float humidity) {
   // Define the document path
-  String documentPath = "DEVICES/mDpgXGtgoKBU9g385F";
+  String documentPath = DEVICE_PATH;
 
   // Prepare the data to update
   FirebaseJson json;
@@ -407,10 +409,16 @@ void reconnectWiFi(void) {
   WiFi.begin(ssid, password); // Conecta na rede WI-FI
 
   Serial.print("* Connecting to Wifi ");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(100);
-    Serial.print(".");
-  }
+     int attempts = 0;
+      while (WiFi.status() != WL_CONNECTED && attempts < 30) {
+        delay(500);
+        Serial.print(".");
+        attempts++;
+      }
+    if  (attempts == 30) {
+      return;
+    }
+
   Serial.println("");
   Serial.print("* Successfully connected to Wi-Fi, with local IP: ");
   Serial.println(WiFi.localIP());
@@ -479,6 +487,7 @@ void reconnectMQTT(void) {
     } else {
       Serial.println("* Failed to connected to broker. Trying again in 2 seconds.");
       delay(2000);
+      return;
     }
   }
 }

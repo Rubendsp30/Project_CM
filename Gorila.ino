@@ -25,7 +25,7 @@
   //BLuetooth Stuff
   String incomingData = "";
   bool isBtOn;
-  #define  BT_NAME "ESP32-BT-rcL9kl2gSYbLusKe4N"
+  #define  BT_NAME "ESP32-BT-7fHkT29BzXpLqV4JsNwE"
 
   // Define random ID
   String ID_MQTT;
@@ -33,11 +33,11 @@
 
   // Define MQTT Topics
   #define TOPIC_TEST "/project/pet"
-  #define TOPIC_TREAT "/project/treat/rcL9kl2gSYbLusKe4N"
-  #define TOPIC_TREAT_ANSWER "/project/treatAnswer/rcL9kl2gSYbLusKe4N"
-  #define TOPIC_UPDATE_MEALS "/project/updateMeals/rcL9kl2gSYbLusKe4N"
-  #define TOPIC_TEMPERATURE "/project/temperature/rcL9kl2gSYbLusKe4N"
-  #define TOPIC_HUMIDITY "/project/humidity/rcL9kl2gSYbLusKe4N"
+  #define TOPIC_TREAT "/project/treat/7fHkT29BzXpLqV4JsNwE"
+  #define TOPIC_TREAT_ANSWER "/project/treatAnswer/7fHkT29BzXpLqV4JsNwE"
+  #define TOPIC_UPDATE_MEALS "/project/updateMeals/7fHkT29BzXpLqV4JsNwE"
+  #define TOPIC_TEMPERATURE "/project/temperature/7fHkT29BzXpLqV4JsNwE"
+  #define TOPIC_HUMIDITY "/project/humidity/7fHkT29BzXpLqV4JsNwE"
   
 
   // Define Firebase credentials
@@ -45,9 +45,10 @@
   #define API_KEY "AIzaSyAhLyvKS0Fte6829SHSe9hmva2524gJBto"
 
   // Define Firebase paths
-  #define MEAL_HISTORY_PATH "DEVICES/rcL9kl2gSYbLusKe4N/MEALS_HISTORY/"
-  #define MEAL_SCHEDULES_PATH "DEVICES/rcL9kl2gSYbLusKe4N/MEAL_SCHEDULES/"
-  #define DELETE_MEAL_PATH "DEVICES/rcL9kl2gSYbLusKe4N/MEAL_SCHEDULES/"
+  #define MEAL_HISTORY_PATH "DEVICES/7fHkT29BzXpLqV4JsNwE/MEALS_HISTORY/"
+  #define MEAL_SCHEDULES_PATH "DEVICES/7fHkT29BzXpLqV4JsNwE/MEAL_SCHEDULES/"
+  #define DELETE_MEAL_PATH "DEVICES/7fHkT29BzXpLqV4JsNwE/MEAL_SCHEDULES/"
+  #define DEVICE_PATH "DEVICES/7fHkT29BzXpLqV4JsNwE"
 
   // Define MQTT Broker and PORT
   const char * BROKER_MQTT = "broker.hivemq.com";
@@ -225,7 +226,7 @@
     //todo, sem uso por enquanto mas é esta função q usamos para dar updates dos valores na firebase
     void updateValueInFirestore(int percentage) {
       // Define the document path
-      String documentPath = "DEVICES/rcL9kl2gSYbLusKe4N";
+      String documentPath = DEVICE_PATH;
 
       // Prepare the data to update
       FirebaseJson json;
@@ -247,7 +248,7 @@
     //Temperature
     void updateTemperatureInFirestore(float temperature) {
       // Define the document path
-      String documentPath = "DEVICES/rcL9kl2gSYbLusKe4N";
+      String documentPath = DEVICE_PATH;
 
       // Prepare the data to update
       FirebaseJson json;
@@ -267,7 +268,7 @@
 
     void updateHumidityInFirestore(float humidity) {
       // Define the document path
-      String documentPath = "DEVICES/rcL9kl2gSYbLusKe4N";
+      String documentPath = DEVICE_PATH;
 
       // Prepare the data to update
       FirebaseJson json;
@@ -503,10 +504,16 @@
     WiFi.begin(ssid, password); // Conecta na rede WI-FI
 
     Serial.print("* Connecting to Wifi ");
-    while (WiFi.status() != WL_CONNECTED) {
-      delay(100);
-      Serial.print(".");
+     int attempts = 0;
+      while (WiFi.status() != WL_CONNECTED && attempts < 30) {
+        delay(500);
+        Serial.print(".");
+        attempts++;
+      }
+    if  (attempts == 30) {
+      return;
     }
+
     Serial.println("");
     Serial.print("* Successfully connected to Wi-Fi, with local IP: ");
     Serial.println(WiFi.localIP());
@@ -573,8 +580,9 @@
         MQTT.subscribe(TOPIC_HUMIDITY);
         MQTT.subscribe(TOPIC_TEMPERATURE);
       } else {
-        Serial.println("* Failed to connected to broker. Trying again in 2 seconds.");
+        Serial.println("* Failed to connected to broker. Trying again in 2 secons.");
         delay(2000);
+        return;
       }
     }
   }
@@ -709,26 +717,19 @@
           incomingData = "";
           checkWiFIAndMQTT();
         }
-
-        if (Serial.available() > 0) {
-        String receivedData = Serial.readStringUntil('\n'); // Read data until newline
-        receivedData.trim(); // Remove any whitespace
-
-          // Check if the received data is "CLEAR"
-          if (receivedData.equals("CLEAR")) {
-            clearWiFiCredentials();
-            Serial.println("WiFi credentials cleared.");
-          }
-        }
         
   }
-      delay(200);
-  /*
-      if (!isBtOn) {
-      checkWiFIAndMQTT();
-      //MQTT.loop();
-      }*/
-      
+  if (Serial.available() > 0) {
+      String receivedData = Serial.readStringUntil('\n'); // Read data until newline
+      receivedData.trim(); // Remove any whitespace
+
+        // Check if the received data is "CLEAR"
+        if (receivedData.equals("CLEAR")) {
+          clearWiFiCredentials();
+          Serial.println("WiFi credentials cleared.");
+        }
+      }
+
     if (isWiFiConnected) {
         
     checkWiFIAndMQTT();
