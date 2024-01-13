@@ -74,7 +74,7 @@ public class PetProfileCreationFragment extends Fragment {
         deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
         petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
         String clientName = ClientNameUtil.getClientName();
-        mqttHelper = MQTTHelper.getInstance(requireContext(), clientName);
+        mqttHelper = MQTTHelper.getInstance(requireContext(),clientName);
 
         return view;
     }
@@ -161,7 +161,7 @@ public class PetProfileCreationFragment extends Fragment {
             float weight = Float.parseFloat(weightInput);
 
             if (currentUser == null) {
-                Log.e("createPetProfile", "Null user");
+                Toast.makeText(getContext(), "User must be logged in to create or edit a pet profile", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -184,7 +184,7 @@ public class PetProfileCreationFragment extends Fragment {
                 // Atualiza o perfil existente
                 petProfileViewModel.updatePetProfile(currentPetProfile);
                 Toast.makeText(getContext(), "Pet Profile Updated", Toast.LENGTH_SHORT).show();
-                returnToHomepage();
+                returnToPetProfile();
             } else {
                 // Cria um novo perfil
                 petProfileViewModel.insertPetProfile(petProfile, new PetProfileViewModel.InsertCallback() {
@@ -213,8 +213,6 @@ public class PetProfileCreationFragment extends Fragment {
         if (FragmentChangeListener != null) {
             DevSetupFinal fragment = new DevSetupFinal();
             FragmentChangeListener.replaceFragment(fragment);
-        } else {
-            Log.e("transitionToDevSetFinal", "Activity must implement FragmentChangeListener");
         }
     }
 
@@ -226,13 +224,10 @@ public class PetProfileCreationFragment extends Fragment {
             return 1;
         }
     }
-
-    private void returnToHomepage() {
+    private void returnToPetProfile() {
         if (FragmentChangeListener != null) {
-            HomeScreenFragment homeFragment = new HomeScreenFragment();
-            FragmentChangeListener.replaceFragment(homeFragment);
-        } else {
-            Log.e("returnToHomepage", "Activity must implement FragmentChangeListener");
+            PetProfileFragment petProfileFragment = new PetProfileFragment();
+            FragmentChangeListener.replaceFragment(petProfileFragment);
         }
     }
 }
