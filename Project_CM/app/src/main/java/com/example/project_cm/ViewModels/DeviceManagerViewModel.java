@@ -1,39 +1,50 @@
 package com.example.project_cm.ViewModels;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-import com.example.project_cm.Device;
+import androidx.lifecycle.AndroidViewModel;
+import com.example.project_cm.DataBase.AppDatabase;
+import com.example.project_cm.DataBase.PetProfileDao;
+import com.example.project_cm.DataBase.Tables.PetProfileEntity;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.Query;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.app.Application;
 import android.util.Log;
 
-    public class DeviceManagerViewModel extends ViewModel {
+    public class DeviceManagerViewModel extends AndroidViewModel {
         private static final String DEVICES_COLLECTION = "DEVICES";
         private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-        private final MutableLiveData<List<Device>> devicesLiveData = new MutableLiveData<>();
+        private final PetProfileDao petProfileDao;
+        private final ExecutorService executorService;
 
-        public void checkUserHasDevice(String userId) {
-            firestore.collection(DEVICES_COLLECTION).whereEqualTo("user_id", userId)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                            List<Device> deviceList = new ArrayList<>();
-                            task.getResult().forEach(document -> {
-                                Device device = document.toObject(Device.class);
-                                deviceList.add(device);
-                            });
-                            Log.d("DeviceManagerVM", "Dispositivos encontrados: " + deviceList.size());
-                            devicesLiveData.postValue(deviceList);
-                        }
-                    });
+        public DeviceManagerViewModel(Application application) {
+            super(application);
+            AppDatabase database = AppDatabase.getDBinstance(application.getApplicationContext());
+            petProfileDao = database.petProfileDao();
+            executorService = Executors.newSingleThreadExecutor();
         }
 
-        public LiveData<List<Device>> getDevicesLiveData() {
-            return devicesLiveData;
+        public void deleteDevice(String deviceId, int petId) {
+            firestore.collection(DEVICES_COLLECTION).document(deviceId)
+                    .delete()
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("DeviceManagerVM", "Device successfully deleted from Firestore");
+                        deleteAssociatedPetAndVaccines(petId);
+                    })
+                    .addOnFailureListener(e -> Log.w("DeviceManagerVM", "Error deleting device", e));
         }
+
+        private void deleteAssociatedPetAndVaccines(int petId) {
+
+            executorService.execute(() -> {
+                PetProfileEntity pet = petProfileDao.getPetProfileById(petId);
+                if (pet != null) {
+                    petProfileDao.deletePetProfile(pet);
+
+                    Log.d("DeviceManagerVM", "Associated pet and vaccines deleted from Room");
+                }
+            });
+        }
+
+
     }
 

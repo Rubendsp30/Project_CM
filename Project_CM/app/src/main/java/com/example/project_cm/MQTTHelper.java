@@ -123,6 +123,17 @@ public class MQTTHelper {
 
     }
 
+    public void unsubscribeToDeviceTopics(String deviceId) {
+        Log.e("MQTT", "Unsubscribing");
+
+        String treatTopic = "/project/treat/" + deviceId;
+        unsubscribeToTopic(treatTopic);
+
+        String treatAnswerTopic = "/project/treatAnswer/" + deviceId;
+        unsubscribeToTopic(treatAnswerTopic);
+    }
+
+
     public void unsubscribeToTopic(String topic) {
         mqttAndroidClient.unsubscribe(topic, null, new IMqttActionListener() {
             @Override

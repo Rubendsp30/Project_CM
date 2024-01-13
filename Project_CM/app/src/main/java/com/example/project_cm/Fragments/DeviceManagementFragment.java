@@ -16,30 +16,21 @@
     import androidx.recyclerview.widget.RecyclerView;
 
     import com.example.project_cm.Activities.HomeActivity;
+    import com.example.project_cm.Device;
     import com.example.project_cm.FragmentChangeListener;
     import com.example.project_cm.Fragments.DeviceSetup.DevSetupInitial;
-    import com.example.project_cm.Fragments.HomeScreenFragment;
-    import com.example.project_cm.MQTTHelper;
 
-    import com.example.project_cm.User;
     import com.example.project_cm.ViewModels.UserViewModel;
-    import com.example.project_cm.utils.ClientNameUtil;
-    import com.google.firebase.firestore.FirebaseFirestore;
-    import com.google.firebase.firestore.Query;
-    import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-    //import com.example.project_cm.Adapters.DeviceManagerAdapter;
     import com.example.project_cm.R;
     import com.example.project_cm.ViewModels.DeviceViewModel;
-    import com.example.project_cm.ViewModels.UserViewModel;
-    import com.example.project_cm.ViewModels.DeviceManagerViewModel;
+
     import com.example.project_cm.Adapters.DeviceManagerAdapter;
     import com.example.project_cm.ViewModels.PetProfileViewModel;
     import java.util.ArrayList;
-    import com.example.project_cm.FragmentChangeListener;
+
     public class DeviceManagementFragment extends Fragment {
         private com.example.project_cm.FragmentChangeListener fragmentChangeListener;
-        private DeviceManagerViewModel deviceManagerViewModel;
         private DeviceViewModel deviceViewModel;
         private UserViewModel userViewModel;
         private RecyclerView recyclerView;
@@ -68,25 +59,29 @@
 
             PetProfileViewModel petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
             userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
-            deviceManagerViewModel = new ViewModelProvider(requireActivity()).get(DeviceManagerViewModel.class);
 
             recyclerView = view.findViewById(R.id.DeviceViewHolder);
             LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-
-            adapter = new DeviceManagerAdapter(new ArrayList<>(), petProfileViewModel, layoutInflater);
-            recyclerView.setAdapter(adapter);
 
             addDeviceButton = view.findViewById(R.id.AddDevice);
             addDeviceButton.setOnClickListener(v -> addNewDevice());
 
             String userId = getUserIdFromUserViewModel();
             Log.d("DeviceManagement", "UserID: " + userId);
-            deviceManagerViewModel.checkUserHasDevice(userId);
 
-            deviceManagerViewModel.getDevicesLiveData().observe(getViewLifecycleOwner(), devices -> {
-                Log.d("DeviceManagement", "Dispositivos carregados: " + devices.size());
-                adapter.setDevices(devices);
+            ArrayList<Device> managerDeviceList = new ArrayList<>();
+            adapter = new DeviceManagerAdapter(getChildFragmentManager(),managerDeviceList, petProfileViewModel, layoutInflater);
+            recyclerView.setAdapter(adapter);
+
+            deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
+            deviceViewModel.listenForDeviceUpdates(userId).observe(getViewLifecycleOwner(), devices -> {
+                managerDeviceList.clear();
+                managerDeviceList.addAll(devices);
                 adapter.notifyDataSetChanged();
+                if (devices.isEmpty()) {
+                    changeToDeviceSetup();
+                }
+
             });
 
             addDeviceButton.setOnClickListener(v -> {
@@ -103,6 +98,12 @@
 
         private String getUserIdFromUserViewModel() {
             return userViewModel.getCurrentUser().getValue().getUserID();
+        }
+
+        private void changeToDeviceSetup() {
+            if (fragmentChangeListener != null) {
+                fragmentChangeListener.replaceFragment(new DevSetupInitial());
+            }
         }
     }
 
