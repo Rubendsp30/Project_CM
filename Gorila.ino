@@ -33,11 +33,11 @@
 
   // Define MQTT Topics
   #define TOPIC_TEST "/project/pet"
-  #define TOPIC_TREAT "/project/treat/"
-  #define TOPIC_TREAT_ANSWER "/project/treatAnswer/"
-  #define TOPIC_UPDATE_MEALS "/project/updateMeals/"
-  #define TOPIC_TEMPERATURE "/project/temperature/"
-  #define TOPIC_HUMIDITY "/project/humidity/"
+  #define TOPIC_TREAT "/project/treat/rcL9kl2gSYbLusKe4N"
+  #define TOPIC_TREAT_ANSWER "/project/treatAnswer/rcL9kl2gSYbLusKe4N"
+  #define TOPIC_UPDATE_MEALS "/project/updateMeals/rcL9kl2gSYbLusKe4N"
+  #define TOPIC_TEMPERATURE "/project/temperature/rcL9kl2gSYbLusKe4N"
+  #define TOPIC_HUMIDITY "/project/humidity/rcL9kl2gSYbLusKe4N"
   
 
   // Define Firebase credentials
@@ -45,9 +45,9 @@
   #define API_KEY "AIzaSyAhLyvKS0Fte6829SHSe9hmva2524gJBto"
 
   // Define Firebase paths
-  #define MEAL_HISTORY_PATH "DEVICES/MEALS_HISTORY/"
-  #define MEAL_SCHEDULES_PATH "DEVICES/MEAL_SCHEDULES"
-  #define DELETE_MEAL_PATH "DEVICES/MEAL_SCHEDULES/"
+  #define MEAL_HISTORY_PATH "DEVICES/rcL9kl2gSYbLusKe4N/MEALS_HISTORY/"
+  #define MEAL_SCHEDULES_PATH "DEVICES/rcL9kl2gSYbLusKe4N/MEAL_SCHEDULES/"
+  #define DELETE_MEAL_PATH "DEVICES/rcL9kl2gSYbLusKe4N/MEAL_SCHEDULES/"
 
   // Define MQTT Broker and PORT
   const char * BROKER_MQTT = "broker.hivemq.com";
@@ -59,17 +59,17 @@
   bool isWiFiConnected = false;
   unsigned long lastMealCheckMillis = 0;
   const long mealCheckInterval = 60000;
-  float cal = 0;
+  float cal = 20;
   unsigned long lastSendTime = 0;
   const long threeHoursInMillis = 3 * 60 * 60 * 1000;
 
-  //////////////////////////////////////////////////
-  // End Include Wifi and communication libraries //
-  //////////////////////////////////////////////////
+//////////////////////////////////////////////////
+// End Include Wifi and communication libraries //
+//////////////////////////////////////////////////
 
-  //////////////////////////////////////////////
-  //     Equipment includes and defines       //
-  //////////////////////////////////////////////
+//////////////////////////////////////////////
+//     Equipment includes and defines       //
+//////////////////////////////////////////////
 
     //Loadcell
     #include "HX711.h"
@@ -98,13 +98,13 @@
 
 
 
-  //////////////////////////////////////////////
-  //   End Equipment includes and defines     //
-  //////////////////////////////////////////////
+//////////////////////////////////////////////
+//   End Equipment includes and defines     //
+//////////////////////////////////////////////
 
-  //////////////////////////////////////////////
-  //      Variables and fixed of feeder       //
-  //////////////////////////////////////////////
+//////////////////////////////////////////////
+//      Variables and fixed of feeder       //
+//////////////////////////////////////////////
     // Scale
     HX711 scale;
 
@@ -129,13 +129,13 @@
     // Global variable to store the schedule
     DynamicJsonDocument scheduleData(4096);
 
-  //////////////////////////////////////////////
-  //    End Variables and fixed of feeder     //
-  //////////////////////////////////////////////
+//////////////////////////////////////////////
+//    End Variables and fixed of feeder     //
+//////////////////////////////////////////////
 
-  //////////////////////////////////////////////
-  //        Aux functions for Firebase        //
-  //////////////////////////////////////////////
+//////////////////////////////////////////////
+//        Aux functions for Firebase        //
+//////////////////////////////////////////////
 
     // Generate Random ID to create doc for firebase
     String generateRandomID() {
@@ -225,16 +225,13 @@
     //todo, sem uso por enquanto mas é esta função q usamos para dar updates dos valores na firebase
     void updateValueInFirestore(int percentage) {
       // Define the document path
-      String documentPath = "DEVICES/";
+      String documentPath = "DEVICES/rcL9kl2gSYbLusKe4N";
 
       // Prepare the data to update
       FirebaseJson json;
 
       // Set the new value for the foodSuply field
       json.set("fields/foodSuply/integerValue", percentage);
-      //json.set("fields/sensor_temperature/doubleValue", temperature);
-      //json.set("fields/sensor_humidity/doubleValue", humidity);
-      
 
       // Update the document
       if (Firebase.Firestore.patchDocument( & firebaseData, FIREBASE_PROJECT_ID, "", documentPath, json.raw(), "foodSuply")) {
@@ -250,7 +247,7 @@
     //Temperature
     void updateTemperatureInFirestore(float temperature) {
       // Define the document path
-      String documentPath = "DEVICES/";
+      String documentPath = "DEVICES/rcL9kl2gSYbLusKe4N";
 
       // Prepare the data to update
       FirebaseJson json;
@@ -270,7 +267,7 @@
 
     void updateHumidityInFirestore(float humidity) {
       // Define the document path
-      String documentPath = "DEVICES/";
+      String documentPath = "DEVICES/rcL9kl2gSYbLusKe4N";
 
       // Prepare the data to update
       FirebaseJson json;
@@ -359,76 +356,87 @@
 //                 Bluetooth                //
 //////////////////////////////////////////////
 
-bool setupWifi(const String& ssid, const String& password) {
-    Serial.println("Connecting to Wi-Fi...");
-    WiFi.begin(ssid.c_str(), password.c_str());
+  bool setupWifi(const String& ssid, const String& password) {
+      Serial.println("Connecting to Wi-Fi...");
+      WiFi.begin(ssid.c_str(), password.c_str());
 
-    int attempts = 0;
-    while (WiFi.status() != WL_CONNECTED && attempts < 30) {
-      delay(500);
-      Serial.print(".");
-      attempts++;
+      int attempts = 0;
+      while (WiFi.status() != WL_CONNECTED && attempts < 30) {
+        delay(500);
+        Serial.print(".");
+        attempts++;
+      }
+
+      if (WiFi.status() == WL_CONNECTED) {
+        Serial.println("\nConnected to Wi-Fi.");
+        Serial.print("IP Address: ");
+        Serial.println(WiFi.localIP());
+        serialBT.println("CONNECTED");
+
+        preferences.putString("ssid", ssid);
+        preferences.putString("password", password);
+        isBtOn = false;
+        String boolToString = isBtOn ? "true" : "false";
+        preferences.putString("isBtOn", boolToString);
+        serialBT.end();
+        isWiFiConnected = true;
+        config.api_key = API_KEY;
+        auth.user.email = "feederdevice@test.com";
+        auth.user.password = "123456";
+        Firebase.begin( & config, & auth);
+        Firebase.reconnectWiFi(true);
+        readMealSchedulesFromFirestore();
+        return true;
+        
+      } else {
+        Serial.println("\nFailed to connect to Wi-Fi.");
+        isBtOn = true;
+        String boolToString = isBtOn ? "true" : "false";
+        preferences.putString("isBtOn", boolToString);
+        serialBT.println("FAILED");
+        return false;
+      }
     }
 
-    if (WiFi.status() == WL_CONNECTED) {
-      Serial.println("\nConnected to Wi-Fi.");
-      Serial.print("IP Address: ");
-      Serial.println(WiFi.localIP());
-      serialBT.println("CONNECTED");
-
-      preferences.putString("ssid", ssid);
-      preferences.putString("password", password);
-      isBtOn = false;
+    void clearWiFiCredentials() {
+      preferences.begin("wifi", false); 
+      Serial.println("Clearing WiFi credentials...");
+      preferences.clear();      
+      Serial.println("Credentials cleared.");
+      isBtOn = true; 
       String boolToString = isBtOn ? "true" : "false";
-      preferences.putString("isBtOn", boolToString);
-      serialBT.end();
-      isWiFiConnected = true;
-      return true;
-    } else {
-      Serial.println("\nFailed to connect to Wi-Fi.");
-      isBtOn = true;
-      String boolToString = isBtOn ? "true" : "false";
-      preferences.putString("isBtOn", boolToString);
-      serialBT.println("FAILED");
-      return false;
+      preferences.putString("isBtOn", boolToString);   
+      preferences.end(); 
+      ESP.restart();     
+      serialBT.begin(BT_NAME);
+      Serial.println("Restarting ESP32...");       
     }
-  }
 
-   void clearWiFiCredentials() {
-    preferences.begin("wifi", false); 
-    Serial.println("Clearing WiFi credentials...");
-    preferences.clear();      
-    Serial.println("Credentials cleared.");
-    isBtOn = true; 
-    String boolToString = isBtOn ? "true" : "false";
-    preferences.putString("isBtOn", boolToString);   
-    preferences.end(); 
-    ESP.restart();     
-    serialBT.begin(BT_NAME);
-    Serial.println("Restarting ESP32...");       
-  }
+      //Cleanup
+      void cleanup() {
+        preferences.end(); // Close the Preferences
+      }
+      void parseIncomingData(String data) {
+        // Assume the data format is "SSID:yourSSID;PASSWORD:yourPassword"
+        int ssidStart = data.indexOf("SSID:") + 5;
+        int ssidEnd = data.indexOf(";PASSWORD:");
+        ssid = data.substring(ssidStart, ssidEnd);
 
-    //Cleanup
-    void cleanup() {
-      preferences.end(); // Close the Preferences
-    }
-    void parseIncomingData(String data) {
-      // Assume the data format is "SSID:yourSSID;PASSWORD:yourPassword"
-      int ssidStart = data.indexOf("SSID:") + 5;
-      int ssidEnd = data.indexOf(";PASSWORD:");
-      ssid = data.substring(ssidStart, ssidEnd);
+        int passwordStart = ssidEnd + 10;
+        password = data.substring(passwordStart);
 
-      int passwordStart = ssidEnd + 10;
-      password = data.substring(passwordStart);
+        ssid.trim();
+        password.trim();
 
-      ssid.trim();
-      password.trim();
+        Serial.println("Received SSID: " + ssid);
+        Serial.println("Received Password: " + password);
 
-      Serial.println("Received SSID: " + ssid);
-      Serial.println("Received Password: " + password);
+        setupWifi(ssid, password);
+      }
 
-      setupWifi(ssid, password);
-    }
+//////////////////////////////////////////////
+//               End Bluetooth              //
+//////////////////////////////////////////////
 
 //////////////////////////////////////////////
 //                    Motor                 //
@@ -454,9 +462,9 @@ bool setupWifi(const String& ssid, const String& password) {
 
   //void feed(float cal,int amount) { 
   void feed(float cal,int amount) {
-    float turns = 50 / cal;  //  to get how many turns to get 50g
+    float turns = amount / cal;  //  to get how many turns to get the desired amount
     //float turns = 50 / 103; // todo, visto q disseste q 1 turn = 103g mudei a conta para calcular automaticamente
-    for (int i = 0; i <= amount; i = i + 50) {
+    for (int i = 0; i <= amount; i = i + amount) {
       stepper(turns, step, HIGH); //1 turn = 4000 steps = 103g
       stepper(0.2, step, LOW); //spins backwards chug control  
     }
@@ -464,12 +472,12 @@ bool setupWifi(const String& ssid, const String& password) {
       float t = dht.readTemperature();
       digitalWrite(enable_motor, HIGH);
 
-      int simulatedWeightReduction = amount; // Quantidade de comida dispensada
+     // int simulatedWeightReduction = amount; // Quantidade de comida dispensada
       int currentWeight = scale.get_units(); // Peso atual
-      int newSimulatedWeight = currentWeight - simulatedWeightReduction;
+     // int newSimulatedWeight = currentWeight - simulatedWeightReduction;
 
       int totalCapacity = 1230; // Capacidade total em gramas
-      int percentageRemaining = (newSimulatedWeight * 100) / totalCapacity;
+      int percentageRemaining = (currentWeight * 100) / totalCapacity;
       Serial.print("Valor sendo enviado para a Firebase: ");
       Serial.println(percentageRemaining);
       Serial.println(t);
@@ -574,7 +582,7 @@ bool setupWifi(const String& ssid, const String& password) {
   // Checks both Wi-Fi and MQTT state, and reconnects if something failed.
   void checkWiFIAndMQTT(void) {
     if (!MQTT.connected())
-      reconnectMQTT();
+    reconnectMQTT();
     reconnectWiFi();
   }
 
@@ -643,28 +651,13 @@ bool setupWifi(const String& ssid, const String& password) {
 //////////////////////////////////////////////
   void setup() {
     Serial.begin(115200);
-    //clearWiFiCredentials();
-    preferences.begin("wifi", false);
-    randomSeed(analogRead(0));
-    //Mqtt and wifi start
-    //startWifi();
-    ssid = preferences.getString("ssid", "");
-    password = preferences.getString("password", ""); 
-    String storedValue = preferences.getString("isBtOn", "true"); // Default to "true" if not set
-    isBtOn = (storedValue == "true");
-    initMQTT();
-      if (ssid != "" && password != "") {
-      startWifi();
-      return;
-    }
-    serialBT.begin(BT_NAME);
-    //Feeder stuff
+      //Feeder stuff
     dht.begin();
     // Setup Serial connection
     Wire.begin(SDA_PIN, SCL_PIN);
     URTCLIB_WIRE.begin();
     
-   // rtc.set(0, 55, 22, 1, 19, 12, 24);
+    //rtc.set(0, 30, 19, 5, 12, 1, 24);
     //RTCLib::set(byte second, byte minute, byte hour, byte dayOfWeek, byte dayOfMonth, byte month, byte year)
 
     scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
@@ -677,6 +670,26 @@ bool setupWifi(const String& ssid, const String& password) {
     pinMode(step, OUTPUT);
     pinMode(dirPin, OUTPUT);
     pinMode(enable_motor, OUTPUT);
+
+    //clearWiFiCredentials();
+
+    preferences.begin("wifi", false);
+    randomSeed(analogRead(0));
+    //Mqtt and wifi start
+    //startWifi();
+    ssid = preferences.getString("ssid", "");
+    password = preferences.getString("password", ""); 
+    String storedValue = preferences.getString("isBtOn", "true"); // Default to "true" if not set
+    isBtOn = (storedValue == "true");
+    initMQTT();
+
+      if (ssid != "" && password != "") {
+      startWifi();
+      return;
+    }
+    
+    serialBT.begin(BT_NAME);
+  
   }
 //////////////////////////////////////////////
 //                End Setup                 //
@@ -710,12 +723,12 @@ bool setupWifi(const String& ssid, const String& password) {
         
   }
       delay(200);
-/*
-    if (!isBtOn) {
-    checkWiFIAndMQTT();
-    //MQTT.loop();
-    }*/
-    
+  /*
+      if (!isBtOn) {
+      checkWiFIAndMQTT();
+      //MQTT.loop();
+      }*/
+      
     if (isWiFiConnected) {
         
     checkWiFIAndMQTT();
@@ -748,8 +761,8 @@ bool setupWifi(const String& ssid, const String& password) {
       
       
     Serial.println("RTC DateTime: " + String(rtc.year()) + '/' + String(rtc.month()) + '/' + String(rtc.day()) + ' ' + String(rtc.hour()) + ':' + String(rtc.minute()) + ':' + String(rtc.second()) + " DOW: " + String(rtc.dayOfWeek()));
-
-    delay(2000);
+    
+    delay(3000);
     MQTT.loop();
     }
   }
