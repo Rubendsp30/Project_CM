@@ -3,6 +3,8 @@ package com.example.project_cm.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -29,6 +31,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity implements FragmentChangeListener {
     private static final String USERS_COLLECTION = "USERS";
@@ -39,6 +42,8 @@ public class HomeActivity extends AppCompatActivity implements FragmentChangeLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setLocale();
+
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_home);
 
@@ -63,6 +68,17 @@ public class HomeActivity extends AppCompatActivity implements FragmentChangeLis
             redirectToLogin();
         }
 
+    }
+
+    private void setLocale() {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        String language = sharedPreferences.getString("language", "en"); // Default to English
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        Resources resources = getResources();
+        Configuration configuration = resources.getConfiguration();
+        configuration.locale = locale;
+        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
     }
 
     private String getLoggedInUserId() {

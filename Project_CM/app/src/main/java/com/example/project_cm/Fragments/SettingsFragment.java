@@ -1,5 +1,7 @@
 package com.example.project_cm.Fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -120,6 +122,11 @@ public class SettingsFragment extends Fragment {
             Configuration config = resources.getConfiguration();
             config.locale = local;
             resources.updateConfiguration(config, dm);
+
+            SharedPreferences sharedPreferences = getContext().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("language", selectedLanguage);
+            editor.apply();
 
             // faz reload da página
             getActivity().recreate();
