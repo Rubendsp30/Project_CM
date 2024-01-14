@@ -715,7 +715,6 @@
         if (receivedChar == '\n') {
           parseIncomingData(incomingData);
           incomingData = "";
-          checkWiFIAndMQTT();
         }
         
   }

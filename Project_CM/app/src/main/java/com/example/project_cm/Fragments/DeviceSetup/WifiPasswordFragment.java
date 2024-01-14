@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -52,8 +54,13 @@ public class WifiPasswordFragment extends Fragment {
 
         ssidEditText.setText(selectedSSID);
 
-        TextView changeSSID = view.findViewById(R.id.selectOtherText);
-        changeSSID.setOnClickListener(v -> transitionToWifiScanFragment());
+        Toolbar toolbar = view.findViewById(R.id.toolbarWifiPass);
+        toolbar.setTitle(" ");
+
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(v -> {
+            transitionToWifiScanFragment();
+        });
 
         connectButton.setOnClickListener(v -> {
             String password = passwordEditText.getText().toString();

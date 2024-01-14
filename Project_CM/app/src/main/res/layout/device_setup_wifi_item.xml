@@ -12,7 +12,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="TESTE"
         android:textSize="@dimen/small_16" />
 
     <ImageView
@@ -21,7 +20,7 @@
         android:layout_height="24dp"
         android:layout_marginEnd="12dp"
         android:src="@drawable/lock_wifi"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/imageViewSignalStrength"

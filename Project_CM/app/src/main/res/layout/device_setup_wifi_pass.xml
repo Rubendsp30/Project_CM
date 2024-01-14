@@ -10,14 +10,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarWifiPass"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/arrowleft2">
+
+        </androidx.appcompat.widget.Toolbar>
+
         <TextView
             android:id="@+id/wifi_setup_header"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="40dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="107dp"
+            android:layout_marginBottom="64dp"
+            android:fontFamily="@font/poppins_medium"
+            android:textAlignment="center"
             android:text="@string/fill_the_password_of_your_network"
             android:textColor="@color/green_400"
-            android:textSize="21sp"
+            android:textSize="@dimen/medium_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/box" />
@@ -26,7 +41,7 @@
             android:id="@+id/box"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="50dp"
+            android:layout_marginHorizontal="40dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,38 +54,29 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/wifi"
                 android:textColorHint="@color/green_400"
-                app:startIconTint="@color/green_400"
+                app:startIconTint="@color/green_200"
                 app:boxCornerRadiusBottomEnd="30dp"
                 app:boxCornerRadiusBottomStart="30dp"
                 app:boxCornerRadiusTopEnd="30dp"
                 app:boxCornerRadiusTopStart="30dp"
-                app:startIconDrawable="@drawable/signal_wifi_4_bar"
-                app:boxStrokeColor="@color/green_400"
+                app:startIconDrawable="@drawable/baseline_signal_wifi_4_bar_24"
+                app:boxStrokeColor="@color/green_200"
                 app:counterTextColor="@color/green_400"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:boxStrokeWidth="0dp"
                 android:backgroundTint="@color/green_400">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/wifiSSID"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/small_16"
                     android:enabled="false"
                     android:textColor="@color/green_400"/>
 
             </com.google.android.material.textfield.TextInputLayout>
-            <TextView
-                android:id="@+id/selectOtherText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/select_another"
-                android:textColor="@color/orange_300"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="@id/wifiSSIDLayout"
-                app:layout_constraintTop_toTopOf="@id/wifiSSIDLayout"
-                app:layout_constraintBottom_toBottomOf="@id/wifiSSIDLayout" />
             <!--Wifi top-->
 
             <!--Password down-->
@@ -100,7 +106,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/small_16"
                     android:textColor="@color/green_400"
 
                     />
@@ -113,15 +119,18 @@
 
         <Button
             android:id="@+id/connectButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="42dp"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginBottom="40dp"
             android:backgroundTint="@color/orange_300"
             android:elevation="8dp"
             android:stateListAnimator="@null"
             android:text="@string/connect"
             android:textColor="@color/white"
-            android:textSize="21sp"
+            android:textSize="@dimen/small_16"
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
