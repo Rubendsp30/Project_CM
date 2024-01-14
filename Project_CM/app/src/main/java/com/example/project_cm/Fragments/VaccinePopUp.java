@@ -163,7 +163,20 @@ public class VaccinePopUp extends DialogFragment {
     }
 
     private boolean validateDateVaccine(Date dataString) {
-        if (dataString.getTime() < System.currentTimeMillis()) {
+        Calendar calendarVaccine = Calendar.getInstance();
+        calendarVaccine.setTime(dataString);
+        calendarVaccine.set(Calendar.HOUR_OF_DAY, 0);
+        calendarVaccine.set(Calendar.MINUTE, 0);
+        calendarVaccine.set(Calendar.SECOND, 0);
+        calendarVaccine.set(Calendar.MILLISECOND, 0);
+
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        today.set(Calendar.MILLISECOND, 0);
+
+        if (calendarVaccine.before(today)) {
             editNextDose.setError("Earlier dates are not accepted!");
             return false;
         } else return true;
