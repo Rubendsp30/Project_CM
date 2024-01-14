@@ -88,7 +88,6 @@ public class ScheduleFragment extends Fragment {
         numberPickerHour = view.findViewById(R.id.numberPickerHour);
         numberPickerMinute = view.findViewById(R.id.numberPickerMinute);
         portionSeekBar = view.findViewById(R.id.portionSeekBar);
-        notificationSwitch = view.findViewById(R.id.switch1);
         saveButton = view.findViewById(R.id.saveButton);
         cancelButton = view.findViewById(R.id.cancelButton);
 
@@ -134,8 +133,9 @@ public class ScheduleFragment extends Fragment {
         for (Button dayButton : dayButtons) {
             dayButton.setOnClickListener(v -> {
                 v.setSelected(!v.isSelected());
-                v.getBackground().setTint(v.isSelected() ? getResources().getColor(R.color.orange_100) : getResources().getColor(R.color.orange_300));
+                v.getBackground().setTint(v.isSelected() ? getResources().getColor(R.color.orange_300) : getResources().getColor(R.color.orange_100));
             });
+            dayButton.getBackground().setTint(getResources().getColor(R.color.orange_300, null));
         }
     }
 
