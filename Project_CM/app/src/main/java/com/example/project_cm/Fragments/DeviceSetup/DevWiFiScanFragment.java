@@ -16,10 +16,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.project_cm.Activities.HomeActivity;
+import com.example.project_cm.Adapters.WifiNetworkAdapter;
 import com.example.project_cm.R;
+import com.example.project_cm.ViewModels.BluetoothViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +34,7 @@ public class DevWiFiScanFragment extends Fragment {
     private WifiManager wifiManager;
     private List<ScanResult> wifiList;
     private ArrayAdapter<String> adapter;
+    private List<String> networkNames;
 
     @Nullable
     private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
@@ -38,7 +44,9 @@ public class DevWiFiScanFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         wifiManager = (WifiManager) requireActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        networkNames = new ArrayList<>(); // Initialize networkNames here
     }
+
 
     @Nullable
     @Override
@@ -47,14 +55,26 @@ public class DevWiFiScanFragment extends Fragment {
 
         // Initialize the FragmentChangeListener
         this.FragmentChangeListener = (HomeActivity) inflater.getContext();
+        Toolbar toolbar = view.findViewById(R.id.toolbarScanWifi);
+        toolbar.setTitle(" ");
+
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(v -> {
+            if (FragmentChangeListener != null) {
+                disconnectBluetooth();
+                FragmentChangeListener.replaceFragment(new DevSetupTurnBle());
+            }
+        });
 
         // Setup ListView
         ListView wifiListView = view.findViewById(R.id.listViewWifiNetworks);
-        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
+        adapter = new WifiNetworkAdapter(getContext(), new ArrayList<>());
         wifiListView.setAdapter(adapter);
 
+
         wifiListView.setOnItemClickListener((adapterView, view1, position, id) -> {
-            String networkSSID = wifiList.get(position).SSID;
+            String fullString = adapter.getItem(position);
+            String networkSSID = fullString.split(" (?=\\()|(?<=\\)) | \\[")[0];
 
             Bundle bundle = new Bundle();
             bundle.putString("SSID", networkSSID);
@@ -99,17 +119,31 @@ public class DevWiFiScanFragment extends Fragment {
         wifiManager.startScan();
     }
 
+
     private void displayWifiList() {
         wifiList = wifiManager.getScanResults();
-        List<String> networkNames = new ArrayList<>();
-        for (ScanResult scanResult : wifiList) {
-            if (scanResult.SSID != null && !scanResult.SSID.isEmpty()) {
-                networkNames.add(scanResult.SSID);
+        if (networkNames != null) {
+            networkNames.clear();
+            for (ScanResult scanResult : wifiList) {
+                if (scanResult.SSID != null && !scanResult.SSID.isEmpty()) {
+                    String securityInfo = scanResult.capabilities.contains("WEP") || scanResult.capabilities.contains("WPA") || scanResult.capabilities.contains("WPA2") ? "Secured" : "Open";
+                    networkNames.add(scanResult.SSID + " (" + securityInfo + ") [" + WifiManager.calculateSignalLevel(scanResult.level, 5) + "]");
+                }
             }
+            adapter.clear();
+            adapter.addAll(networkNames);
+            adapter.notifyDataSetChanged();
         }
-        adapter.clear();
-        adapter.addAll(networkNames);
-        adapter.notifyDataSetChanged();
     }
+
+    private void disconnectBluetooth() {
+        // Access the BluetoothViewModel from the activity
+        BluetoothViewModel bluetoothViewModel = new ViewModelProvider(requireActivity()).get(BluetoothViewModel.class);
+        bluetoothViewModel.disconnectBluetooth();
+    }
+
+
+
+
 
 }

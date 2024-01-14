@@ -109,4 +109,5 @@
     <string name="language">Language</string>
     <string name="new_vaccine">New Vaccine</string>
     <string name="next_dose">Next Dose</string>
+    <string name="choose_your_wi_fi_network">Choose your Wi-Fi Network</string>
 </resources>

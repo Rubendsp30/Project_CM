@@ -69,7 +69,7 @@
             android:stateListAnimator="@null"
             android:text="@string/turn_ble_btn"
             android:textColor="@color/white"
-            android:textSize="21sp"
+            android:textSize="@dimen/small_16"
             android:paddingVertical="10dp"
             android:paddingHorizontal="32dp"
             app:layout_constraintBottom_toBottomOf="parent"
