@@ -47,6 +47,7 @@ public class PetProfileAdapter extends RecyclerView.Adapter<PetProfileAdapter.Pe
     @Override
     public void onBindViewHolder(@NonNull PetProfileAdapter.PetProfileViewHolder holder, int position) {
         PetProfileEntity petProfile = petProfiles.get(position);
+        holder.petProfileImageView.setVisibility(View.GONE);
         petProfileViewModel.getPetProfileById(petProfile.id).observe(lifecycleOwner, petProfileEntity -> {
             if (petProfileEntity != null) {
                 holder.petNameTextView.setText(petProfile.name);
@@ -57,10 +58,11 @@ public class PetProfileAdapter extends RecyclerView.Adapter<PetProfileAdapter.Pe
                 if (petProfile.photoPath != null && !petProfile.photoPath.isEmpty()) {
                     File imgFile = new File(petProfile.photoPath);
                     if (imgFile.exists()) {
+                        holder.petProfileImageView.setVisibility(View.VISIBLE);
                         Picasso.get().load(imgFile).into(holder.petProfileImageView);
-                        Log.d("PetProfileAdapter", "Carregando imagem para o pet: " + petProfile.name);
                     }else {
-                        Log.d("PetProfileAdapter", "Caminho da imagem não encontrado: " + petProfile.photoPath);
+                        holder.petProfileImageView.setVisibility(View.VISIBLE);
+                        holder.petProfileImageView.setImageResource(R.drawable.lovely_pet_portrait_isolated);
                     }
                 }
             }

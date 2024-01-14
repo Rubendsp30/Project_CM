@@ -55,6 +55,8 @@ public class PetProfileCreationFragment extends Fragment {
     private DeviceViewModel deviceViewModel;
     private MQTTHelper mqttHelper;
     private static final int PICK_IMAGE_REQUEST = 1;
+    private String tempImagePath;
+
 
     // Nullable as it may not be initialized if the fragment is not attached to an activity
     @Nullable
@@ -100,6 +102,8 @@ public class PetProfileCreationFragment extends Fragment {
         petProfileViewModel = new ViewModelProvider(requireActivity()).get(PetProfileViewModel.class);
         String clientName = ClientNameUtil.getClientName();
         mqttHelper = MQTTHelper.getInstance(requireContext(), clientName);
+        currentPetProfile = new PetProfileEntity();
+        tempImagePath = null;
 
         return view;
     }
@@ -112,8 +116,7 @@ public class PetProfileCreationFragment extends Fragment {
 
         // UI things
         profileImage = view.findViewById(R.id.profile_image);
-        //todo what is this
-        petProfileViewModel.getCurrentPet().observe(getViewLifecycleOwner(), this::loadPetImage);
+        //petProfileViewModel.getCurrentPet().observe(getViewLifecycleOwner(), this::loadPetImage);
         inputName = view.findViewById(R.id.inputName);
         inputAge = view.findViewById(R.id.inputAge);
         inputWeight = view.findViewById(R.id.inputWeight);
@@ -209,14 +212,14 @@ public class PetProfileCreationFragment extends Fragment {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             Uri imageUri = data.getData();
 
-            String imagePath = saveImageToInternalStorage(imageUri);
+            tempImagePath = saveImageToInternalStorage(imageUri);
             if (currentPetProfile == null) {
                 currentPetProfile = new PetProfileEntity();
             }
-
+            /*
             currentPetProfile.photoPath = imagePath;
             Log.d("PetProfileEdit", "Caminho da imagem atualizado: " + imagePath);
-            petProfileViewModel.updatePetProfile(currentPetProfile);
+            petProfileViewModel.updatePetProfile(currentPetProfile);*/
             profileImage.setImageURI(imageUri);
         }
     }
@@ -287,6 +290,10 @@ public class PetProfileCreationFragment extends Fragment {
         String ageInput = inputAge.getText().toString();
         String weightInput = inputWeight.getText().toString();
         String gender;
+        if (tempImagePath != null) {
+
+            currentPetProfile.photoPath = tempImagePath;
+        }
         int selectedGenderId = genderRadioGroup.getCheckedRadioButtonId();
         String microchip = inputMicrochip.getText().toString();
 

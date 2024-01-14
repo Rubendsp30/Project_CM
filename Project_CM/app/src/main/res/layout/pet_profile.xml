@@ -19,6 +19,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/pet_profile"
+            android:textSize="@dimen/medium_24"
+            android:textColor="@color/green_400"
+            android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
     </androidx.appcompat.widget.Toolbar>
 
