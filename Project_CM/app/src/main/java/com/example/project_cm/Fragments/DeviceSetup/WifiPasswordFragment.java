@@ -1,6 +1,8 @@
 package com.example.project_cm.Fragments.DeviceSetup;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.project_cm.Activities.HomeActivity;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.BluetoothViewModel;
+import com.google.android.material.textfield.TextInputLayout;
 
 
 public class WifiPasswordFragment extends Fragment {
@@ -51,6 +54,28 @@ public class WifiPasswordFragment extends Fragment {
         EditText ssidEditText = view.findViewById(R.id.wifiSSID);
         EditText passwordEditText = view.findViewById(R.id.passwordWifi);
         Button connectButton = view.findViewById(R.id.connectButton);
+        TextInputLayout passwordWifiLayout = view.findViewById(R.id.passwordWifiLayout);
+        bluetoothViewModel.getPasswordError().observe(getViewLifecycleOwner(), hasError -> {
+            if (hasError) {
+                passwordWifiLayout.setError("Connection failed. Please check the password and try again.");
+            }
+        });
+
+        passwordEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                passwordWifiLayout.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
 
         ssidEditText.setText(selectedSSID);
 

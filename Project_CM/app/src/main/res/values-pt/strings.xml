@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Create Account page -->
-    <string name="app_name">Projeto_CM</string>
+    <string name="app_name">PetFeeder</string>
     <string name="create_account_header">Criar Conta</string>
     <string name="create_account_username_hint">Nome de utilizador</string>
     <string name="create_account_email_hint">Email</string>

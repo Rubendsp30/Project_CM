@@ -13,8 +13,8 @@
     </style>
 
     <style name="CustomSwitch" parent="Widget.MaterialComponents.CompoundButton.Switch">
-        <item name="thumbTint">@color/white_background</item>
-        <item name="trackTint">@color/orange_300</item>
+        <item name="thumbTint">@color/white</item>
+        <item name="trackTint">@color/switch_track_color</item>
     </style>
 
 </resources>

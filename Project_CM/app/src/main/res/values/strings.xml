@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Project_CM</string>
+    <string name="app_name">PetFeeder</string>
 
 
     <!-- Create Acount page -->
@@ -23,13 +23,21 @@
 
     <string name="scan_bt_header">Looking for equipment</string>
     <string name="scan_bt_text">Don’t turn off the application</string>
-    <string name="don_t_turn_off_the_equipmen">Don’t turn off the equipmen</string>
+    <string name="don_t_turn_off_the_equipmen">Don’t turn off the equipment</string>
     <string name="connecting">Connecting</string>
     <string name="create_profile">Create Profile</string>
     <string name="all_set">All set!</string>
-    <string name="everything_is_ready_now">Everything is ready! Now you can create a profile for your pet and schedule the meals</string>
+    <string name="everything_is_ready_now">Everything is ready! Now you can schedule your pet meals!</string>
     <string name="equipment_not_detected">Equipment not detected</string>
-    <string name="try_the_following">Try the following:\n\n Verify if the equipment is turned on, you can turn it on by connecting to the outle\n Verify if the light on the ESP32 is on\n Turn on the bluetooth of your phone\n Put your phone closer to the ESP\n If the problem persists turn it off and restart the application</string>
+    <string name="try_the_following">
+    Try the following:\n\n
+    \u2022 Verify if the equipment is turned on, you can turn it on by connecting to the outlet;\n\n
+    \u2022 Verify if the light on the ESP32 is on;\n\n
+    \u2022 Turn on the bluetooth of your phone;\n\n
+    \u2022 Put your phone closer to the ESP;\n\n
+    \u2022 If the problem persists turn it off and restart the application.
+</string>
+
     <string name="try_again">Try Again</string>
     <string name="connect">Connect</string>
     <string name="select_another">SELECT ANOTHER</string>
@@ -110,4 +118,5 @@
     <string name="new_vaccine">New Vaccine</string>
     <string name="next_dose">Next Dose</string>
     <string name="choose_your_wi_fi_network">Choose your Wi-Fi Network</string>
+    <string name="continue_">Continue</string>
 </resources>

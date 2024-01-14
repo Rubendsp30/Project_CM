@@ -6,6 +6,7 @@
     <color name="red_300">#E73435</color>
     <color name="white_background">#F8FCFC</color>
     <color name="green_300">#94CBA6</color>
+    <color name="green_100">#9AD2CC</color>
     <color name="orange_300">#EF794C</color>
     <color name="blue_100">#DDEFF0</color>
     <color name="green_400">#26564F</color>
@@ -14,3 +15,5 @@
 
     <color name="mtrl_textinput_default_box_stroke_color">#26564F</color>
 </resources>
+
+

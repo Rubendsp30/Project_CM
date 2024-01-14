@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/rounded_corner_meal_schedule"
+    android:background="@drawable/rounded_corner_meal_item"
     android:layout_marginBottom="10dp"
     android:paddingVertical="10dp"
     android:paddingHorizontal="20dp"
@@ -25,25 +25,29 @@
             android:layout_height="wrap_content"
             android:text="@string/hour"
             android:fontFamily="@font/poppins_medium"
+            android:textStyle="bold"
+            android:includeFontPadding="false"
             android:textColor="@color/white"
-            android:textSize="24sp"/>
+            android:textSize="@dimen/medium_24"/>
 
         <TextView
             android:id="@+id/homeMealScheduleDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:includeFontPadding="false"
             android:text="@string/repeat_days"
             android:textColor="@color/white"
-            android:textSize="16sp"/>
-
+            android:textSize="@dimen/xsmall_10"/>
 
 
     </LinearLayout>
 
-    <Switch
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/scheduleActiveSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/CustomSwitch"
+        android:background="@drawable/vaccine_rounded_corner"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 

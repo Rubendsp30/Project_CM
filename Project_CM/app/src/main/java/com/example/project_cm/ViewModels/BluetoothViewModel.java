@@ -1,5 +1,7 @@
 package com.example.project_cm.ViewModels;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import android.bluetooth.BluetoothSocket;
@@ -13,6 +15,16 @@ public class BluetoothViewModel extends ViewModel {
     private BluetoothSocket socket;
     private OutputStream outputStream;
     private BluetoothMessageListener messageListener;
+
+    private final MutableLiveData<Boolean> passwordErrorLiveData = new MutableLiveData<>();
+
+    public LiveData<Boolean> getPasswordError() {
+        return passwordErrorLiveData;
+    }
+
+    public void setPasswordError(boolean hasError) {
+        passwordErrorLiveData.postValue(hasError);
+    }
 
 
     public void setSocket(BluetoothSocket socket) {

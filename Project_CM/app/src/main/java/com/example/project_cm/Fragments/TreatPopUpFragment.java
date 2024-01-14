@@ -132,6 +132,7 @@ public class TreatPopUpFragment extends DialogFragment {
         giveTreatButton.setOnClickListener(v -> {
 
             giveTreatButton.setEnabled(false);
+            giveTreatButton.setImageResource(R.drawable.treat_button_off);
             portionSeekBar.setEnabled(false);
             Dialog dialog = getDialog();
             if (dialog != null) {
@@ -170,6 +171,7 @@ public class TreatPopUpFragment extends DialogFragment {
             getActivity().runOnUiThread(() -> {
                 giveTreatButton.setEnabled(true);
                 portionSeekBar.setEnabled(true);
+                giveTreatButton.setImageResource(R.drawable.treat_button);
                 Dialog dialog = getDialog();
                 if (dialog != null) {
                     dialog.setCancelable(true);

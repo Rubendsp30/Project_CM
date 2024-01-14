@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white_background"
     android:padding="20dp">
 
     <TextView
@@ -12,8 +13,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/portion"
+        android:layout_marginStart="16dp"
         android:textColor="@color/green_400"
-        android:textSize="16sp"
+        android:textSize="@dimen/small_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,8 +25,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/_85g"
+        android:layout_marginEnd="16dp"
         android:textColor="@color/green_400"
-        android:textSize="16sp"
+        android:textSize="@dimen/small_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,7 +39,9 @@
         android:max="100"
         android:min="10"
         android:progress="85"
+        android:splitTrack="false"
         android:progressDrawable="@drawable/custom_seekbar"
+        android:thumb="@drawable/custom_seekbar_thumb"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/portionTreatText" />
@@ -56,24 +61,25 @@
 
     <ImageView
         android:id="@+id/treatSuccessIcon"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_marginTop="16dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/setup_final_icon" />
+        app:srcCompat="@drawable/sucess_treat" />
 
     <TextView
         android:id="@+id/treatSuccessText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="@string/thanks_for_the_treat"
         android:visibility="gone"
         android:textColor="@color/green_400"
-        android:textSize="24sp"
+        android:textSize="@dimen/small_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/treatSuccessIcon"/>

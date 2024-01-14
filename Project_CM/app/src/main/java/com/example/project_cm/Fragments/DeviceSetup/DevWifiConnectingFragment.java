@@ -67,6 +67,7 @@ public class DevWifiConnectingFragment extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putString("SSID", selectedSSID); // Ensure selectedSSID is stored in ConnectingFragment
             fragment.setArguments(bundle);
+            bluetoothViewModel.setPasswordError(true);
 
             FragmentChangeListener.replaceFragment(fragment);
         }

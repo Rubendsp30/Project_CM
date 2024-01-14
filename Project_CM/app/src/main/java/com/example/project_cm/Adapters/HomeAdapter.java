@@ -1,11 +1,13 @@
 package com.example.project_cm.Adapters;
 
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -28,7 +30,9 @@ import com.example.project_cm.FragmentChangeListener;
 import com.example.project_cm.Fragments.ScheduleFragment;
 import com.example.project_cm.ViewModels.ScheduleViewModel;
 import com.example.project_cm.Fragments.FoodInfoFragment;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -88,6 +92,17 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         petProfileViewModel.getPetProfileById(petProfileId).observe(lifecycleOwner, petProfileEntity -> {
             if (petProfileEntity != null) {
                 holder.petNameText.setText(petProfileEntity.name);
+                if (petProfileEntity.photoPath != null && !petProfileEntity.photoPath.isEmpty()) {
+                    File imgFile = new File(petProfileEntity.photoPath);
+                    if (imgFile.exists()) {
+                        Picasso.get().load(imgFile).into(holder.petAvatar);
+                        Log.d("HomeAdapter", "Carregando imagem para o pet: " + petProfileEntity.name);
+                    }else {
+                        Log.d("HomeAdapter", "Caminho da imagem não encontrado: " + petProfileEntity.photoPath);
+                    }
+                }else{
+                    holder.petAvatar.setImageResource(R.drawable.setup_final_icon);
+                }
             }
         });
 
@@ -100,7 +115,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             meals.clear();
             meals.addAll(mealSchedules);
             mealScheduleAdapter.notifyDataSetChanged();
-            updateNextMealHourText(meals, holder.nextMealHourText);
+            updateNextMealHourText(meals, holder.nextMealHourText, holder.nextMealText);
         });
 
 
@@ -130,7 +145,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     }
 
-    private void updateNextMealHourText(List<MealSchedule> mealScheduleList, TextView nextMealHourText) {
+    private void updateNextMealHourText(List<MealSchedule> mealScheduleList, TextView nextMealHourText,  TextView nextMealText) {
         Calendar current = Calendar.getInstance();
         int currentDayOfWeek = current.get(Calendar.DAY_OF_WEEK);
         long currentTimeInMillis = current.getTimeInMillis();
@@ -189,8 +204,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         if (nextMeal != null) {
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
             String formattedTime = timeFormat.format(nextMeal.getMealTime());
+            nextMealText.setVisibility(View.VISIBLE);
             nextMealHourText.setText(formattedTime);
         } else {
+            nextMealText.setVisibility(View.GONE);
             nextMealHourText.setText("No upcoming meals");
         }
     }
@@ -234,7 +251,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     // ViewHolder class for holding the views of each note card.
     public static class HomeViewHolder extends RecyclerView.ViewHolder {
-        Button addScheduleButton;
+        ImageButton addScheduleButton;
         TextView petNameText;
         ImageButton treatButton;
         RecyclerView schedulesRecycler;
@@ -242,18 +259,22 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         TextView nextMealHourText;
         ProgressBar supplyProgressBar;
         ImageButton supplyInfoButton;
+        ImageView petAvatar;
+        TextView nextMealText;
 
         public HomeViewHolder(@NonNull View homeView) {
             super(homeView);
 
             addScheduleButton = itemView.findViewById(R.id.addScheduleButton);
             petNameText = itemView.findViewById(R.id.petNameText);
+            petAvatar = itemView.findViewById(R.id.petAvatar);
             treatButton = itemView.findViewById(R.id.treatButton);
             schedulesRecycler = itemView.findViewById(R.id.schedulesRecycler);
             supplyText = homeView.findViewById(R.id.supplyText);
             supplyProgressBar = itemView.findViewById(R.id.supplyProgressBar);
             nextMealHourText = itemView.findViewById(R.id.nextMealHourText);
             supplyInfoButton = homeView.findViewById(R.id.supplyInfoButton);
+            nextMealText = itemView.findViewById(R.id.nextMealText);
 
         }
     }

@@ -16,9 +16,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
             android:fontFamily="@font/poppins_medium"
+            android:textStyle="bold"
             android:text="@string/equipment_not_detected"
             android:textColor="@color/green_400"
-            android:textSize="25sp"
+            android:textSize="@dimen/medium_24"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -27,6 +28,7 @@
             android:id="@+id/searchIcon"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:layout_marginTop="32dp"
             app:srcCompat="@drawable/not_detected"
             app:layout_constraintTop_toBottomOf="@+id/notDetectedHeader"
             app:layout_constraintStart_toStartOf="parent"
@@ -34,31 +36,36 @@
 
         <TextView
             android:id="@+id/notDetectedText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="107dp"
+            android:layout_marginHorizontal="40dp"
             android:text="@string/try_the_following"
             android:textColor="@color/green_400"
-            android:textSize="13sp"
+            android:textSize="@dimen/small_16"
+            app:layout_constraintBottom_toTopOf="@+id/tryAgainButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-           app:layout_constraintTop_toBottomOf="@+id/searchIcon" />
+            app:layout_constraintTop_toBottomOf="@+id/searchIcon" />
+
 
 
         <Button
             android:id="@+id/tryAgainButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="42dp"
+            android:layout_marginBottom="40dp"
+            android:layout_marginHorizontal="40dp"
             android:backgroundTint="@color/orange_300"
             android:elevation="8dp"
             android:stateListAnimator="@null"
             android:text="@string/try_again"
             android:textColor="@color/white"
-            android:textSize="21sp"
+            android:textSize="@dimen/small_16"
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
 
 

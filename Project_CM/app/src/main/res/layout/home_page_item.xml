@@ -5,14 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_background"
-    android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center"
+    android:orientation="vertical">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/petAvatar"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="105dp"
+        android:layout_height="105dp"
         android:layout_marginTop="16dp"
+        android:scaleType="centerCrop"
         app:srcCompat="@drawable/setup_final_icon" />
 
     <TextView
@@ -22,7 +23,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/pet_name"
         android:textColor="@color/green_400"
-        android:textSize="16sp" />
+        android:textSize="@dimen/xsmall_10" />
 
     <TextView
         android:id="@+id/nextMealText"
@@ -31,27 +32,27 @@
         android:layout_marginTop="8dp"
         android:text="@string/next_meal_at"
         android:textColor="@color/green_400"
-        android:textSize="16sp" />
+        android:textSize="@dimen/small_16" />
 
     <TextView
         android:id="@+id/nextMealHourText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="6dp"
         android:text="@string/_10_30"
         android:textColor="@color/green_400"
-        android:textSize="24sp" />
+        android:textSize="@dimen/medium_24" />
 
     <LinearLayout
         android:id="@+id/schedulesBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="12dp"
         android:layout_weight="1"
-        android:layout_marginTop="16dp"
         android:background="@drawable/custom_username_edit_text"
-        android:padding="16dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="12dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/schedulesRecycler"
@@ -61,19 +62,17 @@
             app:layout_constraintBottom_toTopOf="@+id/addScheduleButton"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <ImageButton
             android:id="@+id/addScheduleButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/orange_300"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
             android:layout_gravity="end"
-            android:elevation="8dp"
-            android:stateListAnimator="@null"
-            android:text="+"
-            android:textColor="@color/white"
-            android:textSize="16sp"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@color/white_background"
+            android:padding="0dp"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:srcCompat="@drawable/add" />
 
 
     </LinearLayout>
@@ -82,47 +81,51 @@
         android:id="@+id/supplyProgressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="21dp"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="24dp"
         android:progress="25"
         android:progressDrawable="@drawable/custom_progress_bar" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginHorizontal="32dp">
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="20dp">
+
         <TextView
             android:id="@+id/supplyText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            android:textAlignment="center"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/supplyInfoButton"
             android:text="@string/_90_food_suply"
+            android:textAlignment="center"
             android:textColor="@color/green_400"
-            android:textSize="16sp"
-            />
+            android:textSize="@dimen/small_16" />
 
         <ImageButton
             android:id="@+id/supplyInfoButton"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_marginTop="8dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:backgroundTint="@color/white_background"
             app:srcCompat="@drawable/baseline_info_24" />
 
-    </LinearLayout>
+    </RelativeLayout>
+
 
     <ImageButton
         android:id="@+id/treatButton"
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_marginBottom="24dp"
-        android:scaleType="centerCrop"
-        android:padding="0dp"
         android:backgroundTint="@color/white_background"
+        android:padding="0dp"
+        android:scaleType="centerCrop"
         app:srcCompat="@drawable/treat_button" />
 
 </LinearLayout>

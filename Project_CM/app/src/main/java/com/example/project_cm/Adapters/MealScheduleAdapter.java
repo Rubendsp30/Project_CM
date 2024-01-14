@@ -19,6 +19,7 @@ import com.example.project_cm.MealSchedule;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.DeviceViewModel;
 import com.example.project_cm.ViewModels.ScheduleViewModel;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -142,7 +143,7 @@ public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapte
     public static class MealScheduleViewHolder extends RecyclerView.ViewHolder {
         public final TextView homeMealScheduleHour;
         public final TextView homeMealScheduleDate;
-        public final Switch scheduleActiveSwitch;
+        public final SwitchMaterial scheduleActiveSwitch;
 
         public MealScheduleViewHolder(@NonNull View homeMealView) {
             super(homeMealView);

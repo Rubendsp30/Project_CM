@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,51 +10,62 @@
         android:id="@+id/petProfileImageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:src="@drawable/lovely_pet_portrait_isolated"
         android:scaleType="centerCrop"
+        android:src="@drawable/lovely_pet_portrait_isolated"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/box" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/editButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/edit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_margin="10dp"/>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/box"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/pet_profile_box"
+
         android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
         <!-- Pet Name TextView -->
         <TextView
             android:id="@+id/petNameTextView"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text=""
-            android:textColor="@color/black"
-            android:textSize="24sp"
+            android:text="Test"
+            android:textColor="@color/green_400"
+            android:textSize="@dimen/medium_24"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageButton
+            android:id="@+id/editButton"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:backgroundTint="@color/blue_100"
+            android:padding="0dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/baseline_edit_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/petNameTextView"
+            app:layout_constraintBottom_toBottomOf="@+id/petNameTextView"/>
+
+
         <!-- New LinearLayout for Pet Info -->
         <LinearLayout
             android:id="@+id/pet_info_container"
-            android:layout_width="371dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="12dp"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp"
             android:weightSum="3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -65,54 +75,62 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:background="@drawable/bordered_background"
                 android:gravity="center"
-                android:padding="10dp"
-                android:layout_marginEnd="8dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="15dp">
 
                 <TextView
                     android:id="@+id/petAgeTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
                     android:gravity="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    android:text=""
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/green_400"
+                    android:textSize="@dimen/small_16" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/age"
                     android:gravity="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                    android:text="@string/age"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/green_400"
+                    android:textSize="@dimen/xsmall_10" />
             </LinearLayout>
 
             <!-- Weight View -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:background="@drawable/bordered_background"
                 android:gravity="center"
-                android:padding="10dp"
-                android:layout_marginEnd="8dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="15dp">
 
                 <TextView
                     android:id="@+id/petWeightTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
                     android:gravity="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    android:text=""
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/green_400"
+                    android:textSize="@dimen/small_16" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/weight"
                     android:gravity="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                    android:text="@string/weight"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/green_400"
+                    android:textSize="@dimen/xsmall_10" />
             </LinearLayout>
 
             <!-- Sex View -->
@@ -122,23 +140,27 @@
                 android:layout_weight="1"
                 android:background="@drawable/bordered_background"
                 android:gravity="center"
-                android:padding="10dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="15dp">
 
                 <TextView
                     android:id="@+id/petSexTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
                     android:gravity="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    android:text=""
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/green_400"
+                    android:textSize="@dimen/small_16" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/gender"
                     android:gravity="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                    android:text="@string/gender"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/green_400"
+                    android:textSize="@dimen/xsmall_10" />
             </LinearLayout>
         </LinearLayout>
 
@@ -147,10 +169,12 @@
             android:layout_width="0dp"
             android:layout_height="55dp"
             android:layout_marginTop="10dp"
-            android:text="@string/microchip"
             android:background="@drawable/vc_microship_view"
-            android:padding="10dp"
             android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/microchip"
+            android:textColor="@color/green_400"
+            android:textSize="@dimen/small_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/pet_info_container"
@@ -163,6 +187,7 @@
             android:layout_height="67dp"
             android:layout_marginTop="20dp"
             android:text="@string/vaccines"
+            android:textSize="@dimen/small_16"
             app:cornerRadius="9dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -175,6 +200,7 @@
             android:layout_height="67dp"
             android:layout_marginTop="6dp"
             android:text="@string/history"
+            android:textSize="@dimen/small_16"
             app:cornerRadius="9dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

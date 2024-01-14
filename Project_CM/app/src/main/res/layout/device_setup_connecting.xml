@@ -15,9 +15,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_medium"
+            android:layout_marginBottom="16dp"
+            android:textStyle="bold"
             android:text="@string/connecting"
             android:textColor="@color/green_400"
-            android:textSize="50sp"
+            android:textSize="@dimen/medium_24"
             app:layout_constraintBottom_toTopOf="@+id/connecting_subheader"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -26,23 +28,26 @@
             android:id="@+id/connecting_subheader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="32dp"
             android:text="@string/don_t_turn_off_the_equipmen"
             android:textColor="@color/green_400"
-            android:textSize="21sp"
+            android:textSize="@dimen/small_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/connectingIcon" />
 
+
         <ImageView
             android:id="@+id/connectingIcon"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            app:srcCompat="@drawable/connecting_icon"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:srcCompat="@drawable/connecting_icon" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
