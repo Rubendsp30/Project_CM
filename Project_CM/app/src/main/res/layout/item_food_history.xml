@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/friday_07_april_2023"
-            android:textSize="16sp"
+            android:textSize="@dimen/small_16"
             android:gravity="start"
             android:textColor="@color/green_400" />
 
@@ -32,8 +32,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:text="@string/_1_5kg"
-            android:textSize="18sp"
+            android:textSize="@dimen/small_16"
             android:gravity="end"
             android:textColor="@color/green_400" />
     </LinearLayout>

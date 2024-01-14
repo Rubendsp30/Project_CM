@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:padding="20dp">
 
     <TextView
@@ -11,29 +12,48 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="@string/are_you_sure_you_want_to_delete_this_device"
         android:textColor="@color/green_400"
-        android:textSize="16sp"
+        android:textSize="@dimen/small_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Guideline at 50% of the screen width -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/center_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.50" />
+
     <Button
         android:id="@+id/deleteNolButton"
-        android:layout_width="0dp"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="@string/no"
-        android:backgroundTint="@color/green_200"
+        android:textStyle="bold"
+        android:textSize="@dimen/small_16"
+        android:textColor="@color/green_400"
+        android:backgroundTint="@color/green_100"
+        android:layout_marginEnd="16dp"
         app:layout_constraintTop_toBottomOf="@+id/deleteDeviceConfirmationText"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/center_guideline" />
 
     <Button
         android:id="@+id/deleteYesButton"
-        android:layout_width="0dp"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="@string/yes"
+        android:textSize="@dimen/small_16"
+        android:textStyle="bold"
+        android:textColor="@color/white"
         android:backgroundTint="@color/orange_300"
+        android:layout_marginStart="16dp"
         app:layout_constraintTop_toBottomOf="@+id/deleteDeviceConfirmationText"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/center_guideline" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -43,7 +43,7 @@ public class DeviceDeletePop extends DialogFragment {
         // Create an AlertDialog instance and set its appearance style.
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.CustomDialog);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.device_deletel_pop_up, null);
+        View dialogView = inflater.inflate(R.layout.device_delete_pop_up, null);
         builder.setView(dialogView);
 
         Button deleteNolButton = dialogView.findViewById(R.id.deleteNolButton);

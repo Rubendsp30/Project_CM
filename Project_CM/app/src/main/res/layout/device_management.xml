@@ -25,6 +25,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/device_manager"
+                android:textSize="@dimen/medium_24"
+                android:textColor="@color/green_400"
+                android:textStyle="bold"
                 android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
         </androidx.appcompat.widget.Toolbar>
 
@@ -44,19 +47,18 @@
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
             app:layout_constraintVertical_bias="0.0" />
 
-        <ImageButton
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/AddDevice"
-            android:layout_width="72dp"
-            android:layout_height="56dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="108dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/add"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.731"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/DeviceViewHolder" />
+            android:src="@drawable/vc_ic_add"
+            app:tint="@color/white"
+            android:backgroundTint="@color/orange_300"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
