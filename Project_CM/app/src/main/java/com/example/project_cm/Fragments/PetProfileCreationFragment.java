@@ -1,17 +1,30 @@
 package com.example.project_cm.Fragments;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -26,6 +39,14 @@ import com.example.project_cm.ViewModels.PetProfileViewModel;
 import com.example.project_cm.ViewModels.UserViewModel;
 import com.example.project_cm.User;
 import com.example.project_cm.utils.ClientNameUtil;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class PetProfileCreationFragment extends Fragment {
     // ViewModel instances for managing user and pet profile data
@@ -33,13 +54,17 @@ public class PetProfileCreationFragment extends Fragment {
     private PetProfileViewModel petProfileViewModel;
     private DeviceViewModel deviceViewModel;
     private MQTTHelper mqttHelper;
+    private static final int PICK_IMAGE_REQUEST = 1;
 
     // Nullable as it may not be initialized if the fragment is not attached to an activity
     @Nullable
     private com.example.project_cm.FragmentChangeListener FragmentChangeListener;
 
     // UI stuff
-    private EditText inputName, inputAge, inputWeight, inputGender, inputMicrochip;
+
+    private EditText inputName, inputAge, inputWeight, inputMicrochip;
+    private RadioGroup genderRadioGroup;
+    private RadioButton radioFemale, radioMale;
     private ImageView profileImage;
     private User currentUser;
 
@@ -86,13 +111,25 @@ public class PetProfileCreationFragment extends Fragment {
         currentUser = userViewModel.getCurrentUser().getValue();
 
         // UI things
+        profileImage = view.findViewById(R.id.profile_image);
+        //todo what is this
+        petProfileViewModel.getCurrentPet().observe(getViewLifecycleOwner(), this::loadPetImage);
         inputName = view.findViewById(R.id.inputName);
         inputAge = view.findViewById(R.id.inputAge);
         inputWeight = view.findViewById(R.id.inputWeight);
-        inputGender = view.findViewById(R.id.inputGender);
         inputMicrochip = view.findViewById(R.id.inputMicrochip);
-        Button saveButton = view.findViewById(R.id.saveButton);
         profileImage = view.findViewById(R.id.profile_image);
+        genderRadioGroup = view.findViewById(R.id.inputGender);
+        radioFemale = view.findViewById(R.id.radio_female);
+        radioMale = view.findViewById(R.id.radio_male);
+        Button saveButton = view.findViewById(R.id.saveButton);
+
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            activity.setSupportActionBar(toolbar);
+        }
+        profileImage.setOnClickListener(v -> openImageChooser());
 
         // Determine if editing an existing profile or creating a new one
         if (currentUser != null) {
@@ -101,20 +138,124 @@ public class PetProfileCreationFragment extends Fragment {
                 petProfileViewModel.getPetProfileById(petProfileId).observe(getViewLifecycleOwner(), petProfile -> {
                     if (petProfile != null) {
                         currentPetProfile = petProfile;
+                        loadPetImage(currentPetProfile);
                         fillInProfileDetails(currentPetProfile);
                         isEditMode = true;
+                        if (activity.getSupportActionBar() != null) {
+                            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                            activity.getSupportActionBar().setDisplayShowHomeEnabled(true);
+                            toolbar.setNavigationIcon(R.drawable.arrowleft2);
+                            toolbar.setNavigationOnClickListener(v -> handleBackPress());
+                            // toolbar.setTitle("Edit Profile");
+                        }
                     } else {
-                        // No profile was found
+                        profileImage.setImageResource(R.drawable.insertimage);
+                        if (activity.getSupportActionBar() != null) {
+                            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                            activity.getSupportActionBar().setDisplayShowHomeEnabled(false);
+                        }
+                        //toolbar.setTitle("Create Profile");
                         isEditMode = false;
                     }
                 });
             }
         }
+
+        TextView textView = new TextView(activity);
+        textView.setText(isEditMode ? "Edit Profile" : "Create Profile");
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        textView.setTypeface(null, Typeface.BOLD);
+        Toolbar.LayoutParams layoutParams = new Toolbar.LayoutParams(
+                Toolbar.LayoutParams.WRAP_CONTENT,
+                Toolbar.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.gravity = Gravity.CENTER;
+        textView.setLayoutParams(layoutParams);
+        toolbar.addView(textView);
+
+        if (activity.getSupportActionBar() != null) {
+            activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
         saveButton.setOnClickListener(v -> createPetProfile());
     }
 
+    private void handleBackPress() {
+        if (isEditMode) {
+            returnToPetProfile();
+        }
+    }
 
-    //Fill com as coisas da UI e as informações gravadas anteriormente
+    private void loadPetImage(PetProfileEntity petProfile) {
+        if (petProfile != null && petProfile.photoPath != null && !petProfile.photoPath.isEmpty()) {
+            File imgFile = new File(petProfile.photoPath);
+            if (imgFile.exists()) {
+                Picasso.get().load(imgFile).into(profileImage);
+            }
+        } else {
+            profileImage.setImageResource(R.drawable.insertimage);
+        }
+    }
+
+    private void openImageChooser() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+            Uri imageUri = data.getData();
+
+            String imagePath = saveImageToInternalStorage(imageUri);
+            if (currentPetProfile == null) {
+                currentPetProfile = new PetProfileEntity();
+            }
+
+            currentPetProfile.photoPath = imagePath;
+            Log.d("PetProfileEdit", "Caminho da imagem atualizado: " + imagePath);
+            petProfileViewModel.updatePetProfile(currentPetProfile);
+            profileImage.setImageURI(imageUri);
+        }
+    }
+
+    private String saveImageToInternalStorage(Uri imageUri) {
+        Context context = getContext();
+        if (context == null) {
+            return null;
+        }
+        try {
+            File directory = context.getDir("images", Context.MODE_PRIVATE);
+            String fileName = "pet_image_" + System.currentTimeMillis() + ".jpg";
+            File filePath = new File(directory, fileName);
+
+            InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
+            if (inputStream == null) {
+                return null;
+            }
+
+            OutputStream outputStream = new FileOutputStream(filePath);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+            outputStream.close();
+            inputStream.close();
+
+            return filePath.getAbsolutePath();
+
+        } catch (FileNotFoundException e) {
+            Log.e("ImageSave", "FileNotFoundException: " + e.getMessage());
+        } catch (IOException e) {
+            Log.e("ImageSave", "IOException: " + e.getMessage());
+        }
+
+        return null;
+    }
+
     private void fillInProfileDetails(PetProfileEntity petProfile) {
         if (petProfile != null) {
             if (petProfile.name != null) {
@@ -124,20 +265,18 @@ public class PetProfileCreationFragment extends Fragment {
             }
             inputAge.setText(String.valueOf(petProfile.age));
             inputWeight.setText(String.valueOf(petProfile.weight));
-            String genderText;
             if (petProfile.gender == 0) {
-                genderText = "male";
+                radioMale.setChecked(true);
             } else {
-                genderText = "female";
+                radioFemale.setChecked(true);
             }
-            inputGender.setText(genderText);
             if (petProfile.microchipNumber != null) {
                 inputMicrochip.setText(petProfile.microchipNumber);
             } else {
                 inputMicrochip.setText("");
             }
         } else {
-            Toast.makeText(getContext(), "Pet profile not found", Toast.LENGTH_SHORT).show();
+            Log.e("fillInProfileDetails", "Pet profile not found");
         }
     }
 
@@ -147,11 +286,21 @@ public class PetProfileCreationFragment extends Fragment {
         String name = inputName.getText().toString();
         String ageInput = inputAge.getText().toString();
         String weightInput = inputWeight.getText().toString();
-        String gender = inputGender.getText().toString();
+        String gender;
+        int selectedGenderId = genderRadioGroup.getCheckedRadioButtonId();
         String microchip = inputMicrochip.getText().toString();
 
+        if (selectedGenderId == R.id.radio_female) {
+            gender = "female";
+        } else if (selectedGenderId == R.id.radio_male) {
+            gender = "male";
+        } else {
+            Toast.makeText(getContext(), "Please select a gender", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         //Fill all fields warning
-        if (name.isEmpty() || ageInput.isEmpty() || weightInput.isEmpty() || gender.isEmpty() || microchip.isEmpty()) {
+        if (name.isEmpty() || ageInput.isEmpty() || weightInput.isEmpty() || microchip.isEmpty()) {
             Toast.makeText(getContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -171,6 +320,13 @@ public class PetProfileCreationFragment extends Fragment {
                 petProfile = currentPetProfile;
             } else {
                 petProfile = new PetProfileEntity();
+                Log.d("PetProfileCreation", "Criando novo PetProfileEntity para novo pet.");
+                if (currentPetProfile != null && currentPetProfile.photoPath != null) {
+                    petProfile.photoPath = currentPetProfile.photoPath;
+                    Log.d("PetProfileCreation", "Caminho da imagem adicionado ao novo pet: " + petProfile.photoPath);
+                } else {
+                    Log.d("PetProfileCreation", "Nenhuma imagem selecionada para o novo pet.");
+                }
             }
             petProfile.name = name;
             petProfile.age = age;
@@ -217,11 +373,7 @@ public class PetProfileCreationFragment extends Fragment {
 
     // Convert the input gender string to a gender value
     private int convertToGender(String gender) {
-        if (gender.equalsIgnoreCase("male")) {
-            return 0;
-        } else {
-            return 1;
-        }
+        return gender.equalsIgnoreCase("male") ? 0 : 1;
     }
 
     private void returnToPetProfile() {

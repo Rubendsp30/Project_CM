@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,7 +20,9 @@ import com.example.project_cm.Fragments.PetProfileCreationFragment;
 import com.example.project_cm.Fragments.VaccinesFragment;
 import com.example.project_cm.R;
 import com.example.project_cm.ViewModels.PetProfileViewModel;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
@@ -50,6 +53,15 @@ public class PetProfileAdapter extends RecyclerView.Adapter<PetProfileAdapter.Pe
                 holder.petWeightTextView.setText(String.format(Locale.getDefault(), "%.1f kg", petProfile.weight));
                 holder.petSexTextView.setText(petProfile.gender == 0 ? "Male" : "Female");
                 holder.petMicrochipTextView.setText(petProfile.microchipNumber);
+                if (petProfile.photoPath != null && !petProfile.photoPath.isEmpty()) {
+                    File imgFile = new File(petProfile.photoPath);
+                    if (imgFile.exists()) {
+                        Picasso.get().load(imgFile).into(holder.petProfileImageView);
+                        Log.d("PetProfileAdapter", "Carregando imagem para o pet: " + petProfile.name);
+                    }else {
+                        Log.d("PetProfileAdapter", "Caminho da imagem não encontrado: " + petProfile.photoPath);
+                    }
+                }
             }
         });
 
@@ -112,11 +124,13 @@ public class PetProfileAdapter extends RecyclerView.Adapter<PetProfileAdapter.Pe
         Button editButton;
         Button vaccinesButton;
         Button historyButton;
+        ImageView petProfileImageView;
         @Nullable
         private final com.example.project_cm.FragmentChangeListener FragmentChangeListener;
 
         public PetProfileViewHolder(@NonNull View itemView, @Nullable com.example.project_cm.FragmentChangeListener fragmentChangeListener) {
             super(itemView);
+            petProfileImageView = itemView.findViewById(R.id.petProfileImageView);
             petNameTextView = itemView.findViewById(R.id.petNameTextView);
             petAgeTextView = itemView.findViewById(R.id.petAgeTextView);
             petWeightTextView = itemView.findViewById(R.id.petWeightTextView);

@@ -44,6 +44,7 @@ dependencies {
     implementation ("com.github.hannesa2:paho.mqtt.android:3.5.1")
     implementation ("androidx.room:room-runtime:2.6.1")
     implementation("com.google.firebase:firebase-firestore:24.10.0")
+    implementation ("com.squareup.picasso:picasso:2.71828")
     annotationProcessor ("androidx.room:room-compiler:2.6.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

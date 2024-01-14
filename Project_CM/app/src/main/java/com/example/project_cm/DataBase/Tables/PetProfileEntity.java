@@ -12,9 +12,8 @@ public class PetProfileEntity {
     @ColumnInfo(name = "name")
     public String name;
 
-    //ToDo: Ver como guardar imagem. Podemos guardar uma cópia da imagem e um path para ela. Ou diretamente path para a foto mas pode-se perder.idk
-    /*@ColumnInfo(name = "photo")
-    public String photo;*/
+    @ColumnInfo(name = "photo_path")
+    public String photoPath;
 
     //0 dog, 1 cat
     @ColumnInfo(name = "animal_type")
