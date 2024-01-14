@@ -61,7 +61,6 @@ public class VaccinePopUp extends DialogFragment {
             Log.e("VaccinePopUp", "Error creating PetProfileViewModel: " + e.getMessage());
         }
 
-        TextView title = dialogView.findViewById(R.id.title);
         editName = dialogView.findViewById(R.id.editName);
         editNextDose = dialogView.findViewById(R.id.editNextDose);
         ImageView deleteButton = dialogView.findViewById(R.id.deleteButton);
@@ -88,7 +87,6 @@ public class VaccinePopUp extends DialogFragment {
 
         // caso seja para editar a vacina, preeche os campos de input
         if (vaccine != null) {
-            title.setText("Vaccine");
 
             editName.setText(vaccine.getVaccineName());
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());

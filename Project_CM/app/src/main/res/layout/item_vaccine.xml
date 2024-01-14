@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/vaccine_1"
-            android:textSize="18sp"
+            android:textSize="@dimen/small_16"
             android:textColor="@android:color/white" />
 
         <TextView
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/_01_01_2023"
-            android:textSize="14sp"
+            android:textSize="@dimen/xsmall_10"
             android:textColor="@android:color/white" />
 
         <!-- Envolver o textViewDaysLeft em um FrameLayout para aplicar o fundo com cantos arredondados -->
@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/_60_days_left"
-                android:textSize="14sp"
+                android:textSize="@dimen/xsmall_10"
                 android:paddingTop="2dp"
                 android:textColor="@color/green_400"
                 android:layout_gravity="center" />

@@ -24,7 +24,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Vaccines"
+                android:text="@string/vaccines"
+                android:textSize="@dimen/medium_24"
+                android:textColor="@color/green_400"
+                android:textStyle="bold"
                 android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
         </androidx.appcompat.widget.Toolbar>
 
@@ -48,6 +51,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:src="@drawable/vc_ic_add"
+            app:tint="@color/white"
+            android:backgroundTint="@color/orange_300"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

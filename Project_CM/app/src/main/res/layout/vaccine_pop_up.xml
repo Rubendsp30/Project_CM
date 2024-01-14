@@ -4,67 +4,89 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingVertical="15dp"
+    android:background="@drawable/rounded_corner"
     android:paddingHorizontal="20dp"
-    android:background="@drawable/rounded_corner">
+    android:paddingVertical="15dp">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/center_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.50" />
 
     <ImageView
         android:id="@+id/deleteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/baseline_restore_from_trash_24"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/baseline_delete_24"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/new_vaccine"
-        app:layout_constraintTop_toTopOf="parent"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        />
 
     <EditText
         android:id="@+id/editName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        tools:layout_editor_absoluteX="10dp"
-        android:hint="@string/name" />
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/vaccine_rounded_corner"
+        android:gravity="center"
+        android:hint="@string/name"
+        android:paddingVertical="8dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="@dimen/small_16"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="10dp" />
 
     <EditText
         android:id="@+id/editNextDose"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusable="false"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/vaccine_rounded_corner"
+        android:gravity="center"
         android:hint="@string/next_dose"
+        android:paddingVertical="8dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="@dimen/small_16"
         app:layout_constraintTop_toBottomOf="@+id/editName"
         tools:layout_editor_absoluteX="10dp" />
 
+
     <Button
         android:id="@+id/eraseButton"
-        android:layout_width="wrap_content"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="10dp"
-        android:layout_gravity="center"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/green_100"
+        android:elevation="8dp"
         android:text="@string/cancel"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/green_400"
+        android:textSize="@dimen/small_16"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/center_guideline"
         app:layout_constraintTop_toBottomOf="@+id/editNextDose" />
 
     <Button
         android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="10dp"
-        android:layout_gravity="end"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="@color/orange_300"
+        android:elevation="8dp"
         android:text="@string/save"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/white"
+        android:textSize="@dimen/small_16"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/center_guideline"
         app:layout_constraintTop_toBottomOf="@+id/editNextDose" />
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
