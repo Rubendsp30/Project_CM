@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
             android:fontFamily="@font/poppins_medium"
+            android:textStyle="bold"
             android:text="@string/device_welcome_header"
             android:textColor="@color/green_400"
             android:textSize="@dimen/medium_24"

@@ -16,6 +16,7 @@
             android:text="@string/create_account_header"
             android:textSize="@dimen/medium_24"
             android:fontFamily="@font/poppins_medium"
+            android:textStyle="bold"
             android:textColor="@color/green_400"
             android:layout_marginBottom="40dp"
             app:layout_constraintEnd_toEndOf="parent"
