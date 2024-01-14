@@ -6,6 +6,7 @@ import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -41,10 +42,20 @@ public class VaccineEntity {
     }
 
     public int getDaysLeft() {
-        Date vaccineDate = new Date(this.vaccineDate);
-        Date currentDate = new Date();
+        Calendar calendarVaccine = Calendar.getInstance();
+        calendarVaccine.setTime(new Date(this.vaccineDate));
+        calendarVaccine.set(Calendar.HOUR_OF_DAY, 0);
+        calendarVaccine.set(Calendar.MINUTE, 0);
+        calendarVaccine.set(Calendar.SECOND, 0);
+        calendarVaccine.set(Calendar.MILLISECOND, 0);
 
-        long diffInMillis = Math.abs(vaccineDate.getTime() - currentDate.getTime());
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        today.set(Calendar.MILLISECOND, 0);
+
+        long diffInMillis = Math.abs(calendarVaccine.getTimeInMillis() - today.getTimeInMillis());
         long diffInDays = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
 
         return (int) diffInDays;

@@ -27,8 +27,6 @@ public class VaccinesViewModel extends AndroidViewModel {
         executorService = Executors.newSingleThreadExecutor();
     }
 
-    // Retorna diretamente o LiveData do Room (não é necessário executor)
-    //todo adicionar executor
     public LiveData<List<VaccineEntity>> getVaccinesByPetProfileId(int petProfileId) {
         return vaccineDao.getVaccinesForPet(petProfileId);
     }
