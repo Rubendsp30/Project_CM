@@ -6,8 +6,10 @@ import static android.app.Activity.RESULT_OK;
 import android.Manifest;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -23,11 +25,15 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 
 import com.example.project_cm.Activities.HomeActivity;
 
+import com.example.project_cm.Activities.LoginActivity;
+import com.example.project_cm.Fragments.DeviceManagementFragment;
 import com.example.project_cm.R;
 
 import java.util.Map;
@@ -59,6 +65,15 @@ public class DevSetupTurnBle extends Fragment {
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Toolbar toolbar = view.findViewById(R.id.toolbarTurnBle);
+        toolbar.setTitle(" ");
+
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(v -> {
+            if (FragmentChangeListener != null) {
+                FragmentChangeListener.replaceFragment(new DevSetupInitial());
+            }
+        });
 
         Button turnBTButton = view.findViewById(R.id.turnBTButton);
 

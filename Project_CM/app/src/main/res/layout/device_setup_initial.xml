@@ -40,7 +40,7 @@
             android:id="@+id/setupText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="32dp"
+            android:layout_marginHorizontal="40dp"
             android:layout_marginTop="32dp"
             android:text="@string/device_welcome_text"
             android:textColor="@color/green_400"
@@ -51,8 +51,10 @@
 
         <ImageView
             android:id="@+id/examplePictureDev"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="40dp"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toTopOf="@+id/debugCreateDeviceButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -61,9 +63,10 @@
 
         <Button
             android:id="@+id/debugCreateDeviceButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
+            android:layout_marginHorizontal="40dp"
             android:backgroundTint="@color/orange_300"
             android:elevation="8dp"
             android:stateListAnimator="@null"
@@ -79,9 +82,10 @@
 
         <Button
             android:id="@+id/deviceLightConfirmation"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
+            android:layout_marginHorizontal="40dp"
             android:backgroundTint="@color/orange_300"
             android:elevation="8dp"
             android:stateListAnimator="@null"
