@@ -43,7 +43,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             String formattedDate = formatter.format(date);
             holder.textViewDateFood.setText(formattedDate);
         } else {
-            holder.textViewDateFood.setText("Date not available");
+            holder.textViewDateFood.setText(R.string.date_not_available);
         }
     }
 

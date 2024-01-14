@@ -122,7 +122,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
 
         int foodSuply = viewPagerItem.getFoodSuply();
-        String foodSuplyText = foodSuply + "% Food Supply";
+        String foodText = holder.itemView.getContext().getString(R.string.food_supply);
+        String foodSuplyText = foodSuply + foodText;
         holder.supplyText.setText(foodSuplyText);
         holder.supplyProgressBar.setProgress(foodSuply);
 
@@ -208,7 +209,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             nextMealHourText.setText(formattedTime);
         } else {
             nextMealText.setVisibility(View.GONE);
-            nextMealHourText.setText("No upcoming meals");
+            nextMealHourText.setText(R.string.no_upcoming_meals);
         }
     }
 

@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.project_cm.Activities.HomeActivity;
 import com.example.project_cm.Activities.LoginActivity;
+import com.example.project_cm.Fragments.DeviceManagementFragment;
 import com.example.project_cm.Fragments.HomeScreenFragment;
 import com.example.project_cm.Fragments.PetProfileCreationFragment;
 import com.example.project_cm.R;
@@ -45,21 +46,30 @@ public class DevSetupInitial extends Fragment {
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Bundle args = getArguments();
         Toolbar toolbar = view.findViewById(R.id.toolbarDevIni);
         toolbar.setTitle(" ");
-
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(v -> {
-            SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("isLoggedIn", false);
-            editor.remove("loggedInUserId");
-            editor.apply();
 
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
-            startActivity(intent);
-            getActivity().finish();
-        });
+        if (args != null && args.getBoolean("fromDeviceManagement", false)) {
+
+            toolbar.setNavigationOnClickListener(v -> {
+                transitionToDeviceManager();
+            });
+        } else {
+            toolbar.setNavigationOnClickListener(v -> {
+                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("isLoggedIn", false);
+                editor.remove("loggedInUserId");
+                editor.apply();
+
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+            });
+        }
+
 
         Button deviceLightConfirmation = view.findViewById(R.id.deviceLightConfirmation);
 
@@ -100,6 +110,17 @@ public class DevSetupInitial extends Fragment {
         } else {
             // Handle the case where FragmentChangeListener is null
             Log.e("DevSetupInitial", "FragmentChangeListener is null. Unable to replace the fragment.");
+        }
+
+    }
+
+    private void transitionToDeviceManager() {
+
+        if (FragmentChangeListener != null) {
+            DeviceManagementFragment fragment = new DeviceManagementFragment();
+            FragmentChangeListener.replaceFragment(fragment);
+        } else {
+            Log.e("transitionToDeviceManager", "FragmentChangeListener is null. Unable to replace the fragment.");
         }
 
     }

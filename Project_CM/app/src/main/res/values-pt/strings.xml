@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Create Account page -->
     <string name="app_name">PetFeeder</string>
+
+    <!-- Create Account page -->
     <string name="create_account_header">Criar Conta</string>
-    <string name="create_account_username_hint">Nome de utilizador</string>
+    <string name="create_account_username_hint">Nome de usuário</string>
     <string name="create_account_email_hint">Email</string>
     <string name="create_account_password_hint">Senha</string>
     <string name="create_account_confirm_password_hint">Confirmar Senha</string>
@@ -13,36 +13,44 @@
 
     <!-- Device Setups page -->
     <string name="device_welcome_header">Bem-vindo!</string>
-    <string name="device_welcome_text">Para fazer funcionar o seu alimentador, precisamos conectá-lo à rede Wi-Fi. Por favor, ligue o alimentador para continuar.\n\nSe as luzes estiverem ligadas, continue para a próxima página</string>
-    <string name="device_welcome_btn">As luzes estão ligadas</string>
+    <string name="device_welcome_text">Para que o alimentador funcione, precisamos conectá-lo à rede Wi-Fi, por favor, ligue o alimentador para prosseguir.\n\nSe as luzes estiverem acesas, continue para a próxima página.</string>
+    <string name="device_welcome_btn">As luzes estão acesas</string>
 
-    <string name="turn_ble_header">Ativar o bluetooth!</string>
-    <string name="turn_ble_text">Ligue o bluetooth para ativar a conexão do alimentador com o telefone durante o processo de instalação</string>
-    <string name="turn_ble_btn">Ligar bluetooth</string>
+    <string name="turn_ble_header">Ativar bluetooth</string>
+    <string name="turn_ble_text">Ative o bluetooth para ligar o alimentador ao telefone durante o processo de instalação.</string>
+    <string name="turn_ble_btn">Ativar bluetooth</string>
 
-    <string name="scan_bt_header">À procura de equipamento</string>
+    <string name="scan_bt_header">Procurando equipamento</string>
     <string name="scan_bt_text">Não desligue a aplicação</string>
     <string name="don_t_turn_off_the_equipmen">Não desligue o equipamento</string>
-    <string name="connecting">Conectando</string>
+    <string name="connecting">A conectar</string>
     <string name="create_profile">Criar Perfil</string>
     <string name="all_set">Tudo pronto!</string>
-    <string name="everything_is_ready_now">Tudo pronto! Agora pode criar um perfil para o seu animal de estimação e programar as refeições</string>
+    <string name="everything_is_ready_now">Tudo está pronto! Agora você pode programar as refeições do seu pet!</string>
     <string name="equipment_not_detected">Equipamento não detetado</string>
-    <string name="try_the_following">Tente o seguinte:\n\n Verifique se o equipamento está ligado, pode ligá-lo conectando-o à tomada\n Verifique se a luz no ESP32 está ligada\n Ligue o bluetooth do seu telemóvel\n Coloque o seu telemóvel mais perto do ESP\n Se o problema persistir, desligue-o e reinicie a aplicação</string>
+    <string name="try_the_following">
+    Tente o seguinte:\n\n
+    \u2022 Verifique se o equipamento está ligado, pode ligá-lo conectando à tomada;\n\n
+    \u2022 Verifique se a luz no ESP32 está acesa;\n\n
+    \u2022 Ative o bluetooth do seu telefone;\n\n
+    \u2022 Coloque o seu telefone mais perto do ESP;\n\n
+    \u2022 Se o problema persistir, desligue e reinicie a aplicação.
+    </string>
+
     <string name="try_again">Tentar Novamente</string>
     <string name="connect">Conectar</string>
-    <string name="select_another">SELECIONAR OUTRA</string>
+    <string name="select_another">SELECIONAR OUTRO</string>
     <string name="wifi">Wi-Fi</string>
     <string name="fill_the_password_of_your_network">Insira a senha da sua rede</string>
-    <string name="are_you_sure_you_want_to_delete_this_device">Tem a certeza de que quer apagar este dispositivo?</string>
+    <string name="are_you_sure_you_want_to_delete_this_device">Tem a certeza de que quer eliminar este dispositivo?</string>
     <string name="no">Não</string>
     <string name="yes">Sim</string>
-    <string name="pet_name">Nome do Animal</string>
+    <string name="pet_name">Nome do Pet</string>
     <string name="device_manager">Gestor de Dispositivos</string>
     <string name="skip_device_steps">Saltar Etapas do Dispositivo</string>
     <string name="food_information">Informação sobre a Comida</string>
     <string name="food_storage">Armazenamento de Comida</string>
-    <string name="_90_food_supply">90% de Comida</string>
+    <string name="_90_food_supply">90% de Suprimento de Comida</string>
     <string name="humidity">Humidade</string>
     <string name="_11">11%</string>
     <string name="temperature">Temperatura</string>
@@ -51,20 +59,20 @@
     <string name="_20">20</string>
     <string name="days_left">Dias Restantes</string>
     <string name="_5">5</string>
-    <string name="are_you_sure_you_want_to_delete_this_meal">Tem a certeza de que quer apagar esta refeição?</string>
+    <string name="are_you_sure_you_want_to_delete_this_meal">Tem a certeza de que quer eliminar esta refeição?</string>
     <string name="hour">HORA</string>
-    <string name="repeat_days">Repetir Dias</string>
+    <string name="repeat_days">Dias de Repetição</string>
     <string name="next_meal_at">Próxima refeição às</string>
     <string name="_10_30">10:30</string>
-    <string name="_90_food_suply">90% de Comida</string>
+    <string name="_90_food_suply">90% de Suprimento de Comida</string>
     <string name="portion">Porção</string>
     <string name="_85g">85g</string>
     <string name="thanks_for_the_treat">Obrigado pelo mimo!</string>
-    <string name="friday_07_april_2023">Sexta-feira, 07 de Abril de 2023</string>
+    <string name="friday_07_april_2023">Sexta-feira, 07 de Abril, 2023</string>
     <string name="_1_5kg">1.5Kg</string>
     <string name="vaccine_1">Vacina 1</string>
     <string name="_01_01_2023">01/01/2023</string>
-    <string name="_60_days_left">60 dias restantes</string>
+    <string name="_60_days_left">Faltam 60 dias</string>
     <string name="welcome">Bem-vindo!</string>
     <string name="sign_in_to_your_account">Entre na sua conta</string>
     <string name="login">Entrar</string>
@@ -76,7 +84,7 @@
     <string name="settings">Definições</string>
     <string name="about_the_application">Sobre a Aplicação</string>
     <string name="logout">Sair</string>
-    <string name="pet_profile">Perfil do Animal</string>
+    <string name="pet_profile">Perfil do Pet</string>
     <string name="profile_picture">Foto de Perfil</string>
     <string name="edit">Editar</string>
     <string name="name">Nome</string>
@@ -89,7 +97,7 @@
     <string name="history">Histórico</string>
     <string name="food_history">Histórico de Refeições</string>
     <string name="last_7_days">Últimos 7 Dias</string>
-    <string name="the_meals_history_list_is_empty">A lista de histórico de refeições está vazia.</string>
+    <string name="the_meals_history_list_is_empty">A lista do histórico de refeições está vazia.</string>
     <string name="new_meal">Nova Refeição</string>
     <string name="repeat">Repetir</string>
     <string name="mon">Seg</string>
@@ -107,6 +115,13 @@
     <string name="date_and_time">Data e hora</string>
     <string name="language">Idioma</string>
     <string name="new_vaccine">Nova Vacina</string>
-<string name="next_dose">Próxima Dose</string>
-
+    <string name="next_dose">Próxima Dose</string>
+    <string name="choose_your_wi_fi_network">Escolha a sua Rede Wi-Fi</string>
+    <string name="continue_">Continuar</string>
+    <string name="no_upcoming_meals">Sem refeições programadas</string>
+    <string name="date_not_available">Data indisponível</string>
+    <string name="food_supply">% de Suprimento de Comida</string>
+    <string name="all_days">Todos os Dias</string>
+    <string name="only_once">Apenas uma vez</string>
+    <string name="monday_to_friday">Segunda a Sexta</string>
 </resources>

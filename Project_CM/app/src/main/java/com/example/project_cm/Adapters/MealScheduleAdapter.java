@@ -1,6 +1,7 @@
 package com.example.project_cm.Adapters;
 
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +62,7 @@ public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapte
 
         holder.homeMealScheduleHour.setText(formattedTime);
 
-        String daysText = getRepeatDaysText(meal.getRepeatDays());
+        String daysText = getRepeatDaysText(meal.getRepeatDays(), holder.itemView.getContext());
         holder.homeMealScheduleDate.setText(daysText);
 
         //holder.scheduleActiveSwitch.setOnCheckedChangeListener(null);
@@ -105,11 +106,11 @@ public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapte
 
     }
 
-    private String getRepeatDaysText(Map<String, Boolean> repeatDays) {
+    private String getRepeatDaysText(Map<String, Boolean> repeatDays, Context context) {
         if (repeatDays != null && !repeatDays.containsValue(false)) {
-            return "All Days";
+            return context.getString(R.string.all_days);
         } else if (repeatDays != null && !repeatDays.containsValue(true)) {
-            return "Only once";
+            return context.getString(R.string.only_once);
         } else {
             boolean weekdaysOnly = true;
             for (String day : repeatDays.keySet()) {
@@ -123,7 +124,7 @@ public class MealScheduleAdapter extends RecyclerView.Adapter<MealScheduleAdapte
                 }
             }
             if (weekdaysOnly) {
-                return "Monday to Friday";
+                return context.getString(R.string.monday_to_friday);
             } else {
                 StringBuilder daysBuilder = new StringBuilder();
                 for (String day : repeatDays.keySet()) {

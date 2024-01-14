@@ -119,4 +119,10 @@
     <string name="next_dose">Next Dose</string>
     <string name="choose_your_wi_fi_network">Choose your Wi-Fi Network</string>
     <string name="continue_">Continue</string>
+    <string name="no_upcoming_meals">No upcoming meals</string>
+    <string name="date_not_available">Date not available</string>
+    <string name="food_supply">% Food Supply</string>
+    <string name="all_days">All Days</string>
+    <string name="only_once">Only once</string>
+    <string name="monday_to_friday">Monday to Friday</string>
 </resources>

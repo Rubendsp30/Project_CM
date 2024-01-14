@@ -79,15 +79,13 @@
                 managerDeviceList.addAll(devices);
                 adapter.notifyDataSetChanged();
                 if (devices.isEmpty()) {
-                    changeToDeviceSetup();
+                    changeToDeviceSetup(false);
                 }
 
             });
 
             addDeviceButton.setOnClickListener(v -> {
-                if (getActivity() instanceof FragmentChangeListener) {
-                    ((FragmentChangeListener) getActivity()).replaceFragment(new DevSetupInitial());
-                }
+                changeToDeviceSetup(true);
             });
         }
         private void addNewDevice() {
@@ -100,11 +98,19 @@
             return userViewModel.getCurrentUser().getValue().getUserID();
         }
 
-        private void changeToDeviceSetup() {
+
+        private void changeToDeviceSetup(boolean redirect) {
             if (fragmentChangeListener != null) {
-                fragmentChangeListener.replaceFragment(new DevSetupInitial());
+                DevSetupInitial devSetupInitialFragment = new DevSetupInitial();
+
+                Bundle args = new Bundle();
+                args.putBoolean("fromDeviceManagement", redirect);
+                devSetupInitialFragment.setArguments(args);
+
+                fragmentChangeListener.replaceFragment(devSetupInitialFragment);
             }
         }
+
     }
 
 
