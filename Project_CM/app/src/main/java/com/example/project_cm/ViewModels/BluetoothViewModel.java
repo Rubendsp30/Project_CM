@@ -65,6 +65,21 @@ public class BluetoothViewModel extends ViewModel {
             }
         }).start();
     }
+    public void disconnectBluetooth() {
+        try {
+            if (outputStream != null) {
+                outputStream.close();
+                outputStream = null;
+            }
+            if (socket != null) {
+                socket.close();
+                socket = null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     protected void onCleared() {

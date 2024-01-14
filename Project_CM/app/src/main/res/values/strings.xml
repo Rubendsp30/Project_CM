@@ -17,8 +17,8 @@
     <string name="device_welcome_text">To get your feeder working we need to connect it to the Wi-Fi network, please turn on the feeder to proceed.\n\nIf the lights are on continue to the next page.</string>
     <string name="device_welcome_btn">The lights are on</string>
 
-    <string name="turn_ble_header">Turn on bluetooth!</string>
-    <string name="turn_ble_text">Turn on the bluetooth to activate the feeder to the phone during the installation process</string>
+    <string name="turn_ble_header">Turn on bluetooth</string>
+    <string name="turn_ble_text">Turn on the bluetooth to activate the feeder to the phone during the installation process.</string>
     <string name="turn_ble_btn">Turn on bluetooth</string>
 
     <string name="scan_bt_header">Looking for equipment</string>
@@ -109,4 +109,5 @@
     <string name="language">Language</string>
     <string name="new_vaccine">New Vaccine</string>
     <string name="next_dose">Next Dose</string>
+    <string name="choose_your_wi_fi_network">Choose your Wi-Fi Network</string>
 </resources>
