@@ -284,6 +284,7 @@ public class PetProfileCreationFragment extends Fragment {
         String ageInput = inputAge.getText().toString();
         String weightInput = inputWeight.getText().toString();
         String gender;
+
         int selectedGenderId = genderRadioGroup.getCheckedRadioButtonId();
 
         String microchip = inputMicrochip.getText().toString();
@@ -298,7 +299,7 @@ public class PetProfileCreationFragment extends Fragment {
         }
 
         //Fill all fields warning
-        if (name.isEmpty() || ageInput.isEmpty() || weightInput.isEmpty() || gender.isEmpty() || microchip.isEmpty()) {
+        if (name.isEmpty() || ageInput.isEmpty() || weightInput.isEmpty() || microchip.isEmpty()) {
             Toast.makeText(getContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -311,7 +312,6 @@ public class PetProfileCreationFragment extends Fragment {
                 Log.e("createPetProfile", "User is null");
                 return;
             }
-
 
             PetProfileEntity petProfile;
             if (isEditMode && currentPetProfile != null) {

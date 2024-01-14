@@ -98,7 +98,7 @@ public class PetProfileFragment extends Fragment {
 
         viewPagerPetProfile = view.findViewById(R.id.viewPagerPetProfile);
 
-        petProfileAdapter = new PetProfileAdapter(petProfilesList, petProfileViewModel, getChildFragmentManager(), getViewLifecycleOwner(), FragmentChangeListener);
+        petProfileAdapter = new PetProfileAdapter(petProfilesList, petProfileViewModel,  getViewLifecycleOwner(), FragmentChangeListener);
 
         ImageView petProfileImageView = view.findViewById(R.id.petProfileImageView);
 
