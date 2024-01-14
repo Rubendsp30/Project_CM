@@ -109,8 +109,6 @@ public class PetProfileCreationFragment extends Fragment {
         // Retrieve the current user
         currentUser = userViewModel.getCurrentUser().getValue();
 
-
-
         // UI things
         profileImage = view.findViewById(R.id.profile_image);
         petProfileViewModel.getCurrentPet().observe(getViewLifecycleOwner(), this::loadPetImage);
@@ -172,7 +170,6 @@ public class PetProfileCreationFragment extends Fragment {
         textView.setLayoutParams(layoutParams);
         toolbar.addView(textView);
 
-        // Remova o título padrão da Toolbar, pois estamos usando o TextView personalizado
         if (activity.getSupportActionBar() != null) {
             activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
@@ -199,7 +196,6 @@ public class PetProfileCreationFragment extends Fragment {
     private void openImageChooser() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
-        //intent.setAction(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
