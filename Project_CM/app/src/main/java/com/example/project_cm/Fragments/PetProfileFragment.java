@@ -4,10 +4,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import android.widget.ImageView;
+import java.io.File;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -92,15 +97,26 @@ public class PetProfileFragment extends Fragment {
         getCurrentUser();
 
         viewPagerPetProfile = view.findViewById(R.id.viewPagerPetProfile);
+
         petProfileAdapter = new PetProfileAdapter(petProfilesList, petProfileViewModel, getChildFragmentManager(), getViewLifecycleOwner(), FragmentChangeListener);
+
+        ImageView petProfileImageView = view.findViewById(R.id.petProfileImageView);
+
         viewPagerPetProfile.setAdapter(petProfileAdapter);
 
         // a primeira é para fazer logo load de 2 páginas, a segunda é para tirar aquele efeito de esticar quando arrastas no primeiro ou último ecrã
         viewPagerPetProfile.setOffscreenPageLimit(2);
         viewPagerPetProfile.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
 
-        petProfileViewModel.getPetProfilesByUserId(currentUserId).observe(getViewLifecycleOwner(), this::updatePetProfiles);
+        petProfileViewModel.getPetProfilesByUserId(currentUserId).observe(getViewLifecycleOwner(), newPetProfiles -> {
+            Log.d("PetProfileFragment", "Atualizando lista de perfis de pets.");
+            petProfilesList.clear();
+            petProfilesList.addAll(newPetProfiles);
+            petProfileAdapter.notifyDataSetChanged();
+        });
+
     }
+
 
     private void getCurrentUser() {
         User currentUser = userViewModel.getCurrentUser().getValue();

@@ -16,13 +16,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/arrowleft2">
+       >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Create Profile"
+            android:text=""
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
     </androidx.appcompat.widget.Toolbar>
 
@@ -44,7 +44,7 @@
         android:id="@+id/textView_profile_picture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="12dp"
         android:text="Profile Picture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.091"
@@ -95,15 +95,38 @@
         android:inputType="numberDecimal"
         app:layout_constraintTop_toBottomOf="@+id/inputAge" />
 
-    <EditText
+    <TextView
+        android:id="@+id/textViewGender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gender"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inputWeight" />
+
+    <RadioGroup
         android:id="@+id/inputGender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/inputWeight"
         android:layout_marginTop="20dp"
-        android:hint="Gender"
-        android:inputType="text"
-        app:layout_constraintTop_toBottomOf="@+id/inputWeight" />
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/inputWeight">
+
+        <RadioButton
+            android:id="@+id/radio_female"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/genderbuttongenderfemale"
+            android:text="Female" />
+
+        <RadioButton
+            android:id="@+id/radio_male"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/radiobuttongendermale"
+            android:text="Male"
+            android:layout_marginStart="16dp" />
+
+    </RadioGroup>
 
     <EditText
         android:id="@+id/inputMicrochip"

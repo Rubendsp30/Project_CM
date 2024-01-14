@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ImageView;
+import java.io.File;
+import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,7 +28,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class PetProfileAdapter extends RecyclerView.Adapter<PetProfileAdapter.PetProfileViewHolder> {
-
     private final List<PetProfileEntity> petProfiles;
     private final PetProfileViewModel petProfileViewModel;
     @Nullable
@@ -49,13 +51,25 @@ public class PetProfileAdapter extends RecyclerView.Adapter<PetProfileAdapter.Pe
     public void onBindViewHolder(@NonNull PetProfileAdapter.PetProfileViewHolder holder, int position) {
         PetProfileEntity petProfile = petProfiles.get(position);
         petProfileViewModel.getPetProfileById(petProfile.id).observe(lifecycleOwner, petProfileEntity -> {
+
             if (petProfileEntity != null) {
                 holder.petNameTextView.setText(petProfile.name);
                 holder.petAgeTextView.setText(String.format(Locale.getDefault(), "%d years", petProfile.age));
                 holder.petWeightTextView.setText(String.format(Locale.getDefault(), "%.1f kg", petProfile.weight));
                 holder.petSexTextView.setText(petProfile.gender == 0 ? "Male" : "Female");
                 holder.petMicrochipTextView.setText(petProfile.microchipNumber);
+
+                if (petProfile.photoPath != null && !petProfile.photoPath.isEmpty()) {
+                    File imgFile = new File(petProfile.photoPath);
+                    if (imgFile.exists()) {
+                        Picasso.get().load(imgFile).into(holder.petProfileImageView);
+                        Log.d("PetProfileAdapter", "Carregando imagem para o pet: " + petProfile.name);
+                    }else {
+                        Log.d("PetProfileAdapter", "Caminho da imagem não encontrado: " + petProfile.photoPath);
+                    }
+                }
             }
+
         });
 
         holder.editButton.setOnClickListener(v -> {
@@ -109,6 +123,7 @@ public class PetProfileAdapter extends RecyclerView.Adapter<PetProfileAdapter.Pe
     }
 
     static class PetProfileViewHolder extends RecyclerView.ViewHolder {
+        ImageView petProfileImageView;
         TextView petNameTextView;
         TextView petAgeTextView;
         TextView petWeightTextView;
@@ -122,6 +137,7 @@ public class PetProfileAdapter extends RecyclerView.Adapter<PetProfileAdapter.Pe
 
         public PetProfileViewHolder(@NonNull View itemView, @Nullable com.example.project_cm.FragmentChangeListener fragmentChangeListener) {
             super(itemView);
+            petProfileImageView = itemView.findViewById(R.id.petProfileImageView);
             petNameTextView = itemView.findViewById(R.id.petNameTextView);
             petAgeTextView = itemView.findViewById(R.id.petAgeTextView);
             petWeightTextView = itemView.findViewById(R.id.petWeightTextView);
