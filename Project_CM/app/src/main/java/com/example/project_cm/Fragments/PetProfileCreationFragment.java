@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
+import androidx.core.content.ContextCompat;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.TypedValue;
@@ -149,7 +150,6 @@ public class PetProfileCreationFragment extends Fragment {
                             activity.getSupportActionBar().setDisplayShowHomeEnabled(true);
                             toolbar.setNavigationIcon(R.drawable.arrowleft2);
                             toolbar.setNavigationOnClickListener(v -> handleBackPress());
-                            // toolbar.setTitle("Edit Profile");
                         }
                     } else {
                         profileImage.setImageResource(R.drawable.insertimage);
@@ -157,7 +157,6 @@ public class PetProfileCreationFragment extends Fragment {
                             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                             activity.getSupportActionBar().setDisplayShowHomeEnabled(false);
                         }
-                        //toolbar.setTitle("Create Profile");
                         isEditMode = false;
                     }
                 });
@@ -166,8 +165,9 @@ public class PetProfileCreationFragment extends Fragment {
 
         TextView textView = new TextView(activity);
         textView.setText(isEditMode ? "Edit Profile" : "Create Profile");
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
         textView.setTypeface(null, Typeface.BOLD);
+        textView.setTextColor(ContextCompat.getColor(activity, R.color.green_400));
         Toolbar.LayoutParams layoutParams = new Toolbar.LayoutParams(
                 Toolbar.LayoutParams.WRAP_CONTENT,
                 Toolbar.LayoutParams.WRAP_CONTENT
@@ -216,10 +216,6 @@ public class PetProfileCreationFragment extends Fragment {
             if (currentPetProfile == null) {
                 currentPetProfile = new PetProfileEntity();
             }
-            /*
-            currentPetProfile.photoPath = imagePath;
-            Log.d("PetProfileEdit", "Caminho da imagem atualizado: " + imagePath);
-            petProfileViewModel.updatePetProfile(currentPetProfile);*/
             profileImage.setImageURI(imageUri);
         }
     }
